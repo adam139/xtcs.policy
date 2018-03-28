@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<metadata>
+  <version>1002</version>
+    <dependencies>
+        <dependency>Products.ATContentTypes:base</dependency> 
+        <dependency>profile-dexterity.membrane:default</dependency>
+        <dependency>profile-my315ok.socialorgnization:default</dependency>       
+        <dependency>profile-collective.diazotheme.bootstrap:default</dependency>
+        
+    </dependencies>  
+</metadata>

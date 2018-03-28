@@ -1,0 +1,111 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:z3c="http://namespaces.zope.org/z3c"
+    xmlns:grok="http://namespaces.zope.org/grok"    
+    i18n_domain="xtcs.policy">
+    
+
+  <include file="caching.zcml" />
+  
+    <include package="z3c.form" file="meta.zcml" />
+    <include package="z3c.form" />  
+  <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="index.html"
+      class=".homepage.FrontpageView"
+      permission="zope.Public"
+      layer="xtcs.theme.interfaces.IThemeSpecific"       
+      template="templates/homepage.pt"
+/>      
+  <browser:page
+      for="*"
+      name="footer"
+      permission="zope.Public"
+ 	    layer=".interfaces.IThemeSpecific"       
+      template="templates/footer.pt"
+      />      
+    <!-- The search box -->
+    <browser:viewlet
+        name="plone.searchbox"
+        layer=".interfaces.IThemeSpecific"        
+        manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
+        class=".common.SearchBoxViewlet"
+        permission="zope2.View"
+        />    
+    
+
+        
+    <!-- override The breadcrumbs -->
+    <browser:viewlet
+        name="plone.path_bar"
+        manager="plone.app.layout.viewlets.interfaces.IAboveContent"
+        class=".common.PathBarViewlet"
+        layer=".interfaces.IThemeSpecific"
+        permission="zope2.View"
+        />        
+    <!-- Override global sections viewlet -->
+
+    <browser:viewlet
+        name="plone.global_sections"
+        manager="plone.app.layout.viewlets.interfaces.IMainNavigation"
+        class=".dropdown.DropdownMenuViewlet"
+ 		layer=".interfaces.IThemeSpecific" 
+        permission="zope2.View"
+        />
+    
+  <browser:page
+        name="batchnavigation"
+        for="*"
+        permission="zope.Public"
+        class="plone.batching.browser.PloneBatchView"
+    		 layer=".interfaces.IThemeSpecific"        
+        template="templates/batchnavigation_bootstrap.pt"
+        /> 
+ 
+  
+  <browser:viewlet
+    name="xtcs.policy.reviewhistory"
+    manager="plone.app.layout.viewlets.interfaces.IBelowContentBody"
+    class=".review_history.ReviewViewlet"
+    layer=".interfaces.IThemeSpecific"
+    permission="zope2.View"
+/>  
+ 	<browser:resourceDirectory
+  name="xtcs.policy"
+  directory="static" />
+
+  <browser:page
+		name="xtcs-policy-macros"
+		for="*"
+		permission="zope2.View"
+		class=".macros.Macros"/> 
+
+        
+
+     
+   <z3c:widgetTemplate
+        mode="input"
+ 		widget="collective.z3cform.datetimewidget.interfaces.IDateWidget"        
+ 		layer=".interfaces.IThemeSpecific"
+ 		template="templates/date_input.pt" />
+ 		
+   <z3c:widgetTemplate
+        mode="input"
+ 		widget="plone.formwidget.namedfile.interfaces.INamedFileWidget"        
+ 		layer=".interfaces.IThemeSpecific"
+ 		template="templates/file_input.pt" />
+ 		 		
+   <z3c:widgetTemplate
+        mode="input"
+ 		widget="plone.formwidget.captcha.interfaces.ICaptchaWidget"        
+ 		layer=".interfaces.IThemeSpecific"
+ 		template="templates/captcha_input.pt" /> 		
+
+<include package="z3c.jbot" file="meta.zcml" />
+
+<browser:jbot
+    directory="override"
+ 		layer=".interfaces.IThemeSpecific"    
+     /> 
+</configure>

@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    i18n_domain="xtcs.policy">
+
+    <!-- Define new permissions --> 
+  		<include package="collective.autopermission" />   
+    
+    <permission
+			id="my315ok.socialorgnization.add.anualreport"
+			title="my315ok.socialorgnization:Add anual report"
+        />
+    <permission
+			id="my315ok.socialorgnization.review.anualreport"
+			title="my315ok.socialorgnization:Review anual report"
+        />
+    <permission
+			id="my315ok.socialorgnization.review.lastlyreport"
+			title="my315ok.socialorgnization:Review lastly anual report"
+        />                
+
+</configure>

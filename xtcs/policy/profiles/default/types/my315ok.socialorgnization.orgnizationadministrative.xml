@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<object name="my315ok.socialorgnization.orgnizationadministrative"
+   meta_type="Dexterity FTI"
+   i18n:domain="my315ok.socialorgnization" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+
+
+ <property name="behaviors">
+
+    <element value="xtcs.policy.behaviors.year2id.INameFromAdminYear" />
+<!--     <element value="my315ok.socialorgnization.behavior.customizetitle.INameFromParentId" />    	
+     <element value="plone.app.dexterity.behaviors.metadata.IBasic"/> -->
+ </property>
+
+
+</object>

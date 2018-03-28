@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<registry>
+ <record name="plone.bundles/plone.merge_with" interface="Products.CMFPlone.interfaces.resources.IBundleRegistry" field="merge_with">
+    <value>default</value>
+  </record>  
+ <record name="plone.bundles/plone-legacy.merge_with" interface="Products.CMFPlone.interfaces.resources.IBundleRegistry" field="merge_with">
+    <value>default</value>
+  </record>        
+</registry>

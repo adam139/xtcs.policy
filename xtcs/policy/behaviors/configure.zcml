@@ -1,0 +1,60 @@
+<configure    xmlns="http://namespaces.zope.org/zope"
+   xmlns:plone="http://namespaces.plone.org/plone"
+   xmlns:grok="http://namespaces.zope.org/grok"
+   i18n_domain="plone">
+   
+   <include package="plone.behavior" file="meta.zcml" />
+   <include package="plone.directives.form" file="meta.zcml" />
+   <include package="plone.directives.form" />
+   
+<plone:behavior
+    title="Name from  year"
+    description="generates a name from  preview year"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    provides=".year2id.INameFromYear"
+    />
+<plone:behavior
+    title="Name from  year and day"
+    description="generates a name from  current year and day"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    provides=".year2id.INameFromAdminYear"
+    />
+
+<adapter factory=".year2id.NameFromYear" />
+
+<adapter factory=".year2id.NameFromAdminYear" />
+
+<!--
+  <plone:behavior
+      title="Name from full name"
+      description="Use the full name as name (basis for the id)"
+      provides=".namefromtitle.INameFromFullName"
+      factory=".namefromtitle.NameFromFullName"
+      for="dexterity.membrane.content.member.IOrganizationMember"
+      />
+    
+ 	<plone:behavior
+				title="Organization name"
+				description="extension a organization name field"
+				provides=".org.IOrg"
+				factory=".org.Org"
+				for="dexterity.membrane.content.member.IOrganizationMember"
+				marker=".org.IOrg"/>
+				 --> 
+	<adapter
+     		factory=".org.Org"
+     		provides=".org.IOrg"
+	/>	
+	<adapter
+     		factory=".org.Sponsor"
+     		provides=".org.ISponsor"
+	/>						 
+	<adapter
+     		factory=".roles.OrgDefaultRoles"
+     		provides="Products.membrane.interfaces.IMembraneUserRoles"
+	/>			  
+ 	<adapter
+     		factory=".roles.SprDefaultRoles"
+     		provides="Products.membrane.interfaces.IMembraneUserRoles"
+	/>	     
+</configure>
