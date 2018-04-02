@@ -1,7 +1,7 @@
 
 require([
-  'jquery','roll','bootstrap-carousel','bootstrap-tabs'
-], function($,roll,carousel,tabs) {
+  'jquery','roll','ajax-fetchimg','bootstrap-carousel','bootstrap-tabs'
+], function($,roll,ajaximg,carousel,tabs) {
   'use strict';
 $(document).ready(function(){ 
 	$(".nav-tabs a").mouseover(function (e) {
@@ -23,6 +23,8 @@ $(document).ready(function(){
 	StartRollV();
 	StartRollVs();
 	rolltext(".roll-wrapper");
-	$("#quicksearch").on("click",".searchButton",function(){var a=$("#search_input").val();var b2=encodeURIComponent(a);var base=$("#ajax").attr('data-js-target');window.location.href=base+"/@@allorgnization_listings?orgname="+b2;return false;});$("#search_input").keypress(function(event){if(event.which==13){var a=$("#search_input").val();var b2=encodeURIComponent(a);var base=$("#ajax").attr('data-js-target');window.location.href=base+"/@@allorgnization_listings?orgname="+b2;return false;}});
+    var root = $("#roll_chanpin").attr("data-root");
+	var ajaxurl = root + "/gongludongtai/tupianxinwen/@@barsview_mini";
+	ajaxfetchimg("roll_chanpin", ajaxurl, ".roll_image", 1);
 	});
 });

@@ -1,143 +1,80 @@
 # -*- coding: utf-8 -*-
+from plone import api
 from Products.CMFCore.utils import getToolByName
 from plone.dexterity.utils import createContentInContainer
-from my315ok.socialorgnization.content.orgnization import IOrgnization,IOrgnization_annual_survey
 
-from my315ok.socialorgnization.content.orgnizationfolder import IOrgnizationFolder
-from my315ok.socialorgnization.content.page import IPage
 from plone.app.contenttypes.behaviors.richtext import IRichText
 
 from plone.i18n.normalizer.interfaces import INormalizer
 from zope.component import getUtility
 from Acquisition import aq_parent
 from plone.app.textfield.value import RichTextValue
+from xtcs.policy.setuphandlers import STRUCTURE,_create_content 
 
-def migrate2Document(context):
-    "migrate my315ok.socialorgnization.page to plone.app.contenttypes.Document"
-    pc = getToolByName(context, "portal_catalog")
-#    wf = getToolByName(context, 'portal_workflow')
-    query = {"object_provides":IPage.__identifier__}
-    bns = pc(query)
-    for bn in bns:
-        ob = bn.getObject()
-        id = "%s2" % (bn.id)
-        title = bn.Title
-        description = bn.Description
-        text = ob.text.output
-        pt = aq_parent(ob)
-        odate = bn.created
+def import_article(context):
+    "import article from mysql to plone."
+    
+    # migrate articles to document
+    # 
+# sortparenid:1002:慈善资讯
+# sortchildid:1:公益新闻
+# sortchildid:2:活动通知
+# sortchildid:3:慈善动态
+# sortparenid:1006:义工中心
+# sortchildid:18:义工活动
+# sortparenid:1007:慈善社区
+# sortchildid:20:慈善文摘
+# sortchildid:21:慈善故事
+# sortchildid:22:精彩博文
+# sortchildid:23:论坛热铁
+# sortparenid:1008:组织管理
+# sortchildid:6:规章制度
+# sortchildid:9:政策法规    
+    from xtcs.policy.mapping_db import  Article
+    from xtcs.policy.interfaces import IArticleLocator
+    
+    from zope.component import getUtility
+    from xtcs.policy import Session as session
 
+    
+    def _create_doc(article):
+        portal = api.portal.get()
         try:
-            item =createContentInContainer(pt,"Document",
-                                           checkConstraints=False,
-                                           id=id,
-                                           title=title,
-                                           description=description)
-            
-            IRichText(item).text = RichTextValue(text,'text/html','text/html')
-            item.creation_date = odate
-            item.setModificationDate(odate)
-            item.reindex(idxs=['created', 'modified'])
-#             pt.manage_delObjects([bn.id])            
-        except:
-            continue        
- 
- 
-def deletesocialorgnizationpage(context):
-    
-    pc = getToolByName(context, "portal_catalog")
-#    wf = getToolByName(context, 'portal_workflow')
-    query = {"object_provides":IPage.__identifier__}
-    bns = pc(query)    
-    
-
-
-#     print >> buf, "Found %d items to be purged" % len(bns)
-
-#     count = 0
-    for b in bns:
-#         count += 1
-        obj = b.getObject()
-#         print >> buf, "Deleting:" + obj.absolute_url() + " " + str(obj.created())
-        obj.aq_parent.manage_delObjects([obj.getId()])
-        
-#     return buf.getvalue()        
-
-
-def set_defaultview(context):
-    "将旧的社会组织年检数据设置默认视图view"
-    pc = getToolByName(context, "portal_catalog")
-#    wf = getToolByName(context, 'portal_workflow')
-    query = {"object_provides":IOrgnization_annual_survey.__identifier__}
-    bns = pc(query)
-    for bn in bns:
-        if bn.review_state  == "published":  # after modify workflow and add directly publish transition.
-            ob = bn.getObject()
-            ob.setLayout("view")
-
-#            wf.doActionFor(ob, 'publish', comment='迁移数据，将原始年检直接标记为发布状态。' )
-
-def publish_survey(context):
-    "将旧的社会组织年检数据直接发布为published状态"
-    pc = getToolByName(context, "portal_catalog")
-    wf = getToolByName(context, 'portal_workflow')
-    query = {"object_provides":IOrgnization_annual_survey.__identifier__}
-    bns = pc(query)
-    for bn in bns:
-        if bn.review_state  == "draft":  # after modify workflow and add directly publish transition.
-            ob = bn.getObject()
-
-            wf.doActionFor(ob, 'publish', comment='迁移数据，将原始年检直接标记为发布状态。' )
-
-
-def publish_organization(context):
-    "将旧的社会组织数据直接发布为published状态"
-    pc = getToolByName(context, "portal_catalog")
-    wf = getToolByName(context, 'portal_workflow')
-    query = {"object_provides":IOrgnization.__identifier__}
-    bns = pc(query)
-    for bn in bns:
-        if bn.review_state  == "private":
-            ob = bn.getObject()
-           
-            wf.doActionFor(ob, 'publish', comment='old org init as published status' )
-        
-    
-    
-def init_governmentdepartment(context):
-    "将归属湘潭市的社会组织提取出来，为每个对象创建一个上级监管单位"
-    
-    pc = getToolByName(context, "portal_catalog")
-    query = {"object_provides":IOrgnizationFolder.__identifier__}
-    bns = pc(query)
-    folder = bns[0].getObject()
-    query = {"object_provides":IOrgnization.__identifier__,"orgnization_belondtoArea":"xiangtanshi"}
-    bns = pc(query)
-    # create government department data
-    title2id = getUtility(INormalizer,'zh')
-    ts = [i.orgnization_supervisor for i in bns]
-    bsset = set(ts)
-    for title in bsset:
-        if title == "" or title == None:continue        
-        if not isinstance(title, unicode):
-            title = unicode(title, 'utf-8')                    
-        # call title to id utility
-        id = title2id.normalize(title)
-        try:
-            item =createContentInContainer(folder,
-                                           "my315ok.socialorgnization.governmentorgnization",
-                                           checkConstraints=False,
-                                           id=id,
-                                           title=title)
-            item.reindex()
-#            setattr(item,'title',title)
+            container = portal['cishanzixun']['cishandongtai']
+            new = container.get(str(sourceObj.id), None)
+            if not new:
+                new = api.content.create(
+                                     type='Document',
+                                     container=container,
+                                     title=article.title,
+                                     description=article.title,            
+                                     id=str(article.id),
+                                     safe_id=False)
+                datev = datetime.datetime.utcfromtimestamp(article.pubtime)
+                if new != None:
+                    new.text = RichTextValue(article.content)
+                    new.setModificationDate(datev)
+                    new.creation_date = datev
+                    new.setEffectiveDate(datev)
+                    new.reindexObject(idxs=['created', 'modified','Title'])        
         except:
             pass
+    #慈善动态
+    portal = api.portal.get()
+#     catalog = api.portal.get_tool(name='portal_catalog')
+    try:
+        container = portal['cishanzixun']['cishandongtai']
+        if container != None:
+            locator = getUtility(IArticleLocator)    
+            articles = locator.query(start=0,size=100,multi=1,sortparentid=1003,sortchildid=3)
+            finished = map(_create_doc,articles)
+        else:
+            pass
+    except:
+       pass
 
-        
-        
-    
-    
+
+   
     
 
 

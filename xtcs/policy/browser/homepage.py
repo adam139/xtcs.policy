@@ -9,7 +9,7 @@ from Products.CMFPlone.resources import add_resource_on_request
 # add_resource_on_request(self.request, 'jquery.recurrenceinput')
 # add_bundle_on_request(self.request, 'thememapper')
 
-from my315ok.socialorgnization import _
+from xtcs.policy import _
 from my315ok.products.product import Iproduct
 from my315ok.socialorgnization.content.orgnizationfolder import IOrgnizationFolder
 from collective.diazotheme.bootstrap.browser.homepage import HomepageView as baseview
@@ -178,9 +178,9 @@ class FrontpageView(baseview):
         return data
         
 # roll table output
-    def getOrgnizationFolder(self):
-        
-        brains = self.catalog()({'object_provides':IOrgnizationFolder.__identifier__})
+    def getDonateFolder(self):
+        from xtcs.policy.interfaces import IJuanzenggongshi
+        brains = self.catalog()({'object_provides':IJuanzenggongshi.__identifier__})
         context = brains[0].getObject()
         return context        
         
@@ -189,9 +189,10 @@ class FrontpageView(baseview):
         call view come from my315ok.socialorgnization orgnization_listing module,
         view name may be "orgnizations_administrative","orgnizations_survey"
         """
-        context = self.getOrgnizationFolder()
+
+
 #         add_bundle_on_request(self.request, 'homepage-legacy')
-        fview = getMultiAdapter((context,self.request),name=view)
+        fview = getMultiAdapter((self.context,self.request),name=view)
         # call getMemberList function output table
         # fetch 20 items roll
         return fview.getMemberList(start=0,size=20,)

@@ -6,13 +6,16 @@
     xmlns:grok="http://namespaces.zope.org/grok"    
     i18n_domain="xtcs.policy">
     
-  <five:registerPackage package="." initialize=".initialize" />
+
   <includeDependencies package="." />
-  
+  <permission
+      id="xtcs.policy.input_db"
+      title="xtcs.policy:Input db"
+      />  
   <i18n:registerTranslations directory="locales" />
     <include package=".browser" />     
     <include package=".portlet" />
-
+    <grok:grok package="." /> 
   <!-- -*- cusomize indexer -*- -->
 
 
@@ -39,4 +42,22 @@
       description="some initial steps"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
+
+    <genericsetup:importStep
+        name="xtcs.policy-postInstall"
+        title="xtcs.policy post_install import step"
+        description="Post install import step from emc.policy,just run once"
+        handler=".setuphandlers.post_install">
+        <depends name='typeinfo' />
+    </genericsetup:importStep>
+
+<!--      
+  <genericsetup:upgradeStep
+      title="import article from mysql to plone"
+      description="import article from mysql to plone."
+      source="1000"
+      destination="1001"
+      handler="xtgl.policy.migration.import_article"
+      profile="xtgl.policy:default"/>
+      -->       
 </configure>

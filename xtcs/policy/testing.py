@@ -32,10 +32,14 @@ class SitePolicy(PloneSandboxLayer):
         # Load ZCML
         import xtcs.policy
         import plone.app.contenttypes
+#         import collective.diazotheme.bootstrap
         import xtcs.theme
         import my315ok.products
+#         import my315ok.orgnization
         xmlconfig.file('configure.zcml', plone.app.contenttypes, context=configurationContext)
+#         xmlconfig.file('configure.zcml', collective.diazotheme.bootstrap, context=configurationContext)
         xmlconfig.file('configure.zcml', my315ok.products, context=configurationContext)
+#         xmlconfig.file('configure.zcml', my315ok.orgnization, context=configurationContext)
         xmlconfig.file('configure.zcml', xtcs.theme, context=configurationContext)
         xmlconfig.file('configure.zcml', xtcs.policy, context=configurationContext)        
        
@@ -50,21 +54,24 @@ class SitePolicy(PloneSandboxLayer):
 #         z2.uninstallProduct(app, 'Products.membrane')        
         
     def setUpPloneSite(self, portal):
-        applyProfile(portal, 'xtcs.policy:default')
+
         applyProfile(portal, 'plone.app.contenttypes:default')
-        applyProfile(portal, 'my315ok.products:default')        
+        applyProfile(portal, 'my315ok.products:default') 
+        applyProfile(portal, 'xtcs.policy:default')       
 #         applyProfile(portal, 'dexterity.membrane:default')
 #        applyProfile(portal, 'dexterity.membrane.content:example')
 
 class IntegrationSitePolicy(SitePolicy):      
         
     def setUpPloneSite(self, portal):
+        applyProfile(portal, 'my315ok.products:default') 
         applyProfile(portal, 'xtcs.policy:default')
+        applyProfile(portal, 'plone.app.contenttypes:default')
 #         applyProfile(portal, 'my315ok.socialorgnization:default')
 #         applyProfile(portal, 'dexterity.membrane:default')
 #        applyProfile(portal, 'dexterity.membrane.content:example')
 
-#        portal = self.layer['portal']
+#         portal = self.layer['portal']
         #make global request work
         from zope.globalrequest import setRequest
         setRequest(portal.REQUEST)

@@ -8,7 +8,7 @@ prefix="plone" />
       <required>False</required>
       <title xmlns:ns0="http://xml.zope.org/namespaces/i18n" ns0:domain="plone" ns0:translate="rules_file">Rules file</title>
     </field>
-    <value>/++theme++collective.diazotheme.bootstrap/xtcs.xml</value>
+    <value>/++theme++xtcs.theme/xtcs.xml</value>
   </record>
 <!-- Resources -->
   <records prefix="plone.resources/roll"
@@ -22,6 +22,12 @@ prefix="plone" />
 
       <value key="deps">jquery</value>
  </records>
+ <records prefix="plone.resources/ajax-fetchimg"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++resource++xtcs.policy/ajaximg.js</value>
+
+      <value key="deps">jquery</value>
+  </records> 
   <records prefix="plone.resources/bootstrap-carousel"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'>
       <value key="js">++plone++static/components/bootstrap/js/carousel.js</value>

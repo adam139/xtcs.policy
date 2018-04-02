@@ -76,3 +76,34 @@ class Macros(BrowserView):
         """ % getattr(person, 'color', 'cccccc')[:6]
 
         return result
+    
+class DbMacros(BrowserView):
+
+    template = ViewPageTemplateFile('templates/db_macros.pt')
+
+    @property
+    def macros(self):
+        return self.template.macros
+
+    def content_tabs(self):
+        context = aq_inner(self.context)
+        navtree_view = NavTree(context, self.request)
+        return [{
+            'id':t['id'],
+            'name':t['Title'],
+            'url':t['getURL'],
+            'description':t['Description']
+        } for t in navtree_view.navigationTree()['children']]
+
+
+    def text_to_html(self, text):
+        text = text or ''
+        pt = getToolByName(self.context, 'portal_transforms')
+        return pt.convertTo('text/html', text, mimetype='text/plain').getData()
+
+    def timedelta(self, start, end):
+        if isinstance(start, DateTime):
+            start=start.asdatetime()
+        if isinstance(end, DateTime):
+            end=end.asdatetime()
+        return start-end    

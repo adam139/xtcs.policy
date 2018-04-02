@@ -3,28 +3,58 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c"
     xmlns:grok="http://namespaces.zope.org/grok"    
-    i18n_domain="xtcs.policy">
-    
+    i18n_domain="xtcs.policy">    
 
-  <include file="caching.zcml" />
-  
+    <include file="caching.zcml" />  
     <include package="z3c.form" file="meta.zcml" />
-    <include package="z3c.form" />  
-  <browser:page
+    <include package="z3c.form" />
+      
+      
+ 	<browser:resourceDirectory
+     name="xtcs.policy"
+     directory="static" />
+     
+    <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="index.html"
       class=".homepage.FrontpageView"
       permission="zope.Public"
-      layer="xtcs.theme.interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"       
       template="templates/homepage.pt"
-/>      
-  <browser:page
+    />
+    
+    <browser:page
+      for="*"
+      name="donor_table"
+      class=".dbpage.DonortableView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/donor_table.pt"
+    />    
+    <browser:page
+      for="xtcs.policy.interfaces.IJuanzenggongshi"
+      name="donate_listings"
+      class=".dbpage.DonateView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/donate_listings.pt"
+    />           
+    <browser:page
+      for="xtcs.policy.interfaces.IJuanzenggongshi"
+      name="donor_listings"
+      class=".dbpage.DonorView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/donor_listings.pt"
+    />    
+    <browser:page
       for="*"
       name="footer"
       permission="zope.Public"
  	    layer=".interfaces.IThemeSpecific"       
       template="templates/footer.pt"
-      />      
+      />
+            
     <!-- The search box -->
     <browser:viewlet
         name="plone.searchbox"
@@ -32,9 +62,7 @@
         manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
         class=".common.SearchBoxViewlet"
         permission="zope2.View"
-        />    
-    
-
+        />
         
     <!-- override The breadcrumbs -->
     <browser:viewlet
@@ -43,9 +71,9 @@
         class=".common.PathBarViewlet"
         layer=".interfaces.IThemeSpecific"
         permission="zope2.View"
-        />        
+        /> 
+               
     <!-- Override global sections viewlet -->
-
     <browser:viewlet
         name="plone.global_sections"
         manager="plone.app.layout.viewlets.interfaces.IMainNavigation"
@@ -54,35 +82,20 @@
         permission="zope2.View"
         />
     
-  <browser:page
+    <browser:page
         name="batchnavigation"
         for="*"
         permission="zope.Public"
         class="plone.batching.browser.PloneBatchView"
-    		 layer=".interfaces.IThemeSpecific"        
+        layer=".interfaces.IThemeSpecific"        
         template="templates/batchnavigation_bootstrap.pt"
-        /> 
- 
-  
-  <browser:viewlet
-    name="xtcs.policy.reviewhistory"
-    manager="plone.app.layout.viewlets.interfaces.IBelowContentBody"
-    class=".review_history.ReviewViewlet"
-    layer=".interfaces.IThemeSpecific"
-    permission="zope2.View"
-/>  
- 	<browser:resourceDirectory
-  name="xtcs.policy"
-  directory="static" />
+        />
 
-  <browser:page
+    <browser:page
 		name="xtcs-policy-macros"
 		for="*"
 		permission="zope2.View"
-		class=".macros.Macros"/> 
-
-        
-
+		class=".macros.Macros"/>
      
    <z3c:widgetTemplate
         mode="input"
@@ -102,10 +115,25 @@
  		layer=".interfaces.IThemeSpecific"
  		template="templates/captcha_input.pt" /> 		
 
-<include package="z3c.jbot" file="meta.zcml" />
+    <include package="z3c.jbot" file="meta.zcml" />
 
-<browser:jbot
-    directory="override"
+    <browser:jbot
+        directory="override"
  		layer=".interfaces.IThemeSpecific"    
-     /> 
+     />
+      
+    <!-- db page -->
+    <browser:page
+        name="db-macros"
+        for="*"
+        permission="zope2.View"
+        class=".macros.DbMacros"/>
+<!--            
+    <browser:page
+        name="fashej_listings"
+        template="templates/fashej_listings.pt"
+        for="emc.kb.contents.ormfolder.Iormfolder"
+        permission="emc.kb.input_db"
+        class=".ajax_listing.FashejView"/>     
+        -->    
 </configure>

@@ -2,6 +2,9 @@
 <object name="Folder" meta_type="Dexterity FTI" i18n:domain="plone"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
  <property name="default_view">tableview</property>
+ <property name="allowed_content_types" purge="false">
+  	 <element value="my315ok.products.productfolder" /> 	 
+  </property>
  <property name="view_methods" purge="false">
   <element value="tableview"/>
   <element value="download_view"/>

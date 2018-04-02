@@ -10,3 +10,37 @@ padding:0;
 .carousel-inner {height:227px;}
 .template-index-html #portal-breadcrumbs {display:none}
 #content .shortcutlink p {text-indent:0}
+
+
+#roll_chanpin {
+margin:0;
+
+}
+
+.roll_image {
+display:inline;
+float:left;
+height:152px;
+overflow:hidden;
+width:675px;
+margin-left:6px;
+margin-top:6px;
+background-color: #fff;
+}
+.roll_image li {
+float:left;
+list-style:none outside none;
+text-align:center;
+width:184px;
+margin-left:8px;
+margin-top:9px;
+*height:100%;
+}
+.roll_image li a img {
+    height: 100px;
+    width: 180px;
+}
+.roll_image li a{display:block;margin-top:0;*margin-top:0;}
+.roll_image li a img {width:180px;height:100px;}
+.roll_image ul.img {*height:128px;}
+#roll_chanpin .imgtitle {width:184px;overflow:hidden;font-size:12px;line-height:2.1;margin-top:6px;}
