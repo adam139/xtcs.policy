@@ -1,0 +1,57 @@
+<metal:block define-macro="styles">
+       <link rel="stylesheet" type="text/css"
+            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="href string:${navroot}/++resource++xtcs.policy/style.css"
+            />
+</metal:block>
+<metal:block define-macro="navbar" i18n:domain="xtcs.policy">
+ <nav class="navbar navbar-default" role="navigation">
+  <div class="container-fluid" 
+  	   tal:define="is_editable context/@@plone_context_state/is_editable;
+                   kb python:context">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#" tal:content="kb/title" tal:attributes="href kb/absolute_url">Brand</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown active">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">电磁兼容型号参数库<span class="caret"></span></a>
+          
+          <ul class="dropdown-menu" role="menu">
+            <li>
+                 <a tal:attributes="href string:${kb/absolute_url}/@@fashej_listings">
+                     发射机
+                  </a>
+                  </li>
+                  <li>
+                 <a tal:attributes="href string:${kb/absolute_url}/@@fashetx_listings">
+                     发射天线
+                  </a>
+                  </li>
+                  <li>
+                 <a tal:attributes="href string:${kb/absolute_url}/@@jieshouj_listings">
+                     接收机
+                  </a>
+                  </li>
+                  <li>
+                 <a tal:attributes="href string:${kb/absolute_url}/@@jieshoutx_listings">
+                     接收天线
+                  </a>
+                  </li>
+          </ul>
+        </li>
+        
+      </ul>      
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav> 
+</metal:block>          

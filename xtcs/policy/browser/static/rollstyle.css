@@ -1,0 +1,13 @@
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	font-size:12px;
+	background-color:#fff;
+}
+#oRollV {margin: 0px; overflow: hidden;height: 180px}
+td {text-align:center;background-color:#fff;}
+.theader td {background-color: #ededed;height: 25px;font-weight:bold}
+td.item {width:25%} td.title {width:55%;text-align:left;height:28px;} td.result {width:20%}
+td.title a {text-decoration:none;}
