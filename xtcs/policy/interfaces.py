@@ -14,6 +14,10 @@ class IAixinjuankuan (Interface):
     """某一捐赠项目具体捐赠记录"""
 class IJuanzenggongshi (Interface):
     """展示已有捐赠的项目"""
+
+class IContainerTablelist (Interface):
+    """文件夹标记接口"""
+
 # db insterface
 
 class IArticleLocator (Interface):

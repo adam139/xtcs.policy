@@ -170,21 +170,21 @@ var generatePageLink = function(c, n, a) {
 $(document).ready(function(){
 // read query string
 // Getting URL var by its nam
+  var current = window.location.href; 
+  if (current.endsWith('donate_listings'))
+  {searchEvent(); }
+  else {	 
     var byName = $.getUrlVar('name');
-    if (byName === undefined || byName == null || byName === "") {
-               alert("网址不正确，请联系管理员！！");
-    } else {
-               var byName2 = decodeURIComponent(byName);
-               $(".documentFirstHeading").html(byName2);                
-    }
     var byId = $.getUrlVar('id');
     if (byId === undefined || byId == null || byId === "") {
                alert("网址不正确，请联系管理员！！");
     } else {
                var byName2 = decodeURIComponent(byName);
-               $("#searchKeyword").val(byName2);    
-               searchEvent();
-    }    
+               $(".documentFirstHeading").html(byName2);
+               $("#idSearch").val(byId);    
+               searchEvent();                
+    }
+   } 
    $("#search").on("click","button",function(){ searchEvent();});
    
    $("#eventListSort").on("click","a",function() {             

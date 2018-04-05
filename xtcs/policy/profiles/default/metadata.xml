@@ -2,8 +2,7 @@
 <metadata>
   <version>1000</version>
     <dependencies>
-     
-
-        
-    </dependencies>  
+        <dependency>profile-my315ok.products:default</dependency>
+        <dependency>profile-xtcs.theme:default</dependency>         
+    </dependencies> >  
 </metadata>

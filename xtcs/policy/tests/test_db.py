@@ -97,6 +97,8 @@ class TestParametersDatabase(unittest.TestCase):
             document.title = article.title
             document.description = "This is my document."
             document.text = RichTextValue(article.content)
+            import pdb
+            pdb.set_trace()
             self.request.set('URL', document.absolute_url())
             self.request.set('ACTUAL_URL', document.absolute_url())
             alsoProvides(self.request, IPloneFormLayer)

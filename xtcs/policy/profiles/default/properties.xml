@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <site>
- <property name="title">湘潭慈善总会官网</property>
+ <property name="title">湘潭市慈善总会官网</property>
  <property name="description">潭慈善总会网——湘潭市民政局直属湘潭市慈善总会官方网站。</property>
  <property name="email_from_address" type="string">tonglian777@126.com</property>
  <property name="email_from_name" type="string">tonglian777</property>

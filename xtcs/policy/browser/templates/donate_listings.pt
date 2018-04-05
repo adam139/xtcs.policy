@@ -14,7 +14,8 @@
   </head>
 <body>
 	<div metal:fill-slot="main">
-		<metal:block   use-macro="context/@@db-macros/macros/navbar"/>
+		<!--
+		<metal:block   use-macro="context/@@db-macros/macros/navbar"/> -->
 		<div id="ajaxsearch" style="display: none" 
 			tal:attributes="data-ajax-target python:context.absolute_url() + '/@@donate_ajaxsearch'"></div>
 		<div class="container-fluid">
@@ -34,7 +35,7 @@
 				</div>
 			</div>
 			<div class="row">
-                <h1 class="documentFirstHeading">电磁兼容型号参数库-发射机表信息</h1>				
+                <h1 class="documentFirstHeading">捐赠信息</h1>				
 			</div>			
 			<input type="hidden" value="0" id="dateSearch">
 			<input type="hidden" value="0" id="idSearch">
@@ -60,7 +61,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-4">
                 	<a class="btn btn-primary" 
-                		tal:attributes="href python:context.absolute_url() + '/@@input_donate'" alt="添加发射机">添加发射机</a>
+                		tal:attributes="href python:context.absolute_url() + '/@@input_donate'" alt="添加公示">添加公示</a>
                 </div>
                 <!--快速翻页-->
                 <div class="col-xs-12 col-sm-4">
@@ -76,19 +77,18 @@
             <table class="row table table-striped table-bordered table-condensed listing">
             	<thead>
             		<tr data-toggle="tooltip" title="点击排序">
-            			<th class="col-md-1 text-center">设备代码</th>
-            			<th class="col-md-1 text-left">发射机名称</th>
-            			<th class="col-md-1 text-left">状态批次代码</th>           			            			            			
+            			<th class="col-md-1 text-left">项目代码</th>             			
+            			<th class="col-md-7 text-center">公示项目</th>
+            			<th class="col-md-2 text-left">注册时间</th>          			            			            			
             			<th class="col-md-1 text-center">编辑</th>
             			<th class="col-md-1 text-center">删除</th>
             		</tr>
             	</thead>
             	<tbody id="searchResultDiv">
             		<tr>
-            			<td class="col-md-1 text-center">设备代码</td>
-            			<td class="col-md-1 text-left">发射机名称</td>
-            			<td class="col-md-1 text-left">状态批次代码</td>
-            			<td class="col-md-1 text-center">位置</td>          			            			            			
+            			<td class="col-md-1 text-center">项目代码</td>
+            			<td class="col-md-7 text-left">公示项目</td>
+            			<td class="col-md-2 text-left">注册时间</td>         			            			            			
             			<td class="col-md-1 text-center">编辑</td>
             			<td class="col-md-1 text-center">删除</td>
             		</tr>

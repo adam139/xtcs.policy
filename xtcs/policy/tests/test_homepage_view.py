@@ -1,4 +1,8 @@
 #-*- coding: UTF-8 -*-
+import json
+import hmac
+from hashlib import sha1 as sha
+from plone.keyring.interfaces import IKeyManager
 from Products.CMFCore.utils import getToolByName
 from xtcs.policy.setuphandlers import STRUCTURE,_create_content 
 from xtcs.policy.testing import FunctionalTesting
@@ -26,8 +30,6 @@ class TestView(unittest.TestCase):
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
         import datetime
-#        import pdb
-#        pdb.set_trace()
         start = datetime.datetime.today()
         end = start + datetime.timedelta(7)
         for item in STRUCTURE:
@@ -36,7 +38,7 @@ class TestView(unittest.TestCase):
 # import articles        
         locator = getUtility(IArticleLocator)
         # cishandongtai
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1003,sortchildid=3)
+        articles = locator.query(start=0,size=25,multi=1,sortparentid=1003,sortchildid=3)
         if articles == None:return
         for article in articles:                                  
             docid = str(article.id)       
@@ -113,20 +115,54 @@ class TestView(unittest.TestCase):
     def test_homepage_view(self):
 
         app = self.layer['app']
-        portal = self.layer['portal']
-       
+        portal = self.layer['portal']       
         browser = Browser(app)
         browser.handleErrors = False
-        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))
-        
+        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
+
         import transaction
         transaction.commit()
-        obj = portal.absolute_url() + '/@@index.html'        
-
+        obj = portal.absolute_url() + '/@@index.html'    
         browser.open(obj)
  
         outstr = u"图片新闻3"
+        self.assertTrue(outstr in browser.contents)
         
-        self.assertTrue(outstr in browser.contents)          
+    def test_folder_ajax_view(self):        
+        request = self.layer['request']       
+        keyManager = getUtility(IKeyManager)
+        secret = keyManager.secret()
+        auth = hmac.new(secret, TEST_USER_NAME, sha).hexdigest()
+        request.form = {
+                        '_authenticator': auth,
+                        'formstart': 2,
+                        'size':10, 
+                        'id':0,
+                        'multi':1,                                                                      
+                        }
+# Look up and invoke the view via traversal
+        target = self.portal['cishanzixun']['cishandongtai']
+        view = target.restrictedTraverse('@@favoritemore')
+        result = view()
+        outstr = u'class="col-md-9 title"'
+        self.assertTrue(outstr in json.loads(result)['outhtml'])
+      
         
-   
+    def test_folder_view(self):        
+
+        app = self.layer['app']
+        portal = self.layer['portal']       
+        browser = Browser(app)
+        browser.handleErrors = False
+        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
+
+        import transaction
+        transaction.commit()
+        target = self.portal['cishanzixun']['cishandongtai']
+        page = target.absolute_url() + '/@@tableview'    
+        browser.open(page)
+ 
+        outstr = 'id="tablecontent"'
+        self.assertTrue(outstr in browser.contents)      
+
+  

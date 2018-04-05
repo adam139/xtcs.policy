@@ -155,10 +155,7 @@ class ajaxsearch(grok.View):
         size = int(datadic['size'])      # batch search size
         id = int(datadic['id'])
         multi = int(datadic['multi'])
-#         sortcolumn = datadic['sortcolumn']
-#         sortdirection = datadic['sortdirection']
-#         keyword = (datadic['searchabletext']).strip()
-#         origquery = searchview.getPathQuery()
+
         origquery = {}
 #         origquery['sort_on'] = sortcolumn
 #         # sql db sortt_order:asc,desc
@@ -174,9 +171,9 @@ class ajaxsearch(grok.View):
 #totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
-
+        totalquery['multi'] = 1
         # search all   size = 0 return numbers of recorders
-        totalnum = len(searchview.search_multicondition(totalquery))
+        totalnum = searchview.search_multicondition(totalquery)
         resultDicLists = searchview.search_multicondition(origquery)
         del origquery
         del totalquery
@@ -193,12 +190,13 @@ class ajaxsearch(grok.View):
         k = 0
         contexturl = self.context.absolute_url()
         for i in resultDicLists:
+            regtime = datetime.datetime.utcfromtimestamp(i.start_time)
             out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
-                                <td class="col-md-2 text-left">
+                                <td class="col-md-7 text-left">
                                 <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
                                 </td>
-                                <td class="col-md-7">%(description)s</td>
+                                <td class="col-md-2">%(regtime)s</td>
                                 <td class="col-md-1 text-center">
                                 <a href="%(edit_url)s" title="edit">
                                   <span class="glyphicon glyphicon-pencil" aria-hidden="true">
@@ -211,12 +209,12 @@ class ajaxsearch(grok.View):
                                   </span>
                                 </a>
                                 </td>
-                                </tr> """% dict(objurl="%s/@@donor_listings" % contexturl,
-                                                name = "%s" % i.aname,
+                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
+                                                name = "%s" % i.aname,                                                
                                                 id = "%s" % i.did,
                                                 num=str(k + 1),
+                                                regtime = regtime.strftime("%Y-%m-%d"),
                                                 title=i.aname,
-                                                description= i.amemo,
                                                 edit_url="%s/@@update_donate/%s" % (contexturl,i.did),
                                                 delete_url="%s/@@delete_donate/%s" % (contexturl,i.did))
             outhtml = "%s%s" %(outhtml ,out)
@@ -236,6 +234,44 @@ class Donorajaxsearch(ajaxsearch):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
 
+    def render(self):
+#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
+        searchview = self.searchview()
+ # datadic receive front ajax post data
+        datadic = self.request.form
+        start = int(datadic['start']) # batch search start position
+        size = int(datadic['size'])      # batch search size
+        id = int(datadic['id'])
+        multi = int(datadic['multi'])
+
+        origquery = {}
+#         origquery['sort_on'] = sortcolumn
+#         # sql db sortt_order:asc,desc
+#         origquery['sort_order'] = sortdirection
+#  #模糊搜索
+#         if keyword != "":
+#             origquery['SearchableText'] = '%'+keyword+'%'
+#origquery provide  batch search
+        origquery['size'] = size
+        origquery['start'] = start
+        origquery['id'] = id
+        origquery['multi'] = multi
+#totalquery  search all
+        totalquery = origquery.copy()
+        totalquery['size'] = 0
+        totalquery['multi'] = 1
+        
+        # search all   size = 0 return numbers of recorders
+        totalnum = searchview.search_multicondition(totalquery)
+        resultDicLists = searchview.search_multicondition(origquery)
+        del origquery
+        del totalquery
+#call output function
+# resultDicLists like this:[(u'C7', u'\u4ed6\u7684\u624b\u673a')]
+        data = self.output(start,size,totalnum, resultDicLists)      
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return json.dumps(data)
+    
     def output(self,start,size,totalnum,resultDicLists):
         """根据参数total,resultDicLists,返回json 输出,resultDicLists like this:
         [(u'C7', u'\u4ed6\u7684\u624b\u673a')]"""
@@ -243,6 +279,10 @@ class Donorajaxsearch(ajaxsearch):
         k = 0
         contexturl = self.context.absolute_url()
         for i in resultDicLists:
+            if i.goods == None:
+                goods = ""
+            else:
+                goods = i.goods
             out = """<tr class="text-left">
                                 <td class="col-md-8">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
@@ -262,7 +302,7 @@ class Donorajaxsearch(ajaxsearch):
                                 </tr> """% dict(
                                             name=i.aname,
                                             money= i.money,
-                                            goods= i.goods,
+                                            goods= goods,
                                             edit_url="%s/@@update_donor/%s" % (contexturl,i.doid),
                                             delete_url="%s/@@delete_donor/%s" % (contexturl,i.doid))
             outhtml = "%s%s" %(outhtml ,out)

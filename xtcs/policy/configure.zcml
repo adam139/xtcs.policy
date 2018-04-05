@@ -50,14 +50,21 @@
         handler=".setuphandlers.post_install">
         <depends name='typeinfo' />
     </genericsetup:importStep>
+  
+  <genericsetup:upgradeStep
+      title="create directory tree"
+      description="create directory tree."
+      source="1000"
+      destination="1001"
+      handler="xtcs.policy.migration.create_tree"
+      profile="xtcs.policy:default"/>
 
-<!--      
   <genericsetup:upgradeStep
       title="import article from mysql to plone"
       description="import article from mysql to plone."
-      source="1000"
-      destination="1001"
-      handler="xtgl.policy.migration.import_article"
-      profile="xtgl.policy:default"/>
-      -->       
+      source="1001"
+      destination="1002"
+      handler="xtcs.policy.migration.import_article"
+      profile="xtcs.policy:default"/>
+    
 </configure>

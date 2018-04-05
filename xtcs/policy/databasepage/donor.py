@@ -44,10 +44,11 @@ class DonorLocator(grok.GlobalUtility):
         # return total num
         if multi == 1:
             if size == 0:
-                nums = session.query(func.count(Donor.doid)).scalar()
+                nums = session.query(func.count(Donor.doid)).filter_by(did=id).scalar()
                 return int(nums)
             else:
 
+                size = start + size
                 recorders = session.query(Donor).filter_by(did=id).\
             order_by(Donor.doid).slice(start,size).all()
                 

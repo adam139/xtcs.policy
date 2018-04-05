@@ -11,7 +11,6 @@ from Products.CMFPlone.resources import add_resource_on_request
 
 from xtcs.policy import _
 from my315ok.products.product import Iproduct
-from my315ok.socialorgnization.content.orgnizationfolder import IOrgnizationFolder
 from collective.diazotheme.bootstrap.browser.homepage import HomepageView as baseview
 from xtcs.policy.browser.interfaces import IThemeSpecific
 

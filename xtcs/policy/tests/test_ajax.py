@@ -2,12 +2,12 @@
 import json
 import hmac
 from hashlib import sha1 as sha
+from plone.keyring.interfaces import IKeyManager
 from Products.CMFCore.utils import getToolByName
 from xtcs.policy.testing import FunctionalTesting  
 from Products.Five.utilities.marker import mark
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from plone.keyring.interfaces import IKeyManager
 from xtcs.policy.interfaces import IJuanzenggongshi as ifobj
 from plone.app.testing import TEST_USER_ID, login, TEST_USER_NAME, \
     TEST_USER_PASSWORD, setRoles
@@ -28,6 +28,10 @@ class TestView(unittest.TestCase):
     def setUp(self):
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
+        portal.invokeFactory('Folder', 'cishanzixun')
+        portal['cishanzixun'].invokeFactory('Folder', 'gongyixinwen',
+                             title = u"公益新闻",
+                             description=u"公益新闻")                 
         portal.invokeFactory('Folder', 'aixingongshi')
         
         portal['aixingongshi'].invokeFactory('Folder', 'juanzenggongshi',

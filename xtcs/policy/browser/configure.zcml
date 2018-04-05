@@ -30,7 +30,15 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/donor_table.pt"
-    />    
+    />
+    <browser:page
+      for="plone.app.contenttypes.interfaces.IFolder"
+      name="tableview"
+      class=".ajax_loadmore.ContainerTableListView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/container_table_list.pt"
+    />        
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donate_listings"

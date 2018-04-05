@@ -40,21 +40,23 @@ class DonateLocator(grok.GlobalUtility):
         multi = int(kwargs['multi'])
 #         import pdb
 #         pdb.set_trace()
-        if multi == 1:            
-#             did = kwargs['did']
-            recorders = session.query(Donate).filter_by(visible=1).\
-            order_by(Donate.did).all()
-                        
-        else:
-            if size != 0:
-                stmt = text("select title,pubtime,content from donate order by did desc limit :start :size")
-                stmt = stmt.columns(Donate.title,Donate.aname,Donate.content)
-                recorders = session.query(Donate).from_statement(stmt).\
-                params(start=start,size=size).all()
-                
-            else:
+        # return total num
+        if multi == 1:
+            if size == 0:
                 nums = session.query(func.count(Donate.did)).scalar()
                 return int(nums)
+            else:
+                recorders = session.query(Donate).\
+            order_by(Donate.did).slice(start,size).all()
+                
+        else:
+            
+            if size !=0:                     
+                recorders = session.query(Donate).\
+            order_by(Donate.did).slice(0,size).all()
+            else:
+                recorders = session.query(Donate).\
+            order_by(Donate.did).all()
         try:
             session.commit()
             return recorders
