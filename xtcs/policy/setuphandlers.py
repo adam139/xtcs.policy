@@ -4,8 +4,18 @@ from plone import api
 from plone.app.dexterity.behaviors import constrains
 from zope.dottedname.resolve import resolve
 from Products.Five.utilities.marker import mark
+
+from plone.namedfile.file import NamedImage
+
 from logging import getLogger
 logger = getLogger(__name__)
+
+# for image field data
+
+
+data = open('/home/plone/workspace/Plone5sites/sites/src/xtcs.policy/xtcs/policy/tests/image.jpg','r').read()
+
+image = NamedImage(data, 'image/jpg', u'image.jpg')
 
 default = { 'i': 'portal_type',
            'o': 'plone.app.querystring.operation.string.is',
@@ -61,6 +71,8 @@ zhengcefaguipath = copy.copy(defaultpath)
 zhengcefaguipath.update({'v':'/zuzhiguanli/zhengcefagui'})
 zhengcefagui = [default,zhengcefaguipath]
 
+
+
 STRUCTURE = [
     {
         'type': 'Folder',
@@ -100,18 +112,21 @@ STRUCTURE = [
             'type': 'my315ok.products.product',
             'title': u'图片新闻',
             'id': 'prdt1',
+            'image':image,            
             'description': u'图片新闻'
                         } ,
                          {
             'type': 'my315ok.products.product',
             'title': u'图片新闻2',
             'id': 'prdt2',
+            'image':image,            
             'description': u'图片新闻2'
                         } ,
                          {
             'type': 'my315ok.products.product',
             'title': u'图片新闻3',
             'id': 'prdt3',
+            'image':image,            
             'description': u'图片新闻3'
                         }                                                                           
                          ]           
@@ -318,11 +333,18 @@ STRUCTURE = [
                      },
                      {                     
                      'type':'Collection',
-                     'title':u'慈善文摘',
-                     'description': u'慈善文摘',
-                     'id':'cishanwenzhai',
-                     'query':cishanwenzhai,
+                     'title':u'精彩博文',
+                     'description': u'精彩博文',
+                     'id':'jingcaibowen',
+                     'query':jingcaibowen,
                      },
+                     {                     
+                     'type':'Collection',
+                     'title':u'论坛热帖',
+                     'description': u'论坛热帖',
+                     'id':'luntanretie',
+                     'query':luntanretie,
+                     },                     
                      {                     
                      'type':'Collection',
                      'title':u'义工活动',
@@ -418,7 +440,9 @@ def _create_content(item, container):
     if item.get('layout', False):
         new.setLayout(item['layout'])
     if item.get('query', False):
-        new.query = item['query']       
+        new.query = item['query']
+    if item.get('image', False):
+        new.image = item['image']               
     if item.get('markif', False):
         try:
             ifobj = resolve(item['markif'])

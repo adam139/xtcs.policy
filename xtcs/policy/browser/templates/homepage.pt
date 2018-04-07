@@ -112,48 +112,49 @@
   			</div> <!--Tab panes end -->
 			</div>
 			</div> <!-- tabPortlet end-->
-					<div class="col-md-4 col-xs-12">
-						<!-- 捐赠金榜-->
-						<div class="portlet">
-							<div class="portletHeader">
-								<a tal:attributes="href python:p + '/socialorganizations/@@orgnizations_administrative_fullview'">
-									<span class="btn btn-default btn-active">捐赠金榜</span>
-									<span class="portletTopRight">更多&gt;&gt;</span></a>
-							</div>
-							<div class="rolltables">
-								<table class="table">
-  									<tbody><tr> 
-    								<td class="nopadding">
-    								<table class="table table-bordered">
-									<tbody><tr class="theader row">
-			  <td class="title">捐赠个人或单位</td>
-			  <td class="item">现金</td>
-			  <td class="result">物资</td>
-			</tr>
-			</tbody>
-		</table>
-    <div id="oRollV">
-	  <div id="oRollV1">
-    <table class="table table-bordered">                  
-        <tbody tal:content="structure python: view.getable('donor_table')" >
-        	<tr> 
-          <td>单位甲</td>
-          <td>201300</td>
-          <td></td>
-        </tr></tbody>
-    </table>
-    </div>
-	  <div id="oRollV2"><!--roll placeholder-->
-      </div>    
-    </div>
-    </td>
-  </tr>
-</tbody>
-</table>
-							</div>
-						</div>						
-					</div>	     
-       </div>                                
+			<div class="col-md-4 col-xs-12">
+			<!-- 捐赠金榜-->
+				<div role="tabpanel" class="portlet">
+  				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
+    				<li role="presentation" class="active">
+    					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@donate_listings'">捐赠金榜</a>
+    				</li>
+  				</ul>
+  					<!-- Tab panes start-->
+  				<div class="tab-content">
+   				<div role="tabpanel" class="tab-pane active" id="juanzengjinbang">
+					<div class="rolltables">
+						<table class="table"><tbody><tr> 
+    						<td class="nopadding">
+    							<table class="table table-bordered"><tbody>
+    								<tr class="theader row">
+			  							<td class="title">捐赠个人或单位</td>
+			  							<td class="item">现金</td>
+			  							<td class="result">物资</td>
+									</tr></tbody>
+								</table>
+    							<div id="oRollV"><div id="oRollV1">
+    								<table class="table table-bordered">                  
+        								<tbody tal:content="structure python: view.getable('donor_table')" >
+        									<tr> 
+          										<td>单位甲</td>
+          										<td>201300</td>
+          										<td></td>
+        									</tr></tbody>
+    									</table>
+    								</div>
+	 							 <div id="oRollV2"><!--roll placeholder-->
+      							</div>    
+    						</div>
+    					</td></tr></tbody>
+					</table>
+				</div>     	
+    			</div>
+    		</div> <!--Tab panes end -->
+  			</div>  <!--portlet end -->				
+		</div>	<!--end col-3 of row-1 -->     
+       </div>  <!--end row-1 -->                              
        <div class="row row-2">        
          	<div class="hidden-xs col-md-12">       
        	 		<div class="big-ad" tal:attributes="data-target python:p +'/zhijianzhibu/dangwuguanli/@@tableview'">
@@ -258,8 +259,8 @@
   				<!-- Nav tabs -->
   				<ul  class="nav nav-tabs kuputab-selectors row" role="tablist">
     				<li role="presentation" class="active col-xs-4">
-    					<a href="#aixinkushi" aria-controls="aixinkushi" role="tab" data-toggle="tab"
-    						tal:attributes="data-js-target python:p + '/cishanshequ/aixinkushi/@@tableview'">爱心故事</a>
+    					<a href="#aixingushi" aria-controls="aixingushi" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/cishanshequ/aixingushi/@@tableview'">爱心故事</a>
     				</li>
     				<li role="presentation" class="col-xs-4">
     					<a href="#guizhangzhidu" aria-controls="guizhangzhidu" role="tab" data-toggle="tab"
@@ -271,9 +272,9 @@
   				</ul>
   					<!-- Tab panes start-->
   				<div class="tab-content">
-   				<div role="tabpanel" class="tab-pane active" id="aixinkushi">
+   				<div role="tabpanel" class="tab-pane active" id="aixingushi">
          		<ul class="tabcontent-lists">
-         		<tal:group tal:repeat="obj python:view.collection('aixinkushi',7)">    				
+         		<tal:group tal:repeat="obj python:view.collection('aixingushi',7)">    				
     						<li class="portletItem"
         					tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         					tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -343,6 +344,90 @@
   			</div> <!--Tab panes end -->
 			</div>
 			</div> <!-- tabPortlet end-->			
+		<div class="col-xs-12 col-md-4 tabPortlet">		
+			<div role="tabpanel" class="kuputab-container">
+  				<!-- Nav tabs -->
+  				<ul  class="nav nav-tabs kuputab-selectors row" role="tablist">
+    				<li role="presentation" class="active col-xs-4">
+    					<a href="#juanzengfangshi" aria-controls="juanzengfangshi" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/cishanshequ/juanzengfangshi/@@tableview'">捐赠方式</a>
+    				</li>
+    				<li role="presentation" class="col-xs-4">
+    					<a href="#jingcaibowen" aria-controls="jingcaibowen" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/cishanshequ/jingcaibowen/@@tableview'">精彩博文</a>
+    				</li>
+    				<li role="presentation" class="col-xs-4">
+    					<a href="#luntanretie" aria-controls="luntanretie" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/cishanshequ/luntanretie'">论坛热帖</a></li>
+  				</ul>
+  					<!-- Tab panes start-->
+  				<div class="tab-content">
+   				<div role="tabpanel" class="tab-pane active" id="juanzengfangshi">
+         		<ul class="tabcontent-lists">
+         		<div class="row">
+         			<div class="col-sm-12">
+         				<img class="responsive-image" src="http://images.315ok.org/xtcs/images/paybg_287_229.jpg"/>
+         			</div>
+         		</div>
+         		<div class="row pay-button">
+         			<div class="col-sm-6">
+         				<img class="responsive-image" src="http://images.315ok.org/xtcs/images/juankuan_130_43.jpg"/>
+         			</div>
+         			<div class="col-sm-6">
+         				<img class="responsive-image" src="http://images.315ok.org/xtcs/images/juanwu_130_43.jpg"/>
+         			</div>         			
+         		</div>
+    					</ul>    	
+    				</div>
+    			<div role="tabpanel" class="tab-pane" id="jingcaibowen">
+         	<ul class="tabcontent-lists">    	
+         	<tal:group tal:repeat="obj python:view.collection('jingcaibowen',7)">
+    				<li class="portletItem"
+        		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
+        		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
+        		<span>
+        		<a href="#"
+           	class="tile"
+           	tal:attributes="href obj/getURL;title python:ttl">
+           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+             Title
+            </span>
+        		</a>
+        		</span>
+            <span class="portletItemDetails"
+            	tal:content="python:toLocalizedTime(obj.created )">
+                Date
+            </span>        		
+    				</li> 
+    				</tal:group>
+    				</ul>    				    	
+    			</div>
+    			<div role="tabpanel" class="tab-pane" id="luntanretie">
+         	<ul class="tabcontent-lists">    	
+         	<tal:group tal:repeat="obj python:view.collection('luntanretie',7)">
+    				<li class="portletItem"
+        		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
+        		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
+        		<span>
+        		<a href="#"
+           	class="tile"
+           	tal:attributes="href obj/getURL;title python:ttl">
+           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+             Title
+            </span>
+        		</a>
+        		</span>
+            <span class="portletItemDetails"
+            	tal:content="python:toLocalizedTime(obj.created )">
+                Date
+            </span>        		
+    				</li> 
+    			</tal:group>
+    			</ul>    			     	
+    		</div>
+  			</div> <!--Tab panes end -->
+			</div>
+			</div> <!-- tabPortlet end-->		
 		</div>  <!-- row3 end-->	
 
 		<div class="row row-4">
@@ -351,7 +436,7 @@
     			<div class="portlet roll_imageportlet">
     				<div class="map_brand">
     					<a href="#" 
-    						tal:attributes="href python:p + '/gongludongtai/tupianxinwen/'" class="verticaltext" alt="慈善项目">慈善项目</a></div>   
+    						tal:attributes="href python:p + '/cishanxiangmu/tuijianxiangmu/'" class="verticaltext" alt="慈善项目">慈善项目</a></div>   
         		<div id="roll_chanpin" tal:attributes="data-root python:p">
         		<div class="roll_image" data-pause="1000" data-step="1" data-speed="37" data-direction="left">
             	<ul class="img"></ul>          
@@ -370,18 +455,18 @@
   					<!-- Tab panes start-->
   				<div class="tab-content">
    				<div role="tabpanel" class="tab-pane active" id="fuwuxinxi">
-         		<ul class="tabcontent-lists">
+         			<ul class="tabcontent-lists">
 						<ul class="serviceinfo">
         				<li>联系我们 电话：0731-58226696</li>
 							<li>地址：湘潭市建设北路260号</li>
 							<li>路政案件举报电话：0731-58265034</li>
 						</ul>        		
-    					</ul>    	
-    				</div>
-    				</div> 
-  			</div> <!--Tab panes end --> 								
-		  </div>						
-		 </div>		  
+    				</ul>    	
+    			</div>
+    		</div> <!--Tab panes end -->
+  			</div>  <!--portlet end -->								
+		  </div>	<!--end col-md -->					
+		 </div>		<!--end row -->  
      
      </div>
   </tal:main-macro>

@@ -19,12 +19,19 @@ $(document).ready(function(){
 		  var url = $(this).attr("data-target");
 		  window.location.href = url;
 		  return false;
-		});				
+		});
+    $('a[href$="juanzenggongshi"]').on("click",function (e) {
+    	  e.preventDefault();
+		  var url = $(this).attr("href");
+		  window.location.href = url + "/@@donate_listings";
+		  return false;
+    });	
+								
 	StartRollV();
 	StartRollVs();
 	rolltext(".roll-wrapper");
     var root = $("#roll_chanpin").attr("data-root");
-	var ajaxurl = root + "/gongludongtai/tupianxinwen/@@barsview_mini";
+	var ajaxurl = root + "/cishanzixun/tupianxinwen/@@barsview_mini";
 	ajaxfetchimg("roll_chanpin", ajaxurl, ".roll_image", 1);
 	});
 });

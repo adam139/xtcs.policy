@@ -2,7 +2,7 @@
 from plone import api
 from Products.CMFCore.utils import getToolByName
 from plone.dexterity.utils import createContentInContainer
-
+import datetime
 from plone.app.contenttypes.behaviors.richtext import IRichText
 
 from plone.i18n.normalizer.interfaces import INormalizer

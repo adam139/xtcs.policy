@@ -8,6 +8,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.app.z3cform.interfaces import IPloneFormLayer
 from xtcs.policy.testing import POLICY_INTEGRATION_TESTING as INTEGRATION_TESTING
 from xtcs.policy.setuphandlers import STRUCTURE,_create_content
+from xtcs.policy.migration import _create_article
 #sqlarchemy
 from sqlalchemy import text
 from sqlalchemy import func
@@ -88,8 +89,9 @@ class TestParametersDatabase(unittest.TestCase):
         from xtcs.policy import Session as session
 
         locator = getUtility(IArticleLocator)
-        articles = locator.query(start=0,size=10,multi=1,sortparentid=1003,sortchildid=3)
+        articles = locator.query(start=0,size=3,multi=1,sortparentid=1003,sortchildid=3)
         if articles == None:return
+
         for article in articles:                                  
             docid = str(article.id)      
             self.portal['cishanzixun']['cishandongtai'].invokeFactory('Document', docid)
@@ -110,6 +112,22 @@ class TestParametersDatabase(unittest.TestCase):
             self.assertTrue('This is my document.' in output)
 #         self.assertTrue('Lorem ipsum' in output)
 
+    def test_article_pubtime(self):
+        from xtcs.policy.mapping_db import  Article
+        from xtcs.policy.interfaces import IArticleLocator
+        from zope.component import getUtility
+        from xtcs.policy import Session as session
+
+        locator = getUtility(IArticleLocator)
+        articles = locator.query(start=0,size=1,multi=1,sortparentid=1003,sortchildid=3)
+        if articles == None:return
+        container = self.portal['cishanzixun']['cishandongtai']
+        for article in articles:                                  
+            _create_article(article,container)
+            doc = container[str(article.id)]
+            pubtime = datetime.datetime.utcfromtimestamp(article.pubtime)
+            self.assertTrue(doc.created().strftime("Y-%m-%d") == pubtime.strftime("Y-%m-%d"))
+            
     def tearDown(self):
         if 'document' in self.portal.objectIds():
             self.portal.manage_delObjects(ids='document')

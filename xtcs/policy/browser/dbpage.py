@@ -54,7 +54,7 @@ class DonortableView(BrowserView):
                 goods= u""                        
             out = """<tr>
             <td class="title">%(title)s</td>
-            <td class="money">%(money)s</td>
+            <td class="item">%(money)s</td>
             <td class="goods">%(goods)s</td></tr>""" % dict(
                                             title=i.aname,
                                             money= i.money,
