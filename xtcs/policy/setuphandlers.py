@@ -31,11 +31,11 @@ import copy
 defaultpath.update({'v':'/cishanzixun/gongyixinwen'})
 gongyixinwen = [default,defaultpath]
 
-cishandongtaipath = copy.copy(default)
+cishandongtaipath = copy.copy(defaultpath)
 cishandongtaipath.update({'v':'/cishanzixun/cishandongtai'})
 cishandongtai = [default,cishandongtaipath]
 
-huodongtonggaopath = copy.copy(default)
+huodongtonggaopath = copy.copy(defaultpath)
 huodongtonggaopath.update({'v':'/cishanzixun/huodongtonggao'})
 huodongtonggao = [default,huodongtonggaopath]
 
