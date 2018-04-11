@@ -28,10 +28,10 @@ $(document).ready(function(){
     });	
 								
 	StartRollV();
-	StartRollVs();
+	//StartRollVs();
 	rolltext(".roll-wrapper");
     var root = $("#roll_chanpin").attr("data-root");
-	var ajaxurl = root + "/cishanzixun/tupianxinwen/@@barsview_mini";
+	var ajaxurl = root + "/cishanxiangmu/tuijianxiangmu/@@barsview_mini";
 	ajaxfetchimg("roll_chanpin", ajaxurl, ".roll_image", 1);
 	});
 });
