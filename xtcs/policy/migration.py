@@ -10,6 +10,12 @@ from zope.component import getUtility
 from Acquisition import aq_parent
 from plone.app.textfield.value import RichTextValue
 from xtcs.policy.setuphandlers import STRUCTURE,_create_content
+from plone.namedfile.file import NamedImage
+
+
+data = open('/home/plone/workspace/Plone5sites/sites/src/xtcs.policy/xtcs/policy/tests/image.jpg','r').read()
+
+image = NamedImage(data, 'image/jpg', u'image.jpg')
 
 def create_tree(context):
     "create directory tree."
@@ -38,6 +44,100 @@ def create_tree(context):
        members.exclude_from_nav = True
        members.reindexObject()
        
+def import_contents(context):
+    "import site contents"
+    import_article(context)
+    import_project(context)
+    import_volunteerteam(context)
+    
+    
+    
+
+
+def _create_project(project, container):
+    id = str(project.id)
+    new = container.get(id, None)
+    if not new:
+
+        new = api.content.create(
+            type='my315ok.products.product',
+            container=container,
+            title=project.projectName,
+            text = RichTextValue(project.description), 
+            image = image,           
+            id=id,
+            safe_id=False)
+
+        datev = datetime.datetime.utcfromtimestamp(project.registertime)
+        new.setModificationDate(datev)
+        new.creation_date = datev
+        new.setEffectiveDate(datev)           
+        new.reindexObject() 
+
+
+def import_project(context):    
+    "migrate project to product of the my315ok.products"
+    portal = api.portal.get()
+     
+    from xtcs.policy.mapping_db import  Project
+    from xtcs.policy.interfaces import IProjectLocator    
+    from zope.component import getUtility
+    locator = getUtility(IProjectLocator)
+        # gongyixinwen
+    try:        
+        projects = locator.query(start=0,size=115,multi=1,sortparentid=1003,id=3)
+        if projects == None:pass
+        container =  portal['cishanxiangmu']['tuijianxiangmu']
+        for project in projects:                                             
+            try:
+                _create_project(project,container)
+            except:
+                continue              
+
+    except:
+        pass    
+
+def _create_team(team, container):
+    id = str(team.id)
+    new = container.get(id, None)
+    if not new:
+        new = api.content.create(
+            type='Document',
+            container=container,
+            title=team.teamName,
+            text = RichTextValue(team.description),          
+            id=id,
+            safe_id=False)
+        datev = datetime.datetime.utcfromtimestamp(team.registertime)
+        new.setModificationDate(datev)
+        new.creation_date = datev
+        new.setEffectiveDate(datev)           
+        new.reindexObject()
+
+def import_volunteerteam(context):    
+    "migrate volunteerteam to Document"
+    portal = api.portal.get()
+     
+    from xtcs.policy.mapping_db import  Volunteerteam
+    from xtcs.policy.interfaces import IVolunteerteamLocator    
+    from zope.component import getUtility
+    locator = getUtility(IVolunteerteamLocator)
+        # gongyixinwen
+    try:        
+        teams = locator.query(start=0,size=115,multi=1,sortparentid=1003,id=3)
+        if teams == None:pass
+
+
+        for team in teams:
+            container =  portal['yigongzhongxin']['yigongtuandui']                                 
+            try:
+                _create_team(team,container)
+            except:
+                continue              
+
+    except:
+        pass 
+
 def _create_article(article, container):
     id = str(article.id)
     new = container.get(id, None)
@@ -63,11 +163,10 @@ def import_article(context):
     from xtcs.policy.mapping_db import  Article
     from xtcs.policy.interfaces import IArticleLocator    
     from zope.component import getUtility
-    from xtcs.policy import Session as session
     locator = getUtility(IArticleLocator)
         # gongyixinwen
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1003,sortchildid=1)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1003,sortchildid=1)
         if articles == None:pass
 
         for article in articles:
@@ -82,7 +181,7 @@ def import_article(context):
    
         # huodongtonggao
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1003,sortchildid=2)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1003,sortchildid=2)
         if articles == None:pass
         for article in articles:                                 
                   
@@ -95,7 +194,7 @@ def import_article(context):
         pass    
 #cishandongtai
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1003,sortchildid=3)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1003,sortchildid=3)
         if articles == None:pass
         for article in articles:                                        
             container = portal['cishanzixun']['cishandongtai']
@@ -108,7 +207,7 @@ def import_article(context):
 
 #zhengcefagui
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1008,sortchildid=9)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1008,sortchildid=9)
         if articles == None:pass
         for article in articles:                                  
        
@@ -122,7 +221,7 @@ def import_article(context):
     
 #guizhangzhidu
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1008,sortchildid=6)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1008,sortchildid=6)
         if articles == None:pass
         for article in articles:                                  
        
@@ -136,7 +235,7 @@ def import_article(context):
     
 #yigonghuodong
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1006,sortchildid=18)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1006,sortchildid=18)
         if articles == None:pass
         for article in articles:                                  
        
@@ -150,7 +249,7 @@ def import_article(context):
     
 #cishanwenzhai
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1007,sortchildid=20)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1007,sortchildid=20)
         if articles == None:pass
         for article in articles:                                  
    
@@ -165,7 +264,7 @@ def import_article(context):
     
 #aixingushi
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1007,sortchildid=21)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1007,sortchildid=21)
         if articles == None:pass
         for article in articles:                                  
    
@@ -179,7 +278,7 @@ def import_article(context):
         pass
 #jingcaibowen
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1007,sortchildid=22)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1007,sortchildid=22)
         if articles == None:pass
         for article in articles:                                
      
@@ -194,7 +293,7 @@ def import_article(context):
     
 #luntanretie
     try:        
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1007,sortchildid=23)
+        articles = locator.query(start=0,size=115,multi=1,sortparentid=1007,sortchildid=23)
         if articles == None:pass
         for article in articles:                                  
       

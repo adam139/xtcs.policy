@@ -43,13 +43,7 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
-    <genericsetup:importStep
-        name="xtcs.policy-postInstall"
-        title="xtcs.policy post_install import step"
-        description="Post install import step from emc.policy,just run once"
-        handler=".setuphandlers.post_install">
-        <depends name='typeinfo' />
-    </genericsetup:importStep>
+
   
   <genericsetup:upgradeStep
       title="create directory tree"
@@ -64,7 +58,7 @@
       description="import article from mysql to plone."
       source="1001"
       destination="1002"
-      handler="xtcs.policy.migration.import_article"
+      handler="xtcs.policy.migration.import_contents"
       profile="xtcs.policy:default"/>
     
 </configure>

@@ -102,6 +102,58 @@ class Project(ORMBase):
     description = sqlalchemy.schema.Column(mysql.LONGTEXT,
             nullable=False,
         )
+
+class IVolunteerteam(Interface):
+    """project
+    id,projectName,registertime,description
+    select pubtime,title,content from article where id = 199
+    +--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| id           | int(10)      | NO   | PRI | NULL    | auto_increment |
+| teamName     | varchar(32)  | NO   |     | NULL    |                |
+| imagepath    | varchar(255) | YES  |     | NULL    |                |
+| description  | varchar(200) | YES  |     | NULL    |                |
+| volunteerNum | int(10)      | YES  |     | NULL    |                |
+| registertime | int(10)      | NO   |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+
+    """
+    id = schema.Int(
+            title=_(u"table primary key"),
+        )       
+    registertime = schema.Date(
+            title=_(u"dengji ri qi")
+        )
+    teamName = schema.TextLine(
+            title=_(u"yigong tuandui mingcheng"),
+        )    
+    description = schema.Text(
+            title=_(u"yigong tuandui jieshao"),
+        )
+
+
+class Volunteerteam(ORMBase):
+    """Database-backed implementation of project
+    """
+    implements(IVolunteerteam)
+
+    __tablename__ = 'volunteerteam'
+
+    id = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
+            primary_key=True,
+            autoincrement=True,
+        )
+    
+    registertime = sqlalchemy.schema.Column(sqlalchemy.types.Date(),
+            nullable=False,
+        )
+    teamName = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
+            nullable=False,
+        )    
+    description = sqlalchemy.schema.Column(mysql.LONGTEXT,
+            nullable=False,
+        )
     
 class IDonor(Interface):
     """donor 记录在某一慈善项目（did决定）下，所有捐赠记录

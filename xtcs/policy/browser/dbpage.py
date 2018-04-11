@@ -7,6 +7,7 @@ import datetime
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore import permissions
+from plone.app.contenttypes.permissions import AddDocument
 from Products.CMFCore.interfaces import ISiteRoot
 from plone.memoize.instance import memoize
 from xtcs.policy import _
@@ -70,7 +71,15 @@ class DonateView(BrowserView):
     该参数，查询数据库，并返回结果。
     view name:donate_listings
     """
+    @property
+    def isEditable(self):
+      
+        return self.pm().checkPermission(permissions.ManagePortal,self.context)
+    
+    @property
+    def isAddable(self):
 
+        return self.pm().checkPermission(permissions.AddPortalContent,self.context)  
     @memoize
     def pm(self):
         context = aq_inner(self.context)
@@ -189,9 +198,10 @@ class ajaxsearch(grok.View):
         outhtml = ""
         k = 0
         contexturl = self.context.absolute_url()
-        for i in resultDicLists:
-            regtime = datetime.datetime.utcfromtimestamp(i.start_time)
-            out = """<tr class="text-left">
+        if bool(self.searchview().isAddable):
+            for i in resultDicLists:
+                regtime = datetime.datetime.utcfromtimestamp(i.start_time)            
+                out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-7 text-left">
                                 <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
@@ -217,8 +227,25 @@ class ajaxsearch(grok.View):
                                                 title=i.aname,
                                                 edit_url="%s/@@update_donate/%s" % (contexturl,i.did),
                                                 delete_url="%s/@@delete_donate/%s" % (contexturl,i.did))
-            outhtml = "%s%s" %(outhtml ,out)
-            k = k + 1
+                outhtml = "%s%s" %(outhtml ,out)
+                k = k + 1
+        else:
+            for i in resultDicLists:
+                regtime = datetime.datetime.utcfromtimestamp(i.start_time)            
+                out = """<tr class="text-left">
+                                <td class="col-md-1 text-center">%(num)s</td>
+                                <td class="col-md-9 text-left">
+                                <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
+                                </td>
+                                <td class="col-md-2">%(regtime)s</td>
+                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
+                                                name = "%s" % i.aname,                                                
+                                                id = "%s" % i.did,
+                                                num=str(k + 1),
+                                                regtime = regtime.strftime("%Y-%m-%d"),
+                                                title=i.aname)
+                outhtml = "%s%s" %(outhtml ,out)
+                k = k + 1                
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
         return data
 
@@ -278,12 +305,13 @@ class Donorajaxsearch(ajaxsearch):
         outhtml = ""
         k = 0
         contexturl = self.context.absolute_url()
-        for i in resultDicLists:
-            if i.goods == None:
-                goods = ""
-            else:
-                goods = i.goods
-            out = """<tr class="text-left">
+        if bool(self.searchview().isAddable):        
+            for i in resultDicLists:
+                if i.goods == None:
+                    goods = ""
+                else:
+                    goods = i.goods
+                out = """<tr class="text-left">
                                 <td class="col-md-8">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
                                 <td class="col-md-1">%(goods)s</td>
@@ -305,8 +333,24 @@ class Donorajaxsearch(ajaxsearch):
                                             goods= goods,
                                             edit_url="%s/@@update_donor/%s" % (contexturl,i.doid),
                                             delete_url="%s/@@delete_donor/%s" % (contexturl,i.doid))
-            outhtml = "%s%s" %(outhtml ,out)
-            k = k + 1
+                outhtml = "%s%s" %(outhtml ,out)
+                k = k + 1
+        else:
+            for i in resultDicLists:
+                if i.goods == None:
+                    goods = ""
+                else:
+                    goods = i.goods
+                out = """<tr class="text-left">
+                                <td class="col-md-10">%(name)s</td>
+                                <td class="col-md-1">%(money)s</td>
+                                <td class="col-md-1">%(goods)s</td>
+                                </tr> """% dict(
+                                            name=i.aname,
+                                            money= i.money,
+                                            goods= goods)
+                outhtml = "%s%s" %(outhtml ,out)
+                k = k + 1                
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
         return data
 

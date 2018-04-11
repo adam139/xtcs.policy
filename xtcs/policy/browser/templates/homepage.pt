@@ -158,8 +158,8 @@
        <div class="row row-2">        
          	<div class="hidden-xs col-md-12">       
        	 		<div class="big-ad" tal:attributes="data-target python:p +'/zhijianzhibu/dangwuguanli/@@tableview'">
-				<p class="adtitle">大力推进社会组织党的组织和工作“两个覆盖”</p>
-				<p class="addescription">开展社会组织“五个一批”行动</p>
+				<p class="adtitle"></p>
+				<p class="addescription"></p>
 		 		</div>
 			</div>		
 		</div>				
@@ -366,16 +366,22 @@
          		<ul class="tabcontent-lists">
          		<div class="row">
          			<div class="col-sm-12">
-         				<img class="responsive-image" src="http://images.315ok.org/xtcs/images/paybg_287_229.jpg"/>
+         				<img class="responsive-image center-block" src="http://images.315ok.org/xtcs/images/paybg_287_229.jpg"/>
          			</div>
          		</div>
          		<div class="row pay-button">
-         			<div class="col-sm-6">
-         				<img class="responsive-image" src="http://images.315ok.org/xtcs/images/juankuan_130_43.jpg"/>
+         			<div class="col-xs-1 hidden-xs">
+         			<!-- offset gut -->	
          			</div>
-         			<div class="col-sm-6">
-         				<img class="responsive-image" src="http://images.315ok.org/xtcs/images/juanwu_130_43.jpg"/>
-         			</div>         			
+         			<div class="col-xs-6 col-sm-5">
+         				<img class="responsive-image center-block" src="http://images.315ok.org/xtcs/images/juankuan_130_43.jpg"/>
+         			</div>
+         			<div class="col-xs-6 col-sm-5">
+         				<img class="responsive-image center-block" src="http://images.315ok.org/xtcs/images/juanwu_130_43.jpg"/>
+         			</div>
+         			<div class="col-sm-1 hidden-xs">
+         			<!-- offset gut -->	
+         			</div>         			         			
          		</div>
     					</ul>    	
     				</div>

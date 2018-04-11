@@ -74,8 +74,9 @@
                 </ul>
                </div>
             </div>
-            <table class="row table table-striped table-bordered table-condensed listing">
-            	<thead>
+            <table class="row table table-striped table-bordered table-condensed listing"
+            	tal:define="iseditable python:view.isAddable">
+            	<thead tal:condition="iseditable">
             		<tr data-toggle="tooltip" title="点击排序">
             			<th class="col-md-8 text-center">捐赠单位或个人</th>
             			<th class="col-md-1 text-left">现金（元）</th>
@@ -84,6 +85,13 @@
             			<th class="col-md-1 text-center">删除</th>
             		</tr>
             	</thead>
+            	<thead tal:condition="not:iseditable">
+            		<tr data-toggle="tooltip" title="点击排序">
+            			<th class="col-md-10 text-center">捐赠单位或个人</th>
+            			<th class="col-md-1 text-left">现金（元）</th>
+            			<th class="col-md-1 text-left">物资（元）</th>         			            			            			
+            		</tr>
+            	</thead>            	
             	<tbody id="searchResultDiv">
             		<tr>
             			<td class="col-md-8 text-center">设备代码</td>

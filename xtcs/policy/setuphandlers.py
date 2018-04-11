@@ -141,29 +141,10 @@ STRUCTURE = [
         'layout': 'tableview',
         'children': [
                      {
-            'type': 'Folder',
+            'type': 'my315ok.products.productfolder',
             'title': u'推荐项目',
             'id': 'tuijianxiangmu',
-            'description': u'推荐项目',
-            'children': [
-                         {
-            'type': 'Project',
-            'title': u'项目1',
-            'id': 'xiangmu1',
-            'description': u'项目1'
-            },
-              {'type': 'Project',
-            'title': u'项目2',
-            'id': 'xiangmu2',
-            'description': u'项目2'
-            },
-            {'type': 'Project',
-            'title': u'项目3',
-            'id': 'xiangmu3',
-            'description': u'项目3'
-            },                         
-                         
-                         ]            
+            'description': u'推荐项目'                      
                       }                                                                         
                      ]
     },             
@@ -301,6 +282,8 @@ STRUCTURE = [
                      'title':u'公益新闻',
                      'description': u'查询集',
                      'id':'gongyixinwen',
+                     'sort_on':'created',
+                     'sort_reversed':True,
                      'query':gongyixinwen,
                      },
                      {                     
@@ -308,6 +291,8 @@ STRUCTURE = [
                      'title':u'慈善动态',
                      'description': u'查询集',
                      'id':'cishandongtai',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':cishandongtai,
                      },
                      {                     
@@ -315,6 +300,8 @@ STRUCTURE = [
                      'title':u'活动通告',
                      'description': u'活动通告',
                      'id':'huodongtonggao',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':huodongtonggao,
                      },
                     {
@@ -322,6 +309,8 @@ STRUCTURE = [
                      'title':u'慈善文摘',
                      'description': u'慈善文摘',
                      'id':'cishanwenzhai',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':cishanwenzhai,
                      },                     
                     {
@@ -329,6 +318,8 @@ STRUCTURE = [
                      'title':u'爱心故事',
                      'description': u'爱心故事',
                      'id':'aixingushi',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':aixingushi,
                      },
                      {                     
@@ -336,6 +327,8 @@ STRUCTURE = [
                      'title':u'精彩博文',
                      'description': u'精彩博文',
                      'id':'jingcaibowen',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':jingcaibowen,
                      },
                      {                     
@@ -343,6 +336,8 @@ STRUCTURE = [
                      'title':u'论坛热帖',
                      'description': u'论坛热帖',
                      'id':'luntanretie',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':luntanretie,
                      },                     
                      {                     
@@ -350,6 +345,8 @@ STRUCTURE = [
                      'title':u'义工活动',
                      'description': u'义工活动',
                      'id':'yigonghuodong',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':yigonghuodong,
                      },
                      {                     
@@ -357,6 +354,8 @@ STRUCTURE = [
                      'title':u'义工团队',
                      'description': u'义工团队',
                      'id':'yigongtuandui',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':yigongtuandui,
                      },                     
                      {                     
@@ -364,6 +363,8 @@ STRUCTURE = [
                      'title':u'政策法规',
                      'description': u'政策法规',
                      'id':'zhengcefagui',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':zhengcefagui,
                      },
                      {                     
@@ -371,6 +372,8 @@ STRUCTURE = [
                      'title':u'规章制度',
                      'description': u'规章制度',
                      'id':'guizhangzhidu',
+                     'sort_on':'created',
+                     'sort_reversed':True,                     
                      'query':guizhangzhidu,
                      }                                                                                                          
                      ]
@@ -441,6 +444,10 @@ def _create_content(item, container):
         new.setLayout(item['layout'])
     if item.get('query', False):
         new.query = item['query']
+    if item.get('sort_on', False):
+        new.sort_on = item['sort_on']
+    if item.get('sort_reversed', False):
+        new.sort_reversed = item['sort_reversed']                
     if item.get('image', False):
         new.image = item['image']               
     if item.get('markif', False):

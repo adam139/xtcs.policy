@@ -18,7 +18,7 @@ class IJuanzenggongshi (Interface):
 class IContainerTablelist (Interface):
     """文件夹标记接口"""
 
-# db insterface
+# db insterface   
 
 class IArticleLocator (Interface):
     """Article table add row"""
@@ -41,7 +41,8 @@ class IProjectLocator (IArticleLocator):
     """Project table add row """
 class IDonorLocator (IArticleLocator):
     """donor table add row donor"""
-    
+class IVolunteerteamLocator (IArticleLocator):
+    """Volunteerteam table add row donor """    
 class IDonateLocator (IArticleLocator):
-    """donate table add row donor"""
+    """donate table add row donor """
        

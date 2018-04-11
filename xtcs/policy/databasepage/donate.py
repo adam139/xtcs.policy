@@ -7,7 +7,7 @@ from zope.interface import implements
 from sqlalchemy import text
 from sqlalchemy import func
 
-from xtcs.policy import Session as session
+from xtcs.policy import Scope_session,maintan_session
 from xtcs.policy.mapping_db import Donate,IDonate
 from xtcs.policy.interfaces import IDonateLocator
 
@@ -18,15 +18,12 @@ class DonateLocator(grok.GlobalUtility):
 
     def add(self,kwargs):
         """parameters db Donate table"""
+        session = Scope_session()
         recorder = Donate()
         for kw in kwargs.keys():
             setattr(recorder,kw,kwargs[kw])
         session.add(recorder)
-        try:
-            session.commit()
-        except:
-            session.rollback()
-            pass
+        maintan_session(session)
 
     def query(self,**kwargs):
         """以分页方式提取donate 记录，参数：start 游标起始位置；size:每次返回的记录条数;
@@ -35,48 +32,40 @@ class DonateLocator(grok.GlobalUtility):
         order_by(text("id"))
         """
 
+        session = Scope_session()
         start = int(kwargs['start'])
         size = int(kwargs['size'])
         multi = int(kwargs['multi'])
-#         import pdb
-#         pdb.set_trace()
-        # return total num
         if multi == 1:
             if size == 0:
                 nums = session.query(func.count(Donate.did)).scalar()
                 return int(nums)
             else:
                 recorders = session.query(Donate).\
-            order_by(Donate.did).slice(start,size).all()
+            order_by(Donate.did.desc()).slice(start,size).all()
                 
-        else:
-            
+        else:            
             if size !=0:                     
                 recorders = session.query(Donate).\
-            order_by(Donate.did).slice(0,size).all()
+            order_by(Donate.did.desc()).slice(0,size).all()
             else:
                 recorders = session.query(Donate).\
-            order_by(Donate.did).all()
-        try:
-            session.commit()
-            return recorders
-        except:
-            session.rollback()
-            pass
+            order_by(Donate.did.desc()).all()
+            
+        maintan_session(session)
+        return recorders
 
     def DeleteByCode(self,id):
         "delete the specify id donate recorder"
 
+        session = Scope_session()
         if id != "":
-            try:
-                recorder = session.query(Donate).\
+
+            recorder = session.query(Donate).\
                 from_statement(text("SELECT * FROM donate WHERE did=:id")).\
                 params(did=id).one()
-                session.delete(recorder)
-                session.commit()
-            except:
-                session.rollback()
-                pass
+            session.delete(recorder)
+            maintan_session(session)
         else:
             return None
 
@@ -90,33 +79,26 @@ session.query(User).from_statement(
 text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
         """
 
+        session = Scope_session()
         id = kwargs['did']
         if id != "":
-            try:
-                recorder = session.query(Donate).\
+            recorder = session.query(Donate).\
                 from_statement(text("SELECT * FROM donate WHERE did=:id")).\
                 params(did=id).one()
-                updatedattrs = [kw for kw in kwargs.keys() if kw != 'did']
-                for kw in updatedattrs:
-                    setattr(recorder,kw,kwargs[kw])
-                session.commit()
-            except:
-                session.rollback()
-                pass
+            updatedattrs = [kw for kw in kwargs.keys() if kw != 'did']
+            for kw in updatedattrs:
+                setattr(recorder,kw,kwargs[kw])
+            maintan_session(session)
         else:
             return None
 
     def getByCode(self,id):
+        session = Scope_session()
         if id != "":
-#             import pdb
-#             pdb.set_trace()
-            try:
-                recorder = session.query(Donate).\
+            recorder = session.query(Donate).\
                 from_statement(text("SELECT * FROM donate WHERE did=:id")).\
                 params(did=id).one()
-                return recorder
-            except:
-                session.rollback()
-                None
+            maintan_session(session)
+            return recorder
         else:
             return None
