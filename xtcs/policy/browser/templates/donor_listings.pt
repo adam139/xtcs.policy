@@ -105,8 +105,8 @@
 					
             <!--搜索结果列表 End-->
             <!--分页-->
-           <nav class="text-center">          	
-            <ul id="bottomPageId" class="pagination">
+           <nav class="row text-center">          	
+            <ul id="bottomPageId" class="col-xs-12 pager">
             	<li><a class="page" href="javascript:void(0)">首页</a></li>
             	<li><a class="page" href="javascript:void(0)">上一页</a></li>
             	<li><a class="page_over num" href="#">1</a></li>

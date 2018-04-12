@@ -157,7 +157,7 @@
        </div>  <!--end row-1 -->                              
        <div class="row row-2">        
          	<div class="hidden-xs col-md-12">       
-       	 		<div class="big-ad" tal:attributes="data-target python:p +'/aixingongshi/juanzenggongshi/@@donate_listings''">
+       	 		<div class="big-ad" tal:attributes="data-target python:p +'/aixingongshi/juanzenggongshi/@@donate_listings'">
 				<p class="adtitle"></p>
 				<p class="addescription"></p>
 		 		</div>
