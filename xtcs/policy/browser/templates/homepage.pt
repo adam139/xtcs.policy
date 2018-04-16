@@ -25,7 +25,7 @@
 		  <div role="tabpanel" class="kuputab-container">
   				<!-- Nav tabs -->
   		    <ul  class="nav nav-tabs kuputab-selectors row" role="tablist">
-    		  <li role="presentation" class="active col-xs-4">
+    		  <li role="presentation" class="col-xs-4">
     		    <a href="#gongyixinwen" aria-controls="gongyixinwen" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/cishanzixun/gongyixinwen/@@tableview'">公益新闻</a>
     		  </li>
@@ -33,16 +33,16 @@
     		    <a href="#huodongtonggao" aria-controls="huodongtonggao" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/cishanzixun/huodongtonggao/@@tableview'">活动通告</a>
     		  </li>
-    		  <li role="presentation" class="col-xs-4">
+    		  <li role="presentation" class="active col-xs-4">
     			<a href="#cishandongtai" aria-controls="cishandongtai" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/cishanzixun/cishandongtai/@@tableview'">慈善动态</a>
     		  </li>
   			</ul>
   			<!-- Tab panes start-->
   			<div class="tab-content">
-   			  <div role="tabpanel" class="tab-pane active" id="gongyixinwen">
+   			  <div role="tabpanel" class="tab-pane" id="gongyixinwen">
          		<ul class="tabcontent-lists">
-         		<tal:group tal:repeat="obj python:view.collection('gongyixinwen',7)">    				
+         		<tal:group tal:repeat="obj python:view.collection('gongyixinwen',5)">    				
     						<li class="portletItem"
         					tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         					tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -50,7 +50,7 @@
         						<a href="#"
            					class="tile"
            					tal:attributes="href obj/getURL;title python:ttl">
-           					<span tal:replace="python:view.cropTitle(ttl, 15)">
+           					<span tal:replace="python:view.cropTitle(ttl, 14)">
              						Title
             					</span>
         						</a>
@@ -65,7 +65,7 @@
     				</div>
     			<div role="tabpanel" class="tab-pane" id="huodongtonggao">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('huodongtonggao',7)">
+         	<tal:group tal:repeat="obj python:view.collection('huodongtonggao',5)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -73,7 +73,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -86,9 +86,9 @@
     				</tal:group>
     				</ul>    				    	
     			</div>
-    			<div role="tabpanel" class="tab-pane" id="cishandongtai">
+    			<div role="tabpanel" class="tab-pane active" id="cishandongtai">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('cishandongtai',7)">
+         	<tal:group tal:repeat="obj python:view.collection('cishandongtai',5)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -96,7 +96,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -168,7 +168,7 @@
 				<div role="tabpanel" class="kuputab-container">
   				<!-- Nav tabs -->
   				<ul  class="nav nav-tabs kuputab-selectors row" role="tablist">
-    				<li role="presentation" class="active col-xs-4">
+    				<li role="presentation" class="col-xs-4">
     					<a href="#yigonghuodong" aria-controls="yigonghuodong" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/yigongzhongxin/yigonghuodong/@@tableview'">义工活动</a>
     				</li>
@@ -176,15 +176,15 @@
     					<a href="#yigongtuandui" aria-controls="yigongtuandui" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/yigongzhongxin/yigongtuandui/@@tableview'">义工团队</a>
     				</li>
-    				<li role="presentation" class="col-xs-4">
+    				<li role="presentation" class="active col-xs-4">
     					<a href="#cishanwenzhai" aria-controls="cishanwenzhai" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/cishanshequ/cishanwenzhai/@@tableview'">慈善文摘</a></li>
   				</ul>
   					<!-- Tab panes start-->
   				<div class="tab-content">
-   				<div role="tabpanel" class="tab-pane active" id="yigonghuodong">
+   				<div role="tabpanel" class="tab-pane" id="yigonghuodong">
          		<ul class="tabcontent-lists">
-         		<tal:group tal:repeat="obj python:view.collection('yigonghuodong',7)">    				
+         		<tal:group tal:repeat="obj python:view.collection('yigonghuodong',9)">    				
     						<li class="portletItem"
         					tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         					tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -192,7 +192,7 @@
         						<a href="#"
            					class="tile"
            					tal:attributes="href obj/getURL;title python:ttl">
-           					<span tal:replace="python:view.cropTitle(ttl, 15)">
+           					<span tal:replace="python:view.cropTitle(ttl, 14)">
              						Title
             					</span>
         						</a>
@@ -207,7 +207,7 @@
     				</div>
     			<div role="tabpanel" class="tab-pane" id="yigongtuandui">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('yigongtuandui',7)">
+         	<tal:group tal:repeat="obj python:view.collection('yigongtuandui',9)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -215,7 +215,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -228,9 +228,9 @@
     				</tal:group>
     				</ul>    				    	
     			</div>
-    			<div role="tabpanel" class="tab-pane" id="cishanwenzhai">
+    			<div role="tabpanel" class="tab-pane active" id="cishanwenzhai">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('cishanwenzhai',7)">
+         	<tal:group tal:repeat="obj python:view.collection('cishanwenzhai',9)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -238,7 +238,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -274,7 +274,7 @@
   				<div class="tab-content">
    				<div role="tabpanel" class="tab-pane active" id="aixingushi">
          		<ul class="tabcontent-lists">
-         		<tal:group tal:repeat="obj python:view.collection('aixingushi',7)">    				
+         		<tal:group tal:repeat="obj python:view.collection('aixingushi',9)">    				
     						<li class="portletItem"
         					tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         					tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -282,7 +282,7 @@
         						<a href="#"
            					class="tile"
            					tal:attributes="href obj/getURL;title python:ttl">
-           					<span tal:replace="python:view.cropTitle(ttl, 15)">
+           					<span tal:replace="python:view.cropTitle(ttl, 14)">
              						Title
             					</span>
         						</a>
@@ -297,7 +297,7 @@
     				</div>
     			<div role="tabpanel" class="tab-pane" id="guizhangzhidu">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('guizhangzhidu',7)">
+         	<tal:group tal:repeat="obj python:view.collection('guizhangzhidu',9)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -305,7 +305,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -320,7 +320,7 @@
     			</div>
     			<div role="tabpanel" class="tab-pane" id="zhengcefagui">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('zhengcefagui',7)">
+         	<tal:group tal:repeat="obj python:view.collection('zhengcefagui',9)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -328,7 +328,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -387,7 +387,7 @@
     				</div>
     			<div role="tabpanel" class="tab-pane" id="jingcaibowen">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('jingcaibowen',7)">
+         	<tal:group tal:repeat="obj python:view.collection('jingcaibowen',9)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -395,7 +395,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>
@@ -410,7 +410,7 @@
     			</div>
     			<div role="tabpanel" class="tab-pane" id="luntanretie">
          	<ul class="tabcontent-lists">    	
-         	<tal:group tal:repeat="obj python:view.collection('luntanretie',7)">
+         	<tal:group tal:repeat="obj python:view.collection('luntanretie',9)">
     				<li class="portletItem"
         		tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         		tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">
@@ -418,7 +418,7 @@
         		<a href="#"
            	class="tile"
            	tal:attributes="href obj/getURL;title python:ttl">
-           	<span tal:replace="python:view.cropTitle(ttl, 15)">
+           	<span tal:replace="python:view.cropTitle(ttl, 14)">
              Title
             </span>
         		</a>

@@ -51,10 +51,11 @@ img.right{float:right}
 .adtitle{font-size:32px;margin-bottom:0;padding-top:6px}
 .addescription{font-size:24px;text-indent:4em}
 #juanzengfangshi .tabcontent-lists{padding-left:0}
+#juanzengfangshi .col-sm-12 img {margin-top:-12px}
 .rolltext{margin-top:1em}
 ul.rolltext{margin-left:.5em}
 ul.rolltext li{height:24px}
-.portletItem,.rolltext li{line-height:1.6em;margin-left:-24px;list-style:none outside url(http://images.315ok.org/xtshzz/images/red_point.jpg);border-bottom:1px dashed #b4b4b4}
+.portletItem,.rolltext li{line-height:2em;margin-left:-24px;list-style:none outside url(http://images.315ok.org/xtshzz/images/red_point.jpg);border-bottom:1px dashed #b4b4b4}
 .tab-content{margin-top:14px;background-color:#fff}
 .tabcontent-lists .portletItem{margin-left:-16px}
 .kuputab-selectors,.portletHeader{background:url(http://images.315ok.org/xtcs/images/portletnavbg_7_41.jpg) repeat-x scroll 0 0 transparent;height:41px;margin:0}
@@ -81,9 +82,9 @@ padding:0;
 .row .shortcutlink {padding:0;}
 .carousel-inner {height:227px;}
 .template-index-html #portal-breadcrumbs {display:none}
+.template-index-html .navbar-brand{padding:6px 15px}
+.template-index-html .plone-navbar-nav {margin-top:0}
 #content .shortcutlink p {text-indent:0}
-
-
 #roll_chanpin {
 margin:0;
 
