@@ -116,3 +116,4 @@ margin-top:9px;
 .roll_image li a img {width:180px;height:100px;}
 .roll_image ul.img {*height:128px;}
 #roll_chanpin .imgtitle {width:184px;overflow:hidden;font-size:12px;line-height:2.1;margin-top:6px;}
+.map_brand a:hover,.map_brand a:focus {color:#fff;text-decoration:none}
