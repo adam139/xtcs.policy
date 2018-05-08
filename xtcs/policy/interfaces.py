@@ -14,6 +14,8 @@ class IAixinjuankuan (Interface):
     """某一捐赠项目具体捐赠记录"""
 class IJuanzenggongshi (Interface):
     """展示已有捐赠的项目"""
+class IJuanzengworkflow (Interface):
+        """在线捐赠处理流程"""
 
 class IContainerTablelist (Interface):
     """文件夹标记接口"""

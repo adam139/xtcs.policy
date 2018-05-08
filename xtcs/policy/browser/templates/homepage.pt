@@ -363,14 +363,14 @@
   					<!-- Tab panes start-->
   				<div class="tab-content">
    				<div role="tabpanel" class="tab-pane active" id="juanzengfangshi">
-         		<ul class="tabcontent-lists">
+         		<div class="tabcontent-lists">
          		<div class="row">
          			<div class="col-sm-12">
          				<img class="responsive-image center-block" src="http://images.315ok.org/xtcs/images/paybg_287_229.jpg"/>
          			</div>
          		</div>
          		<div class="row pay-button">
-         			<div class="col-xs-1 hidden-xs">
+         			<div class="col-sm-1 hidden-xs">
          			<!-- offset gut -->	
          			</div>
          			<div class="col-xs-6 col-sm-5">
@@ -383,7 +383,7 @@
          			<!-- offset gut -->	
          			</div>         			         			
          		</div>
-    					</ul>    	
+    					</div>    	
     				</div>
     			<div role="tabpanel" class="tab-pane" id="jingcaibowen">
          	<ul class="tabcontent-lists">    	

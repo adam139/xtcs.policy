@@ -26,6 +26,7 @@ from xtcs.policy.interfaces import IJuanzenggongshi
 # update data view
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
+from Products.CMFPlone.resources import add_bundle_on_request
 from zExceptions import NotFound
 from xtcs.policy import InputDb
 
@@ -36,7 +37,7 @@ class DonortableView(BrowserView):
       
     @memoize
     def getMemberList(self,start=0,size=0):
-        """获取年检结果列表"""
+        """获取捐赠结果列表"""
         
         locator = getUtility(IDonorLocator)        
         articles = locator.query(start=0,size=0,multi=0,id=7,sortchildid=3)
@@ -118,6 +119,22 @@ class DonorView(DonateView):
         return recorders
 
 
+class DonatedWorkflow(BrowserView):
+    """
+    在线捐款流程。
+    view name:donated_workflow
+    """
+    def __init__(self,context, request):
+        # Each view instance receives context and request as construction parameters
+        self.context = context
+        self.request = request
+        add_bundle_on_request(self.request, 'donate-legacy')
+    
+    def get_projects(self):
+        "提取系统所有公益项目"
+        
+        projects = ['','','','']
+        return projects 
 
  # ajax multi-condition search relation db
 class ajaxsearch(grok.View):

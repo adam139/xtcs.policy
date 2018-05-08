@@ -54,7 +54,15 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/donor_listings.pt"
-    />    
+    />
+    <browser:page
+      for="xtcs.policy.interfaces.IJuanzengworkflow"
+      name="donated_workflow"
+      class=".dbpage.DonatedWorkflow"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/donated_workflow.pt"
+    />        
     <browser:page
       for="*"
       name="footer"

@@ -85,11 +85,7 @@ padding:0;
 .template-index-html .navbar-brand{padding:6px 15px}
 .template-index-html .plone-navbar-nav {margin-top:0}
 #content .shortcutlink p {text-indent:0}
-#roll_chanpin {
-margin:0;
-
-}
-
+#roll_chanpin {margin:0;}
 .roll_image {
 display:inline;
 float:left;
@@ -117,3 +113,5 @@ margin-top:9px;
 .roll_image ul.img {*height:128px;}
 #roll_chanpin .imgtitle {width:184px;overflow:hidden;font-size:12px;line-height:2.1;margin-top:6px;}
 .map_brand a:hover,.map_brand a:focus {color:#fff;text-decoration:none}
+#juanzengfangshi {cursor:pointer}
+.template-index-html .container-header .row{margin-bottom:0}
