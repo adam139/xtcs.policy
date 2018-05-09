@@ -112,16 +112,10 @@
 				<div class="form-group">
 					<label for="InputRadio">捐款项目</label>
 						<div class="radio">
-							<label><input type="radio" name="optionsProject1" id="optionsProject1" value="project1" >助学慈善项目</label>
-             			</div>
-						<div class="radio">
-							<label><input type="radio" name="optionsProject2" id="optionsProject2" value="project2" >助医慈善项目</label>
-             			</div>
-						<div class="radio">
-							<label><input type="radio" name="optionsProject3" id="optionsProject3" value="project3" >结对助学慈善项目</label>
-             			</div>
-						<div class="radio">
-							<label><input type="radio" name="optionsProject4" id="optionsProject4" value="project4" >不限定项目</label>
+							<label><input type="radio" name="optionsProject" id="optionsProject1" value="project1" >助学慈善项目</label><br />
+							<label><input type="radio" name="optionsProject" id="optionsProject2" value="project2" >助医慈善项目</label><br />
+							<label><input type="radio" name="optionsProject" id="optionsProject3" value="project3" >结对助学慈善项目</label><br />
+							<label><input type="radio" name="optionsProject" id="optionsProject4" value="project4" >不限定项目</label>
              			</div>             			             			
              	</div>
 			 <div class="form-group">
@@ -131,10 +125,8 @@
 			 <div class="form-group">
 			 	<label for="InputWay">捐款方式</label>
 						<div class="radio">
-							<input type="radio" name="optionsPay1" id="optionsPay1" value="pay1" /><label>微信支付</label>
-             			</div>
-						<div class="radio">
-							<input type="radio" name="optionsPay2" id="optionsPay2" value="pay2" /><label>支付宝支付</label>
+							<label><input type="radio" name="optionsPay" id="optionsPay1" value="pay1" />微信支付</label><br />             			
+							<label><input type="radio" name="optionsPay" id="optionsPay2" value="pay2" />支付宝支付</label>
              			</div>					
 			 </div>
 			<button class="btn btn-warning btn-lg" name="ok">确定</button>
