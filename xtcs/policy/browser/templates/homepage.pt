@@ -454,20 +454,18 @@
 				<div role="tabpanel" class="portlet">
   				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
     				<li role="presentation" class="active">
-    					<a href="#fuwuxinxi" aria-controls="fuwuxinxi" role="tab" data-toggle="tab"
-    						tal:attributes="data-js-target python:p + '/@@index.html'">爱心账号</a>
+    					<a href="#aixinzhanghao" aria-controls="aixinzhanghao" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/aixinjuanzeng/aixinjuankuan/@@donated_workflow'">爱心账号</a>
     				</li>
   				</ul>
   					<!-- Tab panes start-->
   				<div class="tab-content">
-   				<div role="tabpanel" class="tab-pane active" id="fuwuxinxi">
-         			<ul class="tabcontent-lists">
-						<ul class="serviceinfo">
-        					<li>开户名称：湘潭市慈善总会</li>
-							<li>开户银行：华融湘江银行湘潭建设支行</li>
-							<li>开户账号：78003032010010028866</li>
-							<li>联系电话：0731—52255876</li>							
-						</ul>        		
+   				<div role="tabpanel" class="tab-pane active" id="aixinzhanghao">
+         			<ul class="tabcontent-lists aixinzhanghao">
+        					<li class="portletItem">开户名称：湘潭市慈善总会</li>
+							<li class="portletItem">开户银行：华融湘江银行湘潭建设支行</li>
+							<li class="portletItem">开户账号：78003032010010028866</li>
+							<li class="portletItem">联系电话：0731—52255876</li>												        		
     				</ul>    	
     			</div>
     		</div> <!--Tab panes end -->
