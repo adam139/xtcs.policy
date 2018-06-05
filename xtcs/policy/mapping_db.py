@@ -233,11 +233,12 @@ class IDonate(Interface):
     did = schema.Int(
             title=_(u"table primary key"),
         ) 
-    start_time = schema.Int(
+    start_time = schema.Datetime(
             title=_(u"kaishi shijian"),
         )           
     visible = schema.Int(
-            title=_(u"shifou keshi?")
+            title=_(u"shifou keshi?"),
+            default=0
         )
     aname = schema.TextLine(
             title=_(u"cishan juanzeng xiangmu mingcheng"),
@@ -260,7 +261,7 @@ class Donate(ORMBase):
     start_time = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
             nullable=False,
         )
-    visible = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
+    visible = sqlalchemy.schema.Column(sqlalchemy.types.SmallInteger(),
             nullable=False,
         )
     aname = sqlalchemy.schema.Column(sqlalchemy.types.String(32),

@@ -79,7 +79,7 @@
             	<thead tal:condition="iseditable">
             		<tr data-toggle="tooltip" title="点击排序">
             			<th class="col-md-8 text-center">捐赠单位或个人</th>
-            			<th class="col-md-1 text-left">现金（元）</th>
+            			<th class="col-md-1 text-left">现金(物资)</th>
             			<th class="col-md-1 text-left">捐赠时间</th>           			            			            			
             			<th class="col-md-1 text-center">编辑</th>
             			<th class="col-md-1 text-center">删除</th>
@@ -88,7 +88,7 @@
             	<thead tal:condition="not:iseditable">
             		<tr data-toggle="tooltip" title="点击排序">
             			<th class="col-md-10 text-center">捐赠单位或个人</th>
-            			<th class="col-md-1 text-left">现金（元）</th>
+            			<th class="col-md-1 text-left">现金(物资)</th>
             			<th class="col-md-1 text-left">捐赠时间</th>         			            			            			
             		</tr>
             	</thead>            	

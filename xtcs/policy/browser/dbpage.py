@@ -54,12 +54,19 @@ class DonortableView(BrowserView):
                 atime = astr
             else:
                 atime= u""                        
+            if bool(i.goods):
+                if bool(i.money):
+                    money = "%s(%s)" % (i.money,i.goods)
+                else:
+                    money = "(%s)" % (i.goods)
+            else:
+                money = i.money            
             out = """<tr>
             <td class="title">%(title)s</td>
             <td class="item">%(money)s</td>
             <td class="atime">%(atime)s</td></tr>""" % dict(
                                             title=i.aname,
-                                            money= i.money,
+                                            money= money,
                                             atime=atime)           
             outhtml = "%s%s" %(outhtml ,out)
         return outhtml
@@ -329,6 +336,13 @@ class Donorajaxsearch(ajaxsearch):
                     atime = u""
                 else:
                     atime = astr
+                if bool(i.goods):
+                    if bool(i.money):
+                        money = "%s(%s)" % (i.money,i.goods)
+                    else:
+                        money = "(%s)" % (i.goods)
+                else:
+                    money = i.money
                 out = """<tr class="text-left">
                                 <td class="col-md-8">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
@@ -347,7 +361,7 @@ class Donorajaxsearch(ajaxsearch):
                                 </td>
                                 </tr> """% dict(
                                             name=i.aname,
-                                            money= i.money,
+                                            money= money,
                                             atime= atime,
                                             edit_url="%s/@@update_donor/%s" % (contexturl,i.doid),
                                             delete_url="%s/@@delete_donor/%s" % (contexturl,i.doid))
@@ -355,18 +369,26 @@ class Donorajaxsearch(ajaxsearch):
                 k = k + 1
         else:
             for i in resultDicLists:
+                
                 astr = i.atime.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
                     atime = u""
                 else:
                     atime = astr
+                if bool(i.goods):
+                    if bool(i.money):
+                        money = "%s(%s)" % (i.money,i.goods)
+                    else:
+                        money = "(%s)" % (i.goods)
+                else:
+                    money = i.money                
                 out = """<tr class="text-left">
                                 <td class="col-md-10">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
                                 <td class="col-md-1">%(atime)s</td>
                                 </tr> """% dict(
                                             name=i.aname,
-                                            money= i.money,
+                                            money= money,
                                             atime= atime)
                 outhtml = "%s%s" %(outhtml ,out)
                 k = k + 1                
@@ -382,7 +404,7 @@ class DeleteDonate(form.Form):
     grok.require('xtcs.policy.input_db')
 
     label = _(u"delete donate data")
-    fields = field.Fields(IDonate).omit('did')
+    fields = field.Fields(IDonate).omit('did','start_time')
     ignoreContext = False
 
     id = None
@@ -457,12 +479,23 @@ class InputDonate(form.Form):
     def submit(self, action):
         """Submit donate recorder
         """
-        data, errors = self.extractData()
+        data, errors = self.extractData() 
         if errors:
             self.status = self.formErrorsMessage
             return
+        import time
+        from datetime import datetime
+        fmt = "%Y-%m-%d %H:%M:%S"        
+        dtst = data['start_time']
+        if isinstance(dtst,datetime):
+            # datetime convert to timestamp
+            dtst = time.strptime(dtst.strftime(fmt),fmt)
+            dtst = int(time.mktime(dtst))
+            
+            data['start_time'] = dtst
         funcations = getUtility(IDonateLocator)
         try:
+            
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
@@ -589,10 +622,10 @@ class DeleteDonor(DeleteDonate):
             funcations.DeleteByCode(self.id)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/donor_listings')
+            self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
         confirm = _(u"Your data  has been deleted.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donor_listings')
+        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -600,7 +633,7 @@ class DeleteDonor(DeleteDonate):
         """
         confirm = _(u"Delete cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donor_listings')
+        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
 
 
 class InputDonor(InputDonate):
