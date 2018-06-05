@@ -62,7 +62,7 @@ class DonateLocator(grok.GlobalUtility):
         if id != "":
 
             recorder = session.query(Donate).\
-                from_statement(text("SELECT * FROM donate WHERE did=:id")).\
+                from_statement(text("SELECT * FROM donate WHERE did=:did")).\
                 params(did=id).one()
             session.delete(recorder)
             maintan_session(session)
@@ -83,7 +83,7 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
         id = kwargs['did']
         if id != "":
             recorder = session.query(Donate).\
-                from_statement(text("SELECT * FROM donate WHERE did=:id")).\
+                from_statement(text("SELECT * FROM donate WHERE did=:did")).\
                 params(did=id).one()
             updatedattrs = [kw for kw in kwargs.keys() if kw != 'did']
             for kw in updatedattrs:
@@ -96,7 +96,7 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
         session = Scope_session()
         if id != "":
             recorder = session.query(Donate).\
-                from_statement(text("SELECT * FROM donate WHERE did=:id")).\
+                from_statement(text("SELECT * FROM donate WHERE did=:did")).\
                 params(did=id).one()
             maintan_session(session)
             return recorder

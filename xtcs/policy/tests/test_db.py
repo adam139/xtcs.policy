@@ -136,10 +136,11 @@ class TestParametersDatabase(unittest.TestCase):
 
 
         locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=180,multi=1,did=18,id=18)
+        articles = locator.query(start=0,size=180,multi=1,did=7,id=18)
+
         if articles == None:
             return
-        self.assertEqual(len(articles),156)
+        self.assertEqual(len(articles),100)
 
     def test_donate_query(self):
 

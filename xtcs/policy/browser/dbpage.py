@@ -40,7 +40,7 @@ class DonortableView(BrowserView):
         """获取捐赠结果列表"""
         
         locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=0,multi=0,id=7,sortchildid=3)
+        articles = locator.query(start=0,size=0,multi=0,id=18,sortchildid=3)
         if articles == None:
             return             
         return self.outputList(articles)
@@ -49,18 +49,18 @@ class DonortableView(BrowserView):
         outhtml = ""
        
         for i in braindata:
-
-            if bool(i.goods):
-                goods = i.goods
+            astr = i.atime.strftime('%Y-%m-%d')
+            if astr != '2000-01-01':
+                atime = astr
             else:
-                goods= u""                        
+                atime= u""                        
             out = """<tr>
             <td class="title">%(title)s</td>
             <td class="item">%(money)s</td>
-            <td class="goods">%(goods)s</td></tr>""" % dict(
+            <td class="atime">%(atime)s</td></tr>""" % dict(
                                             title=i.aname,
                                             money= i.money,
-                                            goods=goods)           
+                                            atime=atime)           
             outhtml = "%s%s" %(outhtml ,out)
         return outhtml
 
@@ -324,14 +324,15 @@ class Donorajaxsearch(ajaxsearch):
         contexturl = self.context.absolute_url()
         if bool(self.searchview().isAddable):        
             for i in resultDicLists:
-                if i.goods == None:
-                    goods = ""
+                astr = i.atime.strftime('%Y-%m-%d')
+                if astr == '2000-01-01':
+                    atime = u""
                 else:
-                    goods = i.goods
+                    atime = astr
                 out = """<tr class="text-left">
                                 <td class="col-md-8">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
-                                <td class="col-md-1">%(goods)s</td>
+                                <td class="col-md-1">%(atime)s</td>
                                 <td class="col-md-1 text-center">
                                 <a href="%(edit_url)s" title="edit">
                                   <span class="glyphicon glyphicon-pencil" aria-hidden="true">
@@ -347,25 +348,26 @@ class Donorajaxsearch(ajaxsearch):
                                 </tr> """% dict(
                                             name=i.aname,
                                             money= i.money,
-                                            goods= goods,
+                                            atime= atime,
                                             edit_url="%s/@@update_donor/%s" % (contexturl,i.doid),
                                             delete_url="%s/@@delete_donor/%s" % (contexturl,i.doid))
                 outhtml = "%s%s" %(outhtml ,out)
                 k = k + 1
         else:
             for i in resultDicLists:
-                if i.goods == None:
-                    goods = ""
+                astr = i.atime.strftime('%Y-%m-%d')
+                if astr == '2000-01-01':
+                    atime = u""
                 else:
-                    goods = i.goods
+                    atime = astr
                 out = """<tr class="text-left">
                                 <td class="col-md-10">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
-                                <td class="col-md-1">%(goods)s</td>
+                                <td class="col-md-1">%(atime)s</td>
                                 </tr> """% dict(
                                             name=i.aname,
                                             money= i.money,
-                                            goods= goods)
+                                            atime= atime)
                 outhtml = "%s%s" %(outhtml ,out)
                 k = k + 1                
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
@@ -607,7 +609,7 @@ class InputDonor(InputDonate):
 
     grok.name('input_donor')
 
-    label = _(u"Input fa she ji data")
+    label = _(u"Input donor data")
     fields = field.Fields(IDonor).omit('doid')
 
     def update(self):
@@ -631,15 +633,19 @@ class InputDonor(InputDonate):
             self.status = self.formErrorsMessage
             return
         funcations = getUtility(IDonorLocator)
+        locator = getUtility(IDonateLocator)
         try:
+            id = data['did']
+            name = locator.getByCode(id).aname
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+            self.request.response.redirect(self.context.absolute_url() + '/@@donate_listings')                  
 
         confirm = _(u"Thank you! Your data  will be update in back end DB.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+        url_suffix = '/@@donor_listings?name=%s&id=%s' % (name,id)        
+        self.request.response.redirect(self.context.absolute_url() + url_suffix)
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -647,7 +653,7 @@ class InputDonor(InputDonate):
         """
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+        self.request.response.redirect(self.context.absolute_url() + '/@@donate_listings')
 
 
 class UpdateDonor(UpdateDonate):

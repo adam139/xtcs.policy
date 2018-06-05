@@ -49,10 +49,10 @@ class DonorLocator(grok.GlobalUtility):
         else:
             if size !=0:                     
                 recorders = session.query(Donor).filter_by(did=id).\
-            order_by(Donor.doid).slice(0,size).all()
+            order_by(Donor.doid.desc()).slice(0,size).all()
             else:
                 recorders = session.query(Donor).filter_by(did=id).\
-            order_by(Donor.doid).all()            
+            order_by(Donor.doid.desc()).all()            
         maintan_session(session)
         return recorders
 

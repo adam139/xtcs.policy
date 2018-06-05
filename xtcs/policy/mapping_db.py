@@ -183,8 +183,11 @@ class IDonor(Interface):
         )
     goods = schema.TextLine(
             title=_(u"juanzeng wuping"),
+            required=False
         )            
-
+    atime = schema.Datetime(
+            title=_(u"juanzeng shi jian")
+        )
 class Donor(ORMBase):
     """Database-backed implementation of project
     """
@@ -207,7 +210,10 @@ class Donor(ORMBase):
         )
     goods = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
             nullable=False,
-        )       
+        )
+    atime = sqlalchemy.schema.Column(sqlalchemy.types.DateTime(),
+            nullable=True,
+        )           
 #所有有捐赠记录的项目,捐赠公示
 class IDonate(Interface):
     """
