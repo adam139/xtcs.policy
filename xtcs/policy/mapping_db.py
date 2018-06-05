@@ -31,7 +31,7 @@ class IArticle(Interface):
             title=_(u"wenzhang biaoti"),
         )    
     content = schema.TextLine(
-            title=_(u"jie shou ji ming cheng"),
+            title=_(u"wenzhang neirong"),
         )
 
 
@@ -74,10 +74,10 @@ class IProject(Interface):
             title=_(u"dengji ri qi")
         )
     projectName = schema.TextLine(
-            title=_(u"wenzhang biaoti"),
+            title=_(u"xiangmu mingcheng"),
         )    
     description = schema.Text(
-            title=_(u"jie shou ji ming cheng"),
+            title=_(u"xiangmu miaoshu"),
         )
 
 

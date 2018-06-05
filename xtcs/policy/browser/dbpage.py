@@ -581,7 +581,7 @@ class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
     grok.name('delete_donor')
-    label = _(u"delete fa she ji data")
+    label = _(u"delete donate data")
     fields = field.Fields(IDonor).omit('did','doid')
 
 
@@ -693,7 +693,7 @@ class UpdateDonor(UpdateDonate):
     """update model table row data
     """
     grok.name('update_donor')
-    label = _(u"update fa she ji data")
+    label = _(u"update donor data")
     fields = field.Fields(IDonor).omit('doid')
 
     id = None

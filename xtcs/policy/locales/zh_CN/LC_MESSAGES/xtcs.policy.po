@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: xtcs.policy\n"
-"POT-Creation-Date: 2018-06-05 07:09+0000\n"
+"POT-Creation-Date: 2018-06-05 07:30+0000\n"
 "PO-Revision-Date: 2015-02-16 20:49+0800\n"
 "Last-Translator: adam <yuejun.tang@gmail.com>\n"
 "Language-Team: 315ok.org <LL@li.org>\n"
@@ -66,10 +66,6 @@ msgstr "慈善捐赠项目名称"
 msgid "delete donate data"
 msgstr "删除捐赠项目数据"
 
-#: ./browser/dbpage.py:584
-msgid "delete fa she ji data"
-msgstr ""
-
 #: ./mapping_db.py:74
 msgid "dengji ri qi"
 msgstr "登记日期"
@@ -103,13 +99,9 @@ msgstr ""
 msgid "help_enable_parent_clickable"
 msgstr ""
 
-#: ./mapping_db.py:34
-msgid "jie shou ji ming cheng"
-msgstr ""
-
 #: ./mapping_db.py:189
 msgid "juanzeng shi jian"
-msgstr ""
+msgstr "捐赠时间"
 
 #: ./mapping_db.py:185
 msgid "juanzeng wuping"
@@ -171,12 +163,24 @@ msgid "update donate data"
 msgstr "更新捐赠项目数据"
 
 #: ./browser/dbpage.py:696
-msgid "update fa she ji data"
-msgstr ""
+msgid "update donor data"
+msgstr "更新捐赠记录数据"
 
 #: ./mapping_db.py:31
 msgid "wenzhang biaoti"
-msgstr ""
+msgstr "文章标题"
+
+#: ./mapping_db.py:34
+msgid "wenzhang neirong"
+msgstr "文章内容"
+
+#: ./mapping_db.py:80
+msgid "xiangmu miaoshu"
+msgstr "项目描述"
+
+#: ./mapping_db.py:77
+msgid "xiangmu mingcheng"
+msgstr "项目名称"
 
 #: ./mapping_db.py:182
 msgid "xianjin jin e"

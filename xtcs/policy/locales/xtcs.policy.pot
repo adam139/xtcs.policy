@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2018-06-05 07:09+0000\n"
+"POT-Creation-Date: 2018-06-05 07:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,10 +69,6 @@ msgstr ""
 msgid "delete donate data"
 msgstr ""
 
-#: ./browser/dbpage.py:584
-msgid "delete fa she ji data"
-msgstr ""
-
 #: ./mapping_db.py:74
 msgid "dengji ri qi"
 msgstr ""
@@ -104,10 +100,6 @@ msgstr ""
 #. Default: "With this option enabled, every menu item is clickable. With this option disabled, an item is only clickable when it is not a parent so it has no children."
 #: ./browser/interfaces.py:43
 msgid "help_enable_parent_clickable"
-msgstr ""
-
-#: ./mapping_db.py:34
-msgid "jie shou ji ming cheng"
 msgstr ""
 
 #: ./mapping_db.py:189
@@ -174,11 +166,23 @@ msgid "update donate data"
 msgstr ""
 
 #: ./browser/dbpage.py:696
-msgid "update fa she ji data"
+msgid "update donor data"
 msgstr ""
 
 #: ./mapping_db.py:31
 msgid "wenzhang biaoti"
+msgstr ""
+
+#: ./mapping_db.py:34
+msgid "wenzhang neirong"
+msgstr ""
+
+#: ./mapping_db.py:80
+msgid "xiangmu miaoshu"
+msgstr ""
+
+#: ./mapping_db.py:77
+msgid "xiangmu mingcheng"
 msgstr ""
 
 #: ./mapping_db.py:182
