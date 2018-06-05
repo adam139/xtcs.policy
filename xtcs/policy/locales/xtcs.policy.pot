@@ -1,0 +1,206 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2018-06-05 07:09+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: xtcs.policy\n"
+
+#: ./browser/dbpage.py:454
+msgid "Cancel"
+msgstr ""
+
+#: ./browser/dbpage.py:435
+msgid "Delete"
+msgstr ""
+
+#: ./browser/dbpage.py:458
+msgid "Delete cancelled."
+msgstr ""
+
+#: ./browser/dbpage.py:512
+msgid "Input cancelled."
+msgstr ""
+
+#: ./browser/dbpage.py:469
+msgid "Input donate data"
+msgstr ""
+
+#: ./browser/dbpage.py:645
+msgid "Input donor data"
+msgstr ""
+
+#: ./configure.zcml:28
+msgid "Installs the xtcs.policy package"
+msgstr ""
+
+#: ./browser/dbpage.py:478
+msgid "Submit"
+msgstr ""
+
+#: ./browser/dbpage.py:504
+msgid "Thank you! Your data  will be update in back end DB."
+msgstr ""
+
+#: ./browser/dbpage.py:450
+msgid "Your data  has been deleted."
+msgstr ""
+
+#: ./mapping_db.py:247
+msgid "cishan juanzeng xiangmu beizhu"
+msgstr ""
+
+#: ./mapping_db.py:244
+msgid "cishan juanzeng xiangmu mingcheng"
+msgstr ""
+
+#: ./browser/dbpage.py:406
+msgid "delete donate data"
+msgstr ""
+
+#: ./browser/dbpage.py:584
+msgid "delete fa she ji data"
+msgstr ""
+
+#: ./mapping_db.py:74
+msgid "dengji ri qi"
+msgstr ""
+
+#. Default: "Warning! This operation will remove database record."
+#: ./browser/templates/delete_model.pt:14
+msgid "description_delete_model_record"
+msgstr ""
+
+#. Default: "Please enter model recorder."
+#: ./browser/templates/input_model.pt:15
+msgid "description_input_model_record"
+msgstr ""
+
+#: ./mapping_db.py:28
+msgid "fabu ri qi"
+msgstr ""
+
+#. Default: "How many levels to list after the top level."
+#: ./browser/interfaces.py:21
+msgid "help_dropdown_depth"
+msgstr ""
+
+#. Default: "WARNING! This is an experimental feature. This is using RAM to store cached template for dropdown menus. Technically every user and every visited section gets its own instance in the ram.cache. Don't enable this if you don't know what this is about. Disable this option if you get unexpected behavior of your global tabs."
+#: ./browser/interfaces.py:28
+msgid "help_enable_caching"
+msgstr ""
+
+#. Default: "With this option enabled, every menu item is clickable. With this option disabled, an item is only clickable when it is not a parent so it has no children."
+#: ./browser/interfaces.py:43
+msgid "help_enable_parent_clickable"
+msgstr ""
+
+#: ./mapping_db.py:34
+msgid "jie shou ji ming cheng"
+msgstr ""
+
+#: ./mapping_db.py:189
+msgid "juanzeng shi jian"
+msgstr ""
+
+#: ./mapping_db.py:185
+msgid "juanzeng wuping"
+msgstr ""
+
+#: ./mapping_db.py:175
+msgid "juanzeng xiangmu id"
+msgstr ""
+
+#: ./mapping_db.py:179
+msgid "juanzeng zhe"
+msgstr ""
+
+#: ./mapping_db.py:237
+msgid "kaishi shijian"
+msgstr ""
+
+#. Default: "Depth of dropdown menus"
+#: ./browser/interfaces.py:20
+msgid "label_dropdown_depth"
+msgstr ""
+
+#. Default: "Enable caching"
+#: ./browser/interfaces.py:27
+msgid "label_enable_caching"
+msgstr ""
+
+#. Default: "Enable clicking menu items that have children"
+#: ./browser/interfaces.py:41
+msgid "label_enable_parent_clickable"
+msgstr ""
+
+#: ./mapping_db.py:22
+msgid "main folder id"
+msgstr ""
+
+#: ./mapping_db.py:240
+msgid "shifou keshi?"
+msgstr ""
+
+#: ./configure.zcml:37
+msgid "some clear and post steps after initial the site"
+msgstr ""
+
+#: ./configure.zcml:44
+msgid "some initial steps"
+msgstr ""
+
+#: ./mapping_db.py:25
+msgid "sub folder id"
+msgstr ""
+
+#: ./mapping_db.py:19
+msgid "table primary key"
+msgstr ""
+
+#: ./browser/dbpage.py:525
+msgid "update donate data"
+msgstr ""
+
+#: ./browser/dbpage.py:696
+msgid "update fa she ji data"
+msgstr ""
+
+#: ./mapping_db.py:31
+msgid "wenzhang biaoti"
+msgstr ""
+
+#: ./mapping_db.py:182
+msgid "xianjin jin e"
+msgstr ""
+
+#: ./configure.zcml:28
+msgid "xtcs.policy"
+msgstr ""
+
+#: ./configure.zcml:44
+msgid "xtcs.policy initial site"
+msgstr ""
+
+#: ./configure.zcml:37
+msgid "xtcs.policy post steps"
+msgstr ""
+
+#: ./mapping_db.py:132
+msgid "yigong tuandui jieshao"
+msgstr ""
+
+#: ./mapping_db.py:129
+msgid "yigong tuandui mingcheng"
+msgstr ""
