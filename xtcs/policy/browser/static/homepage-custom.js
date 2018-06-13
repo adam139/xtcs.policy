@@ -28,13 +28,7 @@ $(document).ready(function(){
 		  window.location.href = url;
 		  return false;
 		});
-    $('a[href$="juanzenggongshi"]').on("click",function (e) {
-    	  e.preventDefault();
-		  var url = $(this).attr("href");
-		  window.location.href = url + "/@@donate_listings";
-		  return false;
-    });	
-								
+    $('.carousel').carousel();						
 	StartRollV();
 	//StartRollVs();
 	//rolltext(".roll-wrapper");    
