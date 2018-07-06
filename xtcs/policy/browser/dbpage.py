@@ -40,7 +40,7 @@ class DonortableView(BrowserView):
         """获取捐赠结果列表"""
         
         locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=0,multi=0,id=22,sortchildid=3)
+        articles = locator.query(start=0,size=0,multi=0,id=21,sortchildid=3)
         if articles == None:
             return             
         return self.outputList(articles)
@@ -133,7 +133,7 @@ class SpecifyDonorView(DonorView):
     
     parameters:
         query:{'start':0,'size':10}
-        id:22
+        id:21
     view name:db_ajax_juanzeng
     """
 
@@ -142,7 +142,7 @@ class SpecifyDonorView(DonorView):
 
         locator = getUtility(IDonorLocator)
         recorders = locator.query(start=query['start'],\
-                                  size=query['size'],multi = query['multi'],id=22 )
+                                  size=query['size'],multi = query['multi'],id=21 )
         return recorders
 
 
