@@ -176,15 +176,16 @@ STRUCTURE = [
             'title': u'捐赠公示',
             'id': 'juanzenggongshi',
             'description': u'捐赠公示',
-            'layout':'donate_listings',
+            'layout':'specify_donor_listings',
             'markif':'xtcs.policy.interfaces.IJuanzenggongshi' 
                       }, 
                      {
             'type': 'Folder',
             'title': u'阳光屋',
-            'id': 'yigongtuandui',
+            'id': 'yangguangwu',
             'description': u'阳光屋',
-            'layout': 'tableview',
+            'layout':'donate_listings',
+            'markif':'xtcs.policy.interfaces.IJuanzenggongshi'
                       }                                                                         
                      ]
     },              

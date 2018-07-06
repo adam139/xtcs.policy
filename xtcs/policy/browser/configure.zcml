@@ -46,7 +46,8 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/donate_listings.pt"
-    />           
+    /> 
+             
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donor_listings"
@@ -55,6 +56,14 @@
       layer=".interfaces.IThemeSpecific"       
       template="templates/donor_listings.pt"
     />
+    <browser:page
+      for="xtcs.policy.interfaces.IJuanzenggongshi"
+      name="specify_donor_listings"
+      class=".dbpage.SpecifyDonorView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/specify_donor_listings.pt"
+    />    
     <browser:page
       for="xtcs.policy.interfaces.IJuanzengworkflow"
       name="donated_workflow"

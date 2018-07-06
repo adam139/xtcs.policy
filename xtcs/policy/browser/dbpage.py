@@ -33,14 +33,14 @@ from xtcs.policy import InputDb
 grok.templatedir('templates')
 
 class DonortableView(BrowserView):
-    "捐赠金榜"
+    "捐赠金榜,显示日常捐赠"
       
     @memoize
     def getMemberList(self,start=0,size=0):
         """获取捐赠结果列表"""
         
         locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=0,multi=0,id=18,sortchildid=3)
+        articles = locator.query(start=0,size=0,multi=0,id=22,sortchildid=3)
         if articles == None:
             return             
         return self.outputList(articles)
@@ -71,7 +71,7 @@ class DonortableView(BrowserView):
             outhtml = "%s%s" %(outhtml ,out)
         return outhtml
 
-# donate table
+# all donate table
 class DonateView(BrowserView):
     """
     DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
@@ -123,6 +123,26 @@ class DonorView(DonateView):
         locator = getUtility(IDonorLocator)
         recorders = locator.query(start=query['start'],\
                                   size=query['size'],multi = query['multi'],id =query['id'] )
+        return recorders
+
+class SpecifyDonorView(DonorView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
+    
+    parameters:
+        query:{'start':0,'size':10}
+        id:22
+    view name:db_ajax_juanzeng
+    """
+
+    def search_multicondition(self,query):
+        "query is dic,like :{'start':0,'size':10,'':}"
+
+        locator = getUtility(IDonorLocator)
+        recorders = locator.query(start=query['start'],\
+                                  size=query['size'],multi = query['multi'],id=22 )
         return recorders
 
 
@@ -394,6 +414,17 @@ class Donorajaxsearch(ajaxsearch):
                 k = k + 1                
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
         return data
+
+class SpecifyDonorajaxsearch(Donorajaxsearch):
+    """AJAX action for search DB donor table.
+    receive front end ajax transform parameters
+    """
+
+    grok.name('specify_donor_ajaxsearch')
+
+    def searchview(self,viewname="specify_donor_listings"):
+        searchview = getMultiAdapter((self.context, self.request),name=viewname)
+        return searchview
 
 # Delete Update Input block
 class DeleteDonate(form.Form):

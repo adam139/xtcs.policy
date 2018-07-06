@@ -118,7 +118,7 @@
   				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
     				<li role="presentation" class="active">
     					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
-    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@donate_listings'">捐赠金榜</a>
+    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@specify_donor_listings'">捐赠金榜</a>
     				</li>
   				</ul>
   					<!-- Tab panes start-->

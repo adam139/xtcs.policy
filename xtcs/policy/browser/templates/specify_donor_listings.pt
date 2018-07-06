@@ -17,7 +17,7 @@
 		<!--
 		<metal:block   use-macro="context/@@db-macros/macros/navbar"/> -->
 		<div id="ajaxsearch" style="display: none" 
-			tal:attributes="data-ajax-target python:context.absolute_url() + '/@@donate_ajaxsearch'"></div>
+			tal:attributes="data-ajax-target python:context.absolute_url() + '/@@specify_donor_ajaxsearch'"></div>
 		<div class="container-fluid">
 			<div class="row ajaxsearch hidden">
 				<div class="form-group col-xs-9 col-sm-6 col-sm-offset-3">
@@ -35,13 +35,13 @@
 				</div>
 			</div>
 			<div class="row">
-                <h1 class="documentFirstHeading">所有捐赠项目公示</h1>				
+                <h1 class="documentFirstHeading">日常捐赠公示</h1>				
 			</div>			
 			<input type="hidden" value="0" id="dateSearch">
 			<input type="hidden" value="0" id="idSearch">
 			<input type="hidden" value="1" id="multiFlag">	
 			<!-- search fashej table ,so index name define as "sbdm" -->
-			<input type="hidden" value="sbdm" id="solrSortColumn">
+			<input type="hidden" value="id" id="solrSortColumn">
 			<input type="hidden" value="desc" id="solrSortDirection">
 
             <!--搜索选择结果排序-->
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-4">
                 	<a class="btn btn-primary" 
-                		tal:attributes="href python:context.absolute_url() + '/@@input_donate'" alt="添加公示">添加公示</a>
+                		tal:attributes="href python:context.absolute_url() + '/@@input_donor'" alt="添加捐赠记录">添加捐赠记录</a>
                 </div>
                 <!--快速翻页-->
                 <div class="col-xs-12 col-sm-4">
@@ -75,28 +75,28 @@
                </div>
             </div>
             <table class="row table table-striped table-bordered table-condensed listing"
-            	   tal:define="iseditable python:view.isAddable">
-            	<thead   tal:condition="iseditable">
+            	tal:define="iseditable python:view.isAddable">
+            	<thead tal:condition="iseditable">
             		<tr data-toggle="tooltip" title="点击排序">
-            			<th class="col-md-1 text-left">项目代码</th>             			
-            			<th class="col-md-7 text-center">公示项目</th>
-            			<th class="col-md-2 text-left">注册时间</th>          			            			            			
+            			<th class="col-md-8 text-center">捐赠单位或个人</th>
+            			<th class="col-md-1 text-left">现金(物资)</th>
+            			<th class="col-md-1 text-left">捐赠时间</th>           			            			            			
             			<th class="col-md-1 text-center">编辑</th>
             			<th class="col-md-1 text-center">删除</th>
             		</tr>
             	</thead>
-            	<thead   tal:condition="not:iseditable">
+            	<thead tal:condition="not:iseditable">
             		<tr data-toggle="tooltip" title="点击排序">
-            			<th class="col-md-1 text-left">项目代码</th>             			
-            			<th class="col-md-9 text-center">公示项目</th>
-            			<th class="col-md-2 text-left">注册时间</th>         			            			            			
+            			<th class="col-md-10 text-center">捐赠单位或个人</th>
+            			<th class="col-md-1 text-left">现金(物资)</th>
+            			<th class="col-md-1 text-left">捐赠时间</th>         			            			            			
             		</tr>
             	</thead>            	
             	<tbody id="searchResultDiv">
             		<tr>
-            			<td class="col-md-1 text-center">项目代码</td>
-            			<td class="col-md-7 text-left">公示项目</td>
-            			<td class="col-md-2 text-left">注册时间</td>         			            			            			
+            			<td class="col-md-8 text-center">设备代码</td>
+            			<td class="col-md-1 text-left">发射机名称</td>
+            			<td class="col-md-1 text-left">状态批次代码</td>         			            			            			
             			<td class="col-md-1 text-center">编辑</td>
             			<td class="col-md-1 text-center">删除</td>
             		</tr>
@@ -106,7 +106,7 @@
             <!--搜索结果列表 End-->
             <!--分页-->
            <nav class="row text-center">          	
-            <ul id="bottomPageId" class="pager col-xs-12">
+            <ul id="bottomPageId" class="col-xs-12 pager">
             	<li><a class="page" href="javascript:void(0)">首页</a></li>
             	<li><a class="page" href="javascript:void(0)">上一页</a></li>
             	<li><a class="page_over num" href="#">1</a></li>

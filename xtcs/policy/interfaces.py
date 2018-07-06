@@ -13,7 +13,10 @@ class InputError(Exception):
 class IAixinjuankuan (Interface):
     """某一捐赠项目具体捐赠记录"""
 class IJuanzenggongshi (Interface):
+    """展示日常无固定指向项目的捐赠公示"""
+class IYangguangwu (Interface):
     """展示已有捐赠的项目"""
+    
 class IJuanzengworkflow (Interface):
         """在线捐赠处理流程"""
 

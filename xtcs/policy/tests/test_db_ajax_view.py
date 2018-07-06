@@ -7,7 +7,8 @@ from plone.testing.z2 import Browser
 import unittest
 from zope.dottedname.resolve import resolve
 from Products.Five.utilities.marker import mark
-from xtcs.policy.interfaces import IJuanzenggongshi as ifobj
+from xtcs.policy.interfaces import IJuanzenggongshi as specifyifobj
+from xtcs.policy.interfaces import IYangguangwu as ifobj
 
 
 class TestView(unittest.TestCase):
@@ -27,8 +28,14 @@ class TestView(unittest.TestCase):
                              title = u"捐赠公示",
                              description=u"捐赠公示")     
                                                                                                     
-        self.target = portal['aixingongshi']['juanzenggongshi']
-        mark(self.target,ifobj)
+        self.specifytarget = portal['aixingongshi']['juanzenggongshi']
+        mark(self.specifytarget,specifyifobj)
+        portal['aixingongshi'].invokeFactory('Folder', 'yangguangwu',
+                             title = u"阳光屋",
+                             description=u"阳光屋")     
+                                                                                                    
+        self.target = portal['aixingongshi']['yangguangwu']
+        mark(self.target,ifobj)        
         self.portal = portal
     
     def test_aixingongshi_view(self):
@@ -72,4 +79,25 @@ class TestView(unittest.TestCase):
         outstr = 'id="ajaxsearch"'
        
         self.assertTrue(outstr in browser.contents)        
-   
+ 
+    def test_juanxian_view(self):
+        """日常捐赠记录
+        """
+
+        app = self.layer['app']
+        portal = self.portal
+        target = self.specifytarget
+       
+        browser = Browser(app)
+        browser.handleErrors = False
+        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))
+        
+        import transaction
+        transaction.commit()
+        obj = target.absolute_url() + '/@@specify_donor_listings'        
+
+        browser.open(obj)
+ 
+        outstr = 'id="ajaxsearch"'
+       
+        self.assertTrue(outstr in browser.contents)    
