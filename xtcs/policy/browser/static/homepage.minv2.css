@@ -11,6 +11,7 @@
 #oRollV,#sRollV{margin:0;overflow:hidden;height:180px}
 .rolltables .table{margin:0}
 td{text-align:center;background-color:#fff}
+#oRollV td {line-height:2}
 .table .nopadding{padding:0}
 .theader td{background-color:#ededed;height:25px;font-weight:700}
 .rolltables .item{width:25%}
