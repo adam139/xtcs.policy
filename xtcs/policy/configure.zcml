@@ -18,7 +18,10 @@
     <grok:grok package="." /> 
   <!-- -*- cusomize indexer -*- -->
 
-
+  <utility
+      name="xtcs.policy.vocabulary.donateId"
+      component="xtcs.policy.vocabulary.donateId" />
+    
   <genericsetup:registerProfile
       name="default"
       title="xtcs.policy"

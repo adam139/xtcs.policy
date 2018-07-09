@@ -171,10 +171,14 @@ class IDonor(Interface):
     doid = schema.Int(
             title=_(u"table primary key"),
         )
-    did = schema.Int(
+#     did = schema.Int(
+#             title=_(u"juanzeng xiangmu id"),
+#         )            
+    did = schema.Choice(
             title=_(u"juanzeng xiangmu id"),
-        )            
-
+            vocabulary='xtcs.policy.vocabulary.donateId',
+            required=True,
+        )
     aname = schema.TextLine(
             title=_(u"juanzeng zhe"),
         )
