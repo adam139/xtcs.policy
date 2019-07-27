@@ -1,9 +1,10 @@
 
-from plone.app.portlets.portlets.navigation import QueryBuilder
-from plone.app.portlets.portlets.navigation import INavigationPortlet
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
+from plone.app.portlets.portlets.navigation import INavigationPortlet
+from plone.app.portlets.portlets.navigation import QueryBuilder
 from zope.component import adapts
-from zope.interface import implements, Interface
+from zope.interface import implements
+from zope.interface import Interface
 
 
 class INonDefaultPageFilteringNavigationPortlet(INavigationPortlet):

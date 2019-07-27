@@ -1,31 +1,32 @@
-#-*- coding: UTF-8 -*-
-from five import grok
+# -*- coding: UTF-8 -*-
 from datetime import datetime
+from five import grok
+# sqlarchemy
+from sqlalchemy import func
+from sqlalchemy import text
+from xtcs.policy import _
+from xtcs.policy import maintan_session
+from xtcs.policy import Scope_session
+from xtcs.policy.interfaces import IDonateLocator
+from xtcs.policy.mapping_db import Donate
+from xtcs.policy.mapping_db import IDonate
 from zope import schema
 from zope.interface import implements
-#sqlarchemy
-from sqlalchemy import text
-from sqlalchemy import func
 
-from xtcs.policy import Scope_session,maintan_session
-from xtcs.policy.mapping_db import Donate,IDonate
-from xtcs.policy.interfaces import IDonateLocator
-
-from xtcs.policy import  _
 
 class DonateLocator(grok.GlobalUtility):
     implements(IDonateLocator)
 
-    def add(self,kwargs):
+    def add(self, kwargs):
         """parameters db Donate table"""
         session = Scope_session()
         recorder = Donate()
         for kw in kwargs.keys():
-            setattr(recorder,kw,kwargs[kw])
+            setattr(recorder, kw, kwargs[kw])
         session.add(recorder)
         maintan_session(session)
 
-    def query(self,**kwargs):
+    def query(self, **kwargs):
         """以分页方式提取donate 记录，参数：start 游标起始位置；size:每次返回的记录条数;
         fields:field list
         if size = 0,then不分页，返回所有记录集
@@ -42,20 +43,20 @@ class DonateLocator(grok.GlobalUtility):
                 return int(nums)
             else:
                 recorders = session.query(Donate).\
-            order_by(Donate.did.desc()).slice(start,size).all()
-                
-        else:            
-            if size !=0:                     
+                    order_by(Donate.did.desc()).slice(start, size).all()
+
+        else:
+            if size != 0:
                 recorders = session.query(Donate).\
-            order_by(Donate.did.desc()).slice(0,size).all()
+                    order_by(Donate.did.desc()).slice(0, size).all()
             else:
                 recorders = session.query(Donate).\
-            order_by(Donate.did.desc()).all()
-            
+                    order_by(Donate.did.desc()).all()
+
         maintan_session(session)
         return recorders
 
-    def DeleteByCode(self,id):
+    def DeleteByCode(self, id):
         "delete the specify id donate recorder"
 
         session = Scope_session()
@@ -69,7 +70,7 @@ class DonateLocator(grok.GlobalUtility):
         else:
             return None
 
-    def updateByCode(self,kwargs):
+    def updateByCode(self, kwargs):
         "update the speicy id donate recorder"
 
         """
@@ -87,12 +88,12 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
                 params(did=id).one()
             updatedattrs = [kw for kw in kwargs.keys() if kw != 'did']
             for kw in updatedattrs:
-                setattr(recorder,kw,kwargs[kw])
+                setattr(recorder, kw, kwargs[kw])
             maintan_session(session)
         else:
             return None
 
-    def getByCode(self,id):
+    def getByCode(self, id):
         session = Scope_session()
         if id != "":
             recorder = session.query(Donate).\

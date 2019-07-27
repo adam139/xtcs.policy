@@ -1,19 +1,17 @@
 # Five imports
-from Products.Five.browser import BrowserView
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from plone.memoize.instance import memoize
-
-from zope.component import getMultiAdapter
 from Acquisition import aq_inner
-from Products.CMFPlone.browser.interfaces import INavigationTree
+from DateTime import DateTime
 from five import grok
-from zope.component import getMultiAdapter
-from Products.CMFCore.utils import getToolByName
-
-from Products.CMFPlone.browser.navtree import NavtreeQueryBuilder
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
-from DateTime import DateTime
+from plone.memoize.instance import memoize
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.browser.interfaces import INavigationTree
+from Products.CMFPlone.browser.navtree import NavtreeQueryBuilder
+from Products.Five.browser import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from zope.component import getMultiAdapter
+
 
 class NavTree(object):
     grok.implements(INavigationTree)
@@ -33,7 +31,9 @@ class NavTree(object):
 
         strategy = getMultiAdapter((context, self), INavtreeStrategy)
 
-        return buildFolderTree(context, obj=context, query=query, strategy=strategy)
+        return buildFolderTree(context, obj=context,
+                               query=query, strategy=strategy)
+
 
 class Macros(BrowserView):
 
@@ -47,12 +47,11 @@ class Macros(BrowserView):
         context = aq_inner(self.context)
         navtree_view = NavTree(context, self.request)
         return [{
-            'id':t['id'],
+            'id': t['id'],
             'name':t['Title'],
             'url':t['getURL'],
             'description':t['Description']
         } for t in navtree_view.navigationTree()['children']]
-
 
     def text_to_html(self, text):
         text = text or ''
@@ -61,10 +60,10 @@ class Macros(BrowserView):
 
     def timedelta(self, start, end):
         if isinstance(start, DateTime):
-            start=start.asdatetime()
+            start = start.asdatetime()
         if isinstance(end, DateTime):
-            end=end.asdatetime()
-        return start-end
+            end = end.asdatetime()
+        return start - end
 
     def person_inline_css(self, person):
 
@@ -76,7 +75,8 @@ class Macros(BrowserView):
         """ % getattr(person, 'color', 'cccccc')[:6]
 
         return result
-    
+
+
 class DbMacros(BrowserView):
 
     template = ViewPageTemplateFile('templates/db_macros.pt')
@@ -89,12 +89,11 @@ class DbMacros(BrowserView):
         context = aq_inner(self.context)
         navtree_view = NavTree(context, self.request)
         return [{
-            'id':t['id'],
+            'id': t['id'],
             'name':t['Title'],
             'url':t['getURL'],
             'description':t['Description']
         } for t in navtree_view.navigationTree()['children']]
-
 
     def text_to_html(self, text):
         text = text or ''
@@ -103,7 +102,7 @@ class DbMacros(BrowserView):
 
     def timedelta(self, start, end):
         if isinstance(start, DateTime):
-            start=start.asdatetime()
+            start = start.asdatetime()
         if isinstance(end, DateTime):
-            end=end.asdatetime()
-        return start-end    
+            end = end.asdatetime()
+        return start - end

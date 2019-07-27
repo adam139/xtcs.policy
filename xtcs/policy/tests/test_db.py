@@ -1,24 +1,27 @@
-#-*- coding: UTF-8 -*-
-import datetime
-import unittest
-from zope.interface import alsoProvides
-from plone.app.testing import TEST_USER_ID
+# -*- coding: UTF-8 -*-
 from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.app.z3cform.interfaces import IPloneFormLayer
-from xtcs.policy.testing import POLICY_INTEGRATION_TESTING as INTEGRATION_TESTING
-from xtcs.policy.setuphandlers import STRUCTURE,_create_content
-from xtcs.policy.migration import _create_article
-#sqlarchemy
-from sqlalchemy import text
-from sqlalchemy import func
-from zope.dottedname.resolve import resolve
 from Products.Five.utilities.marker import mark
+# sqlarchemy
+from sqlalchemy import func
+from sqlalchemy import text
+from xtcs.policy.migration import _create_article
+from xtcs.policy.setuphandlers import _create_content
+from xtcs.policy.setuphandlers import STRUCTURE
+from xtcs.policy.testing import POLICY_INTEGRATION_TESTING as INTEGRATION_TESTING
+from zope.dottedname.resolve import resolve
+from zope.interface import alsoProvides
+
+import datetime
+import unittest
 
 
 class TestParametersDatabase(unittest.TestCase):
 
     layer = INTEGRATION_TESTING
+
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
@@ -32,7 +35,7 @@ class TestParametersDatabase(unittest.TestCase):
 #         from xtcs.policy.interfaces import IArticleLocator
 #         from zope.component import getUtility
 #         from xtcs.policy import Session as session
-# 
+#
 #         locator = getUtility(IArticleLocator)
 #         #getModel
 #         id = 200
@@ -40,51 +43,62 @@ class TestParametersDatabase(unittest.TestCase):
 #         pubtime = datetime.datetime(2011, 1, 1, 12, 0, 0)
 #         content = u"<p>test article</p>"
 #         sortparentid = 2018
-#         sortchildid = 1        
+#         sortchildid = 1
 #         article = locator.getByCode(id)
 #         #addModel
-# 
+#
 #         if article == None:
 #             locator.add(id=id,title=title,pubtime=pubtime,content= content)
 #         else:
 #             # remove old  delete
 #             locator.DeleteByCode(id)
 #             locator.add(id=id,title=title,pubtime=pubtime,content= content)
-# 
+#
 #         article = locator.getByCode(id)
 #         self.assertEqual(article.id,id)
 #         # query pagenation 分页查询
 #         articles = locator.query(start=0,size=1,id=id)
-# 
+#
 #         self.assertEqual(len(articles),1)
 
     def test_article_query(self):
-        from xtcs.policy.mapping_db import  Article
+        from xtcs.policy.mapping_db import Article
         from xtcs.policy.interfaces import IArticleLocator
         from zope.component import getUtility
         from xtcs.policy import Session as session
 
-        locator = getUtility(IArticleLocator)        
-        articles = locator.query(start=0,size=10,multi=1,sortparentid=1003,sortchildid=3)
+        locator = getUtility(IArticleLocator)
+        articles = locator.query(
+            start=0,
+            size=10,
+            multi=1,
+            sortparentid=1003,
+            sortchildid=3)
         if articles == None:
             return
         import pdb
         pdb.set_trace()
-        self.assertEqual(len(articles),10)
+        self.assertEqual(len(articles), 10)
 
     def test_import_article(self):
-        from xtcs.policy.mapping_db import  Article
+        from xtcs.policy.mapping_db import Article
         from xtcs.policy.interfaces import IArticleLocator
         from zope.component import getUtility
 
         locator = getUtility(IArticleLocator)
-        articles = locator.query(start=0,size=3,multi=1,sortparentid=1003,sortchildid=3)
-        if articles == None:return
+        articles = locator.query(
+            start=0,
+            size=3,
+            multi=1,
+            sortparentid=1003,
+            sortchildid=3)
+        if articles == None:
+            return
 
-        for article in articles:                                  
-            docid = str(article.id)      
-            container=self.portal['cishanzixun']['cishandongtai']
-            _create_article(article,container)
+        for article in articles:
+            docid = str(article.id)
+            container = self.portal['cishanzixun']['cishandongtai']
+            _create_article(article, container)
             document = self.portal['cishanzixun']['cishandongtai'][docid]
 
             self.request.set('URL', document.absolute_url())
@@ -103,71 +117,86 @@ class TestParametersDatabase(unittest.TestCase):
         from xtcs.policy.interfaces import IArticleLocator
         from zope.component import getUtility
         locator = getUtility(IArticleLocator)
-        articles = locator.query(start=0,size=1,multi=1,sortparentid=1003,sortchildid=3)
-        if articles == None:return
+        articles = locator.query(
+            start=0,
+            size=1,
+            multi=1,
+            sortparentid=1003,
+            sortchildid=3)
+        if articles == None:
+            return
         container = self.portal['cishanzixun']['cishandongtai']
-        for article in articles:                                  
-            _create_article(article,container)
+        for article in articles:
+            _create_article(article, container)
             doc = container[str(article.id)]
             pubtime = datetime.datetime.utcfromtimestamp(article.pubtime)
-            self.assertTrue(doc.created().strftime("Y-%m-%d") == pubtime.strftime("Y-%m-%d"))
-            
+            self.assertTrue(doc.created().strftime("Y-%m-%d")
+                            == pubtime.strftime("Y-%m-%d"))
+
     def tearDown(self):
         if 'document' in self.portal.objectIds():
             self.portal.manage_delObjects(ids='document')
             transaction.commit()
 
     def test_project_query(self):
-        from xtcs.policy.mapping_db import  Project
+        from xtcs.policy.mapping_db import Project
         from xtcs.policy.interfaces import IProjectLocator
         from zope.component import getUtility
         from xtcs.policy import Session as session
 
-        locator = getUtility(IProjectLocator)        
-        articles = locator.query(start=0,size=100,multi=1,sortparentid=1003,id=3)
+        locator = getUtility(IProjectLocator)
+        articles = locator.query(
+            start=0,
+            size=100,
+            multi=1,
+            sortparentid=1003,
+            id=3)
         if articles == None:
             return
-        self.assertEqual(len(articles),3)
+        self.assertEqual(len(articles), 3)
 
     def test_Donor_query(self):
-        from xtcs.policy.mapping_db import  Donor
+        from xtcs.policy.mapping_db import Donor
         from xtcs.policy.interfaces import IDonorLocator
         from zope.component import getUtility
 
-
-        locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=180,multi=1,did=7,id=18)
+        locator = getUtility(IDonorLocator)
+        articles = locator.query(start=0, size=180, multi=1, did=7, id=18)
         import pdb
         pdb.set_trace()
         if articles == None:
             return
-        self.assertEqual(len(articles),100)
+        self.assertEqual(len(articles), 100)
 
     def test_donate_query(self):
 
         from xtcs.policy.interfaces import IDonateLocator
         from zope.component import getUtility
 
-
         locator = getUtility(IDonateLocator)
-        
-        articles = locator.query(start=0,size=100,multi=1,did=18,sortchildid=3)
+
+        articles = locator.query(
+            start=0,
+            size=100,
+            multi=1,
+            did=18,
+            sortchildid=3)
         if articles == None:
             return
-        self.assertEqual(len(articles),4)
+        self.assertEqual(len(articles), 4)
 
     def test_volunteerteam_query(self):
-        from xtcs.policy.mapping_db import  Volunteerteam
+        from xtcs.policy.mapping_db import Volunteerteam
         from xtcs.policy.interfaces import IVolunteerteamLocator
         from zope.component import getUtility
         from xtcs.policy import Session as session
 
         locator = getUtility(IVolunteerteamLocator)
-        
-        articles = locator.query(start=0,size=100,multi=1,did=18,id=2)
+
+        articles = locator.query(start=0, size=100, multi=1, did=18, id=2)
         if articles == None:
             return
-        self.assertEqual(len(articles),2)
+        self.assertEqual(len(articles), 2)
 
 
 #     def test_screening_locator_cinema_lookup(self):

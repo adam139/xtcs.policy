@@ -1,14 +1,17 @@
-#-*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-
 # import xtcs.policy.types
-import sqlalchemy.schema
-from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.dialects import mysql
 from five import grok
-from zope import schema
-from zope.interface import Interface,implements
-from xtcs.policy import ORMBase
+from sqlalchemy import ForeignKey
+from sqlalchemy.dialects import mysql
+from sqlalchemy.orm import backref
+from sqlalchemy.orm import relationship
 from xtcs.policy import _
+from xtcs.policy import ORMBase
+from zope import schema
+from zope.interface import implements
+from zope.interface import Interface
+
+import sqlalchemy.schema
 
 
 class IArticle(Interface):
@@ -16,23 +19,23 @@ class IArticle(Interface):
     select pubtime,title,content from article where id = 199
     """
     id = schema.Int(
-            title=_(u"table primary key"),
-        )
+        title=_(u"table primary key"),
+    )
     sortparentid = schema.Int(
-            title=_(u"main folder id"),
-        )
+        title=_(u"main folder id"),
+    )
     sortchildid = schema.Int(
-            title=_(u"sub folder id"),
-        )        
+        title=_(u"sub folder id"),
+    )
     pubtime = schema.Date(
-            title=_(u"fabu ri qi")
-        )
+        title=_(u"fabu ri qi")
+    )
     title = schema.TextLine(
-            title=_(u"wenzhang biaoti"),
-        )    
+        title=_(u"wenzhang biaoti"),
+    )
     content = schema.TextLine(
-            title=_(u"wenzhang neirong"),
-        )
+        title=_(u"wenzhang neirong"),
+    )
 
 
 class Article(ORMBase):
@@ -43,24 +46,25 @@ class Article(ORMBase):
     __tablename__ = 'article'
 
     id = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            primary_key=True,
-            autoincrement=True,
-        )
+                                  primary_key=True,
+                                  autoincrement=True,
+                                  )
     sortparentid = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            nullable=False,
-        )
+                                            nullable=False,
+                                            )
     sortchildid = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            nullable=False,
-        )    
+                                           nullable=False,
+                                           )
     pubtime = sqlalchemy.schema.Column(sqlalchemy.types.Date(),
-            nullable=False,
-        )
+                                       nullable=False,
+                                       )
     title = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )    
+                                     nullable=False,
+                                     )
     content = sqlalchemy.schema.Column(mysql.LONGTEXT,
-            nullable=False,
-        )
+                                       nullable=False,
+                                       )
+
 
 class IProject(Interface):
     """project
@@ -68,17 +72,17 @@ class IProject(Interface):
     select pubtime,title,content from article where id = 199
     """
     id = schema.Int(
-            title=_(u"table primary key"),
-        )       
+        title=_(u"table primary key"),
+    )
     registertime = schema.Date(
-            title=_(u"dengji ri qi")
-        )
+        title=_(u"dengji ri qi")
+    )
     projectName = schema.TextLine(
-            title=_(u"xiangmu mingcheng"),
-        )    
+        title=_(u"xiangmu mingcheng"),
+    )
     description = schema.Text(
-            title=_(u"xiangmu miaoshu"),
-        )
+        title=_(u"xiangmu miaoshu"),
+    )
 
 
 class Project(ORMBase):
@@ -89,19 +93,20 @@ class Project(ORMBase):
     __tablename__ = 'project'
 
     id = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            primary_key=True,
-            autoincrement=True,
-        )
-    
+                                  primary_key=True,
+                                  autoincrement=True,
+                                  )
+
     registertime = sqlalchemy.schema.Column(sqlalchemy.types.Date(),
-            nullable=False,
-        )
+                                            nullable=False,
+                                            )
     projectName = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )    
+                                           nullable=False,
+                                           )
     description = sqlalchemy.schema.Column(mysql.LONGTEXT,
-            nullable=False,
-        )
+                                           nullable=False,
+                                           )
+
 
 class IVolunteerteam(Interface):
     """project
@@ -120,17 +125,17 @@ class IVolunteerteam(Interface):
 
     """
     id = schema.Int(
-            title=_(u"table primary key"),
-        )       
+        title=_(u"table primary key"),
+    )
     registertime = schema.Date(
-            title=_(u"dengji ri qi")
-        )
+        title=_(u"dengji ri qi")
+    )
     teamName = schema.TextLine(
-            title=_(u"yigong tuandui mingcheng"),
-        )    
+        title=_(u"yigong tuandui mingcheng"),
+    )
     description = schema.Text(
-            title=_(u"yigong tuandui jieshao"),
-        )
+        title=_(u"yigong tuandui jieshao"),
+    )
 
 
 class Volunteerteam(ORMBase):
@@ -141,20 +146,21 @@ class Volunteerteam(ORMBase):
     __tablename__ = 'volunteerteam'
 
     id = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            primary_key=True,
-            autoincrement=True,
-        )
-    
+                                  primary_key=True,
+                                  autoincrement=True,
+                                  )
+
     registertime = sqlalchemy.schema.Column(sqlalchemy.types.Date(),
-            nullable=False,
-        )
+                                            nullable=False,
+                                            )
     teamName = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )    
+                                        nullable=False,
+                                        )
     description = sqlalchemy.schema.Column(mysql.LONGTEXT,
-            nullable=False,
-        )
-    
+                                           nullable=False,
+                                           )
+
+
 class IDonor(Interface):
     """donor 记录在某一慈善项目（did决定）下，所有捐赠记录
 +-------+-------------+------+-----+---------+----------------+
@@ -169,29 +175,31 @@ class IDonor(Interface):
 
     """
     doid = schema.Int(
-            title=_(u"table primary key"),
-        )
+        title=_(u"table primary key"),
+    )
 #     did = schema.Int(
 #             title=_(u"juanzeng xiangmu id"),
-#         )            
+#         )
     did = schema.Choice(
-            title=_(u"juanzeng xiangmu id"),
-            vocabulary='xtcs.policy.vocabulary.donateId',
-            required=True,
-        )
+        title=_(u"juanzeng xiangmu id"),
+        vocabulary='xtcs.policy.vocabulary.donateId',
+        required=True,
+    )
     aname = schema.TextLine(
-            title=_(u"juanzeng zhe"),
-        )
+        title=_(u"juanzeng zhe"),
+    )
     money = schema.TextLine(
-            title=_(u"xianjin jin e"),
-        )
+        title=_(u"xianjin jin e"),
+    )
     goods = schema.TextLine(
-            title=_(u"juanzeng wuping"),
-            required=False
-        )            
+        title=_(u"juanzeng wuping"),
+        required=False
+    )
     atime = schema.Datetime(
-            title=_(u"juanzeng shi jian")
-        )
+        title=_(u"juanzeng shi jian")
+    )
+
+
 class Donor(ORMBase):
     """Database-backed implementation of project
     """
@@ -199,26 +207,28 @@ class Donor(ORMBase):
     __tablename__ = 'donor'
 
     doid = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            primary_key=True,
-            autoincrement=True,
-        )
+                                    primary_key=True,
+                                    autoincrement=True,
+                                    )
     did = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            nullable=False,
-        )    
+                                   nullable=False,
+                                   )
 
     aname = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )    
+                                     nullable=False,
+                                     )
     money = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )
+                                     nullable=False,
+                                     )
     goods = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )
+                                     nullable=False,
+                                     )
     atime = sqlalchemy.schema.Column(sqlalchemy.types.DateTime(),
-            nullable=True,
-        )           
-#所有有捐赠记录的项目,捐赠公示
+                                     nullable=True,
+                                     )
+# 所有有捐赠记录的项目,捐赠公示
+
+
 class IDonate(Interface):
     """
     mysql> describe donate;
@@ -232,24 +242,24 @@ class IDonate(Interface):
 | start_time | int(10)      | NO   |     | NULL    |                |
 +------------+--------------+------+-----+---------+----------------+
 5 rows in set (0.00 sec)
-    
+
     """
     did = schema.Int(
-            title=_(u"table primary key"),
-        ) 
+        title=_(u"table primary key"),
+    )
     start_time = schema.Datetime(
-            title=_(u"kaishi shijian"),
-        )           
+        title=_(u"kaishi shijian"),
+    )
     visible = schema.Int(
-            title=_(u"shifou keshi?"),
-            default=0
-        )
+        title=_(u"shifou keshi?"),
+        default=0
+    )
     aname = schema.TextLine(
-            title=_(u"cishan juanzeng xiangmu mingcheng"),
-        )    
+        title=_(u"cishan juanzeng xiangmu mingcheng"),
+    )
     amemo = schema.Text(
-            title=_(u"cishan juanzeng xiangmu beizhu"),
-        )
+        title=_(u"cishan juanzeng xiangmu beizhu"),
+    )
 
 
 class Donate(ORMBase):
@@ -259,18 +269,18 @@ class Donate(ORMBase):
     __tablename__ = 'donate'
 
     did = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            primary_key=True,
-            autoincrement=True,
-        )
+                                   primary_key=True,
+                                   autoincrement=True,
+                                   )
     start_time = sqlalchemy.schema.Column(sqlalchemy.types.Integer(),
-            nullable=False,
-        )
+                                          nullable=False,
+                                          )
     visible = sqlalchemy.schema.Column(sqlalchemy.types.SmallInteger(),
-            nullable=False,
-        )
+                                       nullable=False,
+                                       )
     aname = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
-            nullable=False,
-        )    
+                                     nullable=False,
+                                     )
     amemo = sqlalchemy.schema.Column(sqlalchemy.types.String(64),
-            nullable=True,
-        )
+                                     nullable=True,
+                                     )

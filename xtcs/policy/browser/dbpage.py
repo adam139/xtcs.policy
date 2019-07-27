@@ -1,77 +1,87 @@
-#-*- coding: UTF-8 -*-
-from zope.interface import Interface
-from zope.component import getMultiAdapter
-from five import grok
-import json
-import datetime
+# -*- coding: UTF-8 -*-
 from Acquisition import aq_inner
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore import permissions
+from five import grok
 from plone.app.contenttypes.permissions import AddDocument
-from Products.CMFCore.interfaces import ISiteRoot
-from plone.memoize.instance import memoize
-from xtcs.policy import _
-from Products.Five.browser import BrowserView
-# from collective.gtags.source import TagsSourceBinder
-from zope.component import getUtility
 # input data view
 from plone.directives import form
-from z3c.form import field, button
+from plone.memoize.instance import memoize
+from Products.CMFCore import permissions
+from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.resources import add_bundle_on_request
+from Products.Five.browser import BrowserView
 from Products.statusmessages.interfaces import IStatusMessage
-from xtcs.policy.interfaces import InputError
-from xtcs.policy.interfaces import IDonateLocator,IDonorLocator
-from xtcs.policy.mapping_db import IDonate,Donate,IDonor,Donor
-
+from xtcs.policy import _
+from xtcs.policy import InputDb
+from xtcs.policy.interfaces import IDonateLocator
+from xtcs.policy.interfaces import IDonorLocator
 from xtcs.policy.interfaces import IJuanzenggongshi
+from xtcs.policy.interfaces import InputError
+from xtcs.policy.mapping_db import Donate
+from xtcs.policy.mapping_db import Donor
+from xtcs.policy.mapping_db import IDonate
+from xtcs.policy.mapping_db import IDonor
+from z3c.form import button
+from z3c.form import field
+from zExceptions import NotFound
+# from collective.gtags.source import TagsSourceBinder
+from zope.component import getMultiAdapter
+from zope.component import getUtility
 # update data view
 from zope.interface import implements
+from zope.interface import Interface
 from zope.publisher.interfaces import IPublishTraverse
-from Products.CMFPlone.resources import add_bundle_on_request
-from zExceptions import NotFound
-from xtcs.policy import InputDb
+
+import datetime
+import json
+
 
 grok.templatedir('templates')
 
+
 class DonortableView(BrowserView):
     "捐赠金榜,显示日常捐赠"
-      
+
     @memoize
-    def getMemberList(self,start=0,size=0):
+    def getMemberList(self, start=0, size=0):
         """获取捐赠结果列表"""
-        
-        locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=0,multi=0,id=21,sortchildid=3)
+
+        locator = getUtility(IDonorLocator)
+        articles = locator.query(
+            start=0, size=0, multi=0, id=21, sortchildid=3)
         if articles == None:
-            return             
+            return
         return self.outputList(articles)
 
-    def outputList(self,braindata): 
+    def outputList(self, braindata):
         outhtml = ""
-       
+
         for i in braindata:
             astr = i.atime.strftime('%Y-%m-%d')
             if astr != '2000-01-01':
                 atime = astr
             else:
-                atime= u""                        
+                atime = u""
             if bool(i.goods):
                 if bool(i.money):
-                    money = "%s(%s)" % (i.money,i.goods)
+                    money = "%s(%s)" % (i.money, i.goods)
                 else:
                     money = "(%s)" % (i.goods)
             else:
-                money = i.money            
+                money = i.money
             out = """<tr>
             <td class="title">%(title)s</td>
             <td class="item">%(money)s</td>
             <td class="atime">%(atime)s</td></tr>""" % dict(
-                                            title=i.aname,
-                                            money= money,
-                                            atime=atime)           
-            outhtml = "%s%s" %(outhtml ,out)
+                title=i.aname,
+                money=money,
+                atime=atime)
+            outhtml = "%s%s" % (outhtml, out)
         return outhtml
 
 # all donate table
+
+
 class DonateView(BrowserView):
     """
     DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
@@ -81,13 +91,14 @@ class DonateView(BrowserView):
     """
     @property
     def isEditable(self):
-      
-        return self.pm().checkPermission(permissions.ManagePortal,self.context)
-    
+
+        return self.pm().checkPermission(permissions.ManagePortal, self.context)
+
     @property
     def isAddable(self):
 
-        return self.pm().checkPermission(permissions.AddPortalContent,self.context)  
+        return self.pm().checkPermission(permissions.AddPortalContent, self.context)
+
     @memoize
     def pm(self):
         context = aq_inner(self.context)
@@ -95,20 +106,24 @@ class DonateView(BrowserView):
         return pm
 
     def getPathQuery(self):
-
         """返回 db url
         """
         query = {}
         query['path'] = "/".join(self.context.getPhysicalPath())
         return query
 
-    def search_multicondition(self,query):
+    def search_multicondition(self, query):
         "query is dic,like :{'start':0,'size':10,'':}"
         locator = getUtility(IDonateLocator)
-        recorders = locator.query(start=query['start'],size=query['size'],multi = query['multi'])
+        recorders = locator.query(
+            start=query['start'],
+            size=query['size'],
+            multi=query['multi'])
         return recorders
 
 # donor table
+
+
 class DonorView(DonateView):
     """
     DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
@@ -117,32 +132,33 @@ class DonorView(DonateView):
     view name:db_ajax_juanzeng
     """
 
-    def search_multicondition(self,query):
+    def search_multicondition(self, query):
         "query is dic,like :{'start':0,'size':10,'':}"
 
         locator = getUtility(IDonorLocator)
-        recorders = locator.query(start=query['start'],\
-                                  size=query['size'],multi = query['multi'],id =query['id'] )
+        recorders = locator.query(start=query['start'],
+                                  size=query['size'], multi=query['multi'], id=query['id'])
         return recorders
+
 
 class SpecifyDonorView(DonorView):
     """
     DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
     从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
     该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
-    
+
     parameters:
         query:{'start':0,'size':10}
         id:21
     view name:db_ajax_juanzeng
     """
 
-    def search_multicondition(self,query):
+    def search_multicondition(self, query):
         "query is dic,like :{'start':0,'size':10,'':}"
 
         locator = getUtility(IDonorLocator)
-        recorders = locator.query(start=query['start'],\
-                                  size=query['size'],multi = query['multi'],id=21 )
+        recorders = locator.query(start=query['start'],
+                                  size=query['size'], multi=query['multi'], id=21)
         return recorders
 
 
@@ -151,19 +167,23 @@ class DonatedWorkflow(BrowserView):
     在线捐款流程。
     view name:donated_workflow
     """
-    def __init__(self,context, request):
-        # Each view instance receives context and request as construction parameters
+
+    def __init__(self, context, request):
+        # Each view instance receives context and request as construction
+        # parameters
         self.context = context
         self.request = request
         add_bundle_on_request(self.request, 'donate-legacy')
-    
+
     def get_projects(self):
         "提取系统所有公益项目"
-        
-        projects = ['','','','']
-        return projects 
+
+        projects = ['', '', '', '']
+        return projects
 
  # ajax multi-condition search relation db
+
+
 class ajaxsearch(grok.View):
     """AJAX action for search DB.
     receive front end ajax transform parameters
@@ -172,39 +192,40 @@ class ajaxsearch(grok.View):
     grok.name('donate_ajaxsearch')
     grok.require('zope2.View')
 #     grok.require('emc.project.view_projectsummary')
-    
-    def Datecondition(self,key):
+
+    def Datecondition(self, key):
         "构造日期搜索条件"
         end = datetime.datetime.today()
-#最近一周
+# 最近一周
         if key == 1:
             start = end - datetime.timedelta(7)
-#最近一月
+# 最近一月
         elif key == 2:
             start = end - datetime.timedelta(30)
-#最近一年
+# 最近一年
         elif key == 3:
             start = end - datetime.timedelta(365)
-#最近两年
+# 最近两年
         elif key == 4:
-            start = end - datetime.timedelta(365*2)
-#最近五年
+            start = end - datetime.timedelta(365 * 2)
+# 最近五年
         else:
-            start = end - datetime.timedelta(365*5)
+            start = end - datetime.timedelta(365 * 5)
 #            return    { "query": [start,],"range": "min" }
-        datecondition = { "query": [start, end],"range": "minmax" }
+        datecondition = {"query": [start, end], "range": "minmax"}
         return datecondition
 
-    def searchview(self,viewname="donate_listings"):
-        searchview = getMultiAdapter((self.context, self.request),name=viewname)
+    def searchview(self, viewname="donate_listings"):
+        searchview = getMultiAdapter(
+            (self.context, self.request), name=viewname)
         return searchview
 
     def render(self):
-#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
+        #        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
         searchview = self.searchview()
  # datadic receive front ajax post data
         datadic = self.request.form
-        start = int(datadic['start']) # batch search start position
+        start = int(datadic['start'])  # batch search start position
         size = int(datadic['size'])      # batch search size
         id = int(datadic['id'])
         multi = int(datadic['multi'])
@@ -216,12 +237,12 @@ class ajaxsearch(grok.View):
 #  #模糊搜索
 #         if keyword != "":
 #             origquery['SearchableText'] = '%'+keyword+'%'
-#origquery provide  batch search
+# origquery provide  batch search
         origquery['size'] = size
         origquery['start'] = start
         origquery['id'] = id
         origquery['multi'] = multi
-#totalquery  search all
+# totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
         totalquery['multi'] = 1
@@ -230,13 +251,13 @@ class ajaxsearch(grok.View):
         resultDicLists = searchview.search_multicondition(origquery)
         del origquery
         del totalquery
-#call output function
+# call output function
 # resultDicLists like this:[(u'C7', u'\u4ed6\u7684\u624b\u673a')]
-        data = self.output(start,size,totalnum, resultDicLists)      
+        data = self.output(start, size, totalnum, resultDicLists)
         self.request.response.setHeader('Content-Type', 'application/json')
         return json.dumps(data)
 
-    def output(self,start,size,totalnum,resultDicLists):
+    def output(self, start, size, totalnum, resultDicLists):
         """根据参数total,resultDicLists,返回json 输出,resultDicLists like this:
         [(u'C7', u'\u4ed6\u7684\u624b\u673a')]"""
         outhtml = ""
@@ -244,7 +265,7 @@ class ajaxsearch(grok.View):
         contexturl = self.context.absolute_url()
         if bool(self.searchview().isAddable):
             for i in resultDicLists:
-                regtime = datetime.datetime.utcfromtimestamp(i.start_time)            
+                regtime = datetime.datetime.utcfromtimestamp(i.start_time)
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-7 text-left">
@@ -263,34 +284,41 @@ class ajaxsearch(grok.View):
                                   </span>
                                 </a>
                                 </td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
-                                                name = "%s" % i.aname,                                                
-                                                id = "%s" % i.did,
-                                                num=str(k + 1),
-                                                regtime = regtime.strftime("%Y-%m-%d"),
-                                                title=i.aname,
-                                                edit_url="%s/@@update_donate/%s" % (contexturl,i.did),
-                                                delete_url="%s/@@delete_donate/%s" % (contexturl,i.did))
-                outhtml = "%s%s" %(outhtml ,out)
+                                </tr> """ % dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl, i.aname, i.did),
+                                                 name="%s" % i.aname,
+                                                 id="%s" % i.did,
+                                                 num=str(k + 1),
+                                                 regtime=regtime.strftime(
+                                                     "%Y-%m-%d"),
+                                                 title=i.aname,
+                                                 edit_url="%s/@@update_donate/%s" % (
+                                                     contexturl, i.did),
+                                                 delete_url="%s/@@delete_donate/%s" % (contexturl, i.did))
+                outhtml = "%s%s" % (outhtml, out)
                 k = k + 1
         else:
             for i in resultDicLists:
-                regtime = datetime.datetime.utcfromtimestamp(i.start_time)            
+                regtime = datetime.datetime.utcfromtimestamp(i.start_time)
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-9 text-left">
                                 <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
                                 </td>
                                 <td class="col-md-2">%(regtime)s</td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
-                                                name = "%s" % i.aname,                                                
-                                                id = "%s" % i.did,
-                                                num=str(k + 1),
-                                                regtime = regtime.strftime("%Y-%m-%d"),
-                                                title=i.aname)
-                outhtml = "%s%s" %(outhtml ,out)
-                k = k + 1                
-        data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
+                                </tr> """ % dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl, i.aname, i.did),
+                                                 name="%s" % i.aname,
+                                                 id="%s" % i.did,
+                                                 num=str(k + 1),
+                                                 regtime=regtime.strftime(
+                                                     "%Y-%m-%d"),
+                                                 title=i.aname)
+                outhtml = "%s%s" % (outhtml, out)
+                k = k + 1
+        data = {
+            'searchresult': outhtml,
+            'start': start,
+            'size': size,
+            'total': totalnum}
         return data
 
 
@@ -301,16 +329,17 @@ class Donorajaxsearch(ajaxsearch):
 
     grok.name('donor_ajaxsearch')
 
-    def searchview(self,viewname="donor_listings"):
-        searchview = getMultiAdapter((self.context, self.request),name=viewname)
+    def searchview(self, viewname="donor_listings"):
+        searchview = getMultiAdapter(
+            (self.context, self.request), name=viewname)
         return searchview
 
     def render(self):
-#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
+        #        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
         searchview = self.searchview()
  # datadic receive front ajax post data
         datadic = self.request.form
-        start = int(datadic['start']) # batch search start position
+        start = int(datadic['start'])  # batch search start position
         size = int(datadic['size'])      # batch search size
         id = int(datadic['id'])
         multi = int(datadic['multi'])
@@ -322,34 +351,34 @@ class Donorajaxsearch(ajaxsearch):
 #  #模糊搜索
 #         if keyword != "":
 #             origquery['SearchableText'] = '%'+keyword+'%'
-#origquery provide  batch search
+# origquery provide  batch search
         origquery['size'] = size
         origquery['start'] = start
         origquery['id'] = id
         origquery['multi'] = multi
-#totalquery  search all
+# totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
         totalquery['multi'] = 1
-        
+
         # search all   size = 0 return numbers of recorders
         totalnum = searchview.search_multicondition(totalquery)
         resultDicLists = searchview.search_multicondition(origquery)
         del origquery
         del totalquery
-#call output function
+# call output function
 # resultDicLists like this:[(u'C7', u'\u4ed6\u7684\u624b\u673a')]
-        data = self.output(start,size,totalnum, resultDicLists)      
+        data = self.output(start, size, totalnum, resultDicLists)
         self.request.response.setHeader('Content-Type', 'application/json')
         return json.dumps(data)
-    
-    def output(self,start,size,totalnum,resultDicLists):
+
+    def output(self, start, size, totalnum, resultDicLists):
         """根据参数total,resultDicLists,返回json 输出,resultDicLists like this:
         [(u'C7', u'\u4ed6\u7684\u624b\u673a')]"""
         outhtml = ""
         k = 0
         contexturl = self.context.absolute_url()
-        if bool(self.searchview().isAddable):        
+        if bool(self.searchview().isAddable):
             for i in resultDicLists:
                 astr = i.atime.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
@@ -358,7 +387,7 @@ class Donorajaxsearch(ajaxsearch):
                     atime = astr
                 if bool(i.goods):
                     if bool(i.money):
-                        money = "%s(%s)" % (i.money,i.goods)
+                        money = "%s(%s)" % (i.money, i.goods)
                     else:
                         money = "(%s)" % (i.goods)
                 else:
@@ -379,17 +408,17 @@ class Donorajaxsearch(ajaxsearch):
                                   </span>
                                 </a>
                                 </td>
-                                </tr> """% dict(
-                                            name=i.aname,
-                                            money= money,
-                                            atime= atime,
-                                            edit_url="%s/@@update_donor/%s" % (contexturl,i.doid),
-                                            delete_url="%s/@@delete_donor/%s" % (contexturl,i.doid))
-                outhtml = "%s%s" %(outhtml ,out)
+                                </tr> """ % dict(
+                    name=i.aname,
+                    money=money,
+                    atime=atime,
+                    edit_url="%s/@@update_donor/%s" % (contexturl, i.doid),
+                    delete_url="%s/@@delete_donor/%s" % (contexturl, i.doid))
+                outhtml = "%s%s" % (outhtml, out)
                 k = k + 1
         else:
             for i in resultDicLists:
-                
+
                 astr = i.atime.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
                     atime = u""
@@ -397,23 +426,28 @@ class Donorajaxsearch(ajaxsearch):
                     atime = astr
                 if bool(i.goods):
                     if bool(i.money):
-                        money = "%s(%s)" % (i.money,i.goods)
+                        money = "%s(%s)" % (i.money, i.goods)
                     else:
                         money = "(%s)" % (i.goods)
                 else:
-                    money = i.money                
+                    money = i.money
                 out = """<tr class="text-left">
                                 <td class="col-md-10">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
                                 <td class="col-md-1">%(atime)s</td>
-                                </tr> """% dict(
-                                            name=i.aname,
-                                            money= money,
-                                            atime= atime)
-                outhtml = "%s%s" %(outhtml ,out)
-                k = k + 1                
-        data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
+                                </tr> """ % dict(
+                    name=i.aname,
+                    money=money,
+                    atime=atime)
+                outhtml = "%s%s" % (outhtml, out)
+                k = k + 1
+        data = {
+            'searchresult': outhtml,
+            'start': start,
+            'size': size,
+            'total': totalnum}
         return data
+
 
 class SpecifyDonorajaxsearch(Donorajaxsearch):
     """AJAX action for search DB donor table.
@@ -422,11 +456,14 @@ class SpecifyDonorajaxsearch(Donorajaxsearch):
 
     grok.name('specify_donor_ajaxsearch')
 
-    def searchview(self,viewname="specify_donor_listings"):
-        searchview = getMultiAdapter((self.context, self.request),name=viewname)
+    def searchview(self, viewname="specify_donor_listings"):
+        searchview = getMultiAdapter(
+            (self.context, self.request), name=viewname)
         return searchview
 
 # Delete Update Input block
+
+
 class DeleteDonate(form.Form):
     "delete the specify model recorder"
     implements(IPublishTraverse)
@@ -435,11 +472,12 @@ class DeleteDonate(form.Form):
     grok.require('xtcs.policy.input_db')
 
     label = _(u"delete donate data")
-    fields = field.Fields(IDonate).omit('did','start_time')
+    fields = field.Fields(IDonate).omit('did', 'start_time')
     ignoreContext = False
 
     id = None
-    #receive url parameters
+    # receive url parameters
+
     def publishTraverse(self, request, name):
         if self.id is None:
             self.id = name
@@ -450,8 +488,8 @@ class DeleteDonate(form.Form):
     def getContent(self):
         # Get the model table query funcations
         locator = getUtility(IDonateLocator)
-        #to do
-        #fetch the pending deleting  record
+        # to do
+        # fetch the pending deleting  record
         return locator.getByCode(self.id)
 
     def update(self):
@@ -459,9 +497,8 @@ class DeleteDonate(form.Form):
 
         # Get the model table query funcations
 
-        #Let z3c.form do its magic
+        # Let z3c.form do its magic
         super(DeleteDonate, self).update()
-
 
     @button.buttonAndHandler(_(u"Delete"))
     def submit(self, action):
@@ -477,10 +514,13 @@ class DeleteDonate(form.Form):
             funcations.DeleteByCode(self.id)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+            self.request.response.redirect(
+                self.context.absolute_url() + '/donate_listings')
         confirm = _(u"Your data  has been deleted.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -488,7 +528,10 @@ class DeleteDonate(form.Form):
         """
         confirm = _(u"Delete cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
+
 
 class InputDonate(form.Form):
     """input db donate table data
@@ -510,31 +553,34 @@ class InputDonate(form.Form):
     def submit(self, action):
         """Submit donate recorder
         """
-        data, errors = self.extractData() 
+        data, errors = self.extractData()
         if errors:
             self.status = self.formErrorsMessage
             return
         import time
         from datetime import datetime
-        fmt = "%Y-%m-%d %H:%M:%S"        
+        fmt = "%Y-%m-%d %H:%M:%S"
         dtst = data['start_time']
-        if isinstance(dtst,datetime):
+        if isinstance(dtst, datetime):
             # datetime convert to timestamp
-            dtst = time.strptime(dtst.strftime(fmt),fmt)
+            dtst = time.strptime(dtst.strftime(fmt), fmt)
             dtst = int(time.mktime(dtst))
-            
+
             data['start_time'] = dtst
         funcations = getUtility(IDonateLocator)
         try:
-            
+
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+            self.request.response.redirect(
+                self.context.absolute_url() + '/donate_listings')
 
         confirm = _(u"Thank you! Your data  will be update in back end DB.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -542,7 +588,10 @@ class InputDonate(form.Form):
         """
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
+
 
 class UpdateDonate(form.Form):
     """update model table row data
@@ -557,15 +606,15 @@ class UpdateDonate(form.Form):
     fields = field.Fields(IDonate).omit('did')
     ignoreContext = False
     xhdm = None
-    #receive url parameters
+    # receive url parameters
     # reset content
+
     def getContent(self):
         # Get the model table query funcations
         locator = getUtility(IDonateLocator)
         # to do
         # fetch first record as sample data
         return locator.getByCode(self.id)
-
 
     def publishTraverse(self, request, name):
         if self.id is None:
@@ -594,10 +643,13 @@ class UpdateDonate(form.Form):
             funcations.updateByCode(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+            self.request.response.redirect(
+                self.context.absolute_url() + '/donate_listings')
         confirm = _(u"Thank you! Your data  will be update in back end DB.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -605,19 +657,23 @@ class UpdateDonate(form.Form):
         """
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
 
-##发射机数据库操作
+# 发射机数据库操作
+
+
 class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
     grok.name('delete_donor')
     label = _(u"delete donate data")
-    fields = field.Fields(IDonor).omit('did','doid')
-
+    fields = field.Fields(IDonor).omit('did', 'doid')
 
     id = None
-    #receive url parameters
+    # receive url parameters
+
     def publishTraverse(self, request, name):
         if self.id is None:
             self.id = name
@@ -635,9 +691,8 @@ class DeleteDonor(DeleteDonate):
     def update(self):
         self.request.set('disable_border', True)
 
-        #Let z3c.form do its magic
+        # Let z3c.form do its magic
         super(DeleteDonor, self).update()
-
 
     @button.buttonAndHandler(_(u"Delete"))
     def submit(self, action):
@@ -653,10 +708,13 @@ class DeleteDonor(DeleteDonate):
             funcations.DeleteByCode(self.id)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+            self.request.response.redirect(
+                self.context.absolute_url() + '/donate_listings')
         confirm = _(u"Your data  has been deleted.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -664,7 +722,9 @@ class DeleteDonor(DeleteDonate):
         """
         confirm = _(u"Delete cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/donate_listings')
 
 
 class InputDonor(InputDonate):
@@ -704,12 +764,14 @@ class InputDonor(InputDonate):
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/@@donate_listings')                  
+            self.request.response.redirect(
+                self.context.absolute_url() + '/@@donate_listings')
 
         confirm = _(u"Thank you! Your data  will be update in back end DB.")
         IStatusMessage(self.request).add(confirm, type='info')
-        url_suffix = '/@@donor_listings?name=%s&id=%s' % (name,id)        
-        self.request.response.redirect(self.context.absolute_url() + url_suffix)
+        url_suffix = '/@@donor_listings?name=%s&id=%s' % (name, id)
+        self.request.response.redirect(
+            self.context.absolute_url() + url_suffix)
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -717,7 +779,9 @@ class InputDonor(InputDonate):
         """
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donate_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/@@donate_listings')
 
 
 class UpdateDonor(UpdateDonate):
@@ -728,7 +792,8 @@ class UpdateDonor(UpdateDonate):
     fields = field.Fields(IDonor).omit('doid')
 
     id = None
-    #receive url parameters
+    # receive url parameters
+
     def publishTraverse(self, request, name):
         if self.id is None:
             self.id = name
@@ -763,10 +828,13 @@ class UpdateDonor(UpdateDonate):
             funcations.updateByCode(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+            self.request.response.redirect(
+                self.context.absolute_url() + '/@@donor_listings')
         confirm = _(u"Thank you! Your data  will be update in back end DB.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/@@donor_listings')
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
@@ -774,8 +842,8 @@ class UpdateDonor(UpdateDonate):
         """
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+        self.request.response.redirect(
+            self.context.absolute_url() +
+            '/@@donor_listings')
 
-##end发射机 数据库操作
-
-
+# end发射机 数据库操作

@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
-from xtcs.policy.content.project import IProject
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID, setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.app.z3cform.interfaces import IPloneFormLayer
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.testing.z2 import Browser
+from xtcs.policy.content.project import IProject
+from xtcs.policy.testing import FunctionalTesting
+from xtcs.policy.testing import POLICY_INTEGRATION_TESTING as INTEGRATION_TESTING
 from zope.component import createObject
 from zope.component import queryUtility
 from zope.interface import alsoProvides
-from xtcs.policy.testing import POLICY_INTEGRATION_TESTING as INTEGRATION_TESTING
-from xtcs.policy.testing import FunctionalTesting
+
 import transaction
 import unittest as unittest
 
@@ -82,19 +84,21 @@ class DocumentIntegrationTest(unittest.TestCase):
             self.portal.manage_delObjects(ids='document')
             transaction.commit()
 
+
 class Allcontents(unittest.TestCase):
     layer = INTEGRATION_TESTING
-    
+
     def setUp(self):
         portal = self.layer['portal']
         setRoles(portal, TEST_USER_ID, ('Manager',))
 
-        portal.invokeFactory('Project', 'folder1')                                             
+        portal.invokeFactory('Project', 'folder1')
 
         self.portal = portal
-    
+
     def test_item_types(self):
-        self.assertEqual(self.portal['folder1'].id,'folder1')
+        self.assertEqual(self.portal['folder1'].id, 'folder1')
+
 
 class DocumentFunctionalTest(unittest.TestCase):
 
@@ -114,8 +118,6 @@ class DocumentFunctionalTest(unittest.TestCase):
 
     def test_add_document(self):
         self.browser.open(self.portal_url)
-        import pdb
-        pdb.set_trace()        
         self.browser.getLink(url='http://nohost/plone/++add++Project').click()
 
         self.browser.getControl(name='form.widgets.IDublinCore.title')\
