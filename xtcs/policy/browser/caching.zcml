@@ -1,10 +1,11 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="xtcs.policy">
     
     <include package="z3c.caching" file="meta.zcml" />
-    <configure zcml:condition="not installed xtshzz.policy">
+    <configure zcml:condition="not-installed xtshzz.policy">
     <cache:rulesetType
       name="plone.homepage"
       title="Homepage"
