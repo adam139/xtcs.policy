@@ -4,8 +4,13 @@
     i18n_domain="xtcs.policy">
     
     <include package="z3c.caching" file="meta.zcml" />
-
-       
+    <configure zcml:condition="not installed xtshzz.policy">
+    <cache:rulesetType
+      name="plone.homepage"
+      title="Homepage"
+      description="Site homepage view"
+      />
+    </configure>   
     <cache:ruleset
         for=".homepage.FrontpageView"
         ruleset="plone.homepage"
