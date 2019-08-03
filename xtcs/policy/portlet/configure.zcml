@@ -7,11 +7,11 @@
 
    
   <adapter factory=".navigation.DontFilterDefaultQueryBuilder" />
-
+<!--
 	<five:implements
     class="plone.app.portlets.portlets.navigation.Assignment"
     interface=".navigation.INonDefaultPageFilteringNavigationPortlet" />
- 
+ -->
  
    <plone:portletRenderer
     portlet="plone.app.portlets.portlets.navigation.INavigationPortlet"
