@@ -12,7 +12,8 @@ from zope.component import getUtility
 def donateId(context):
 
     locator = getUtility(IDonateLocator)
-    values = locator.query(start=0,size=100,multi=1,did=18,sortchildid=3)
+#     values = locator.query(start=0,size=100,multi=1,did=18,sortchildid=3)
+    values = locator.query(start=0,size=100,multi=1)
     return SimpleVocabulary(
-        [SimpleTerm(value=i.did, token=str(i.did), title=i.aname) for i in values],
+        [SimpleTerm(value=int(i.did), token=str(i.did), title=i.aname) for i in values],
     )

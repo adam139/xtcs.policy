@@ -5,11 +5,14 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import mysql
 from five import grok
+from datetime import datetime
 from zope import schema
 from zope.interface import Interface,implements
 from xtcs.policy import ORMBase
 from xtcs.policy import _
 
+def nowDateTime():
+    return datetime.today()
 
 class IArticle(Interface):
     """article
@@ -190,7 +193,8 @@ class IDonor(Interface):
             required=False
         )            
     atime = schema.Datetime(
-            title=_(u"juanzeng shi jian")
+            title=_(u"juanzeng shi jian"),
+            defaultFactory=nowDateTime
         )
 class Donor(ORMBase):
     """Database-backed implementation of project

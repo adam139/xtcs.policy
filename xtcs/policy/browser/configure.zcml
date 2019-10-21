@@ -153,12 +153,5 @@
         for="*"
         permission="zope2.View"
         class=".macros.DbMacros"/>
-<!--            
-    <browser:page
-        name="fashej_listings"
-        template="templates/fashej_listings.pt"
-        for="emc.kb.contents.ormfolder.Iormfolder"
-        permission="emc.kb.input_db"
-        class=".ajax_listing.FashejView"/>     
-        -->    
+  
 </configure>
