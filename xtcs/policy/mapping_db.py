@@ -15,7 +15,7 @@ def nowDateTime():
     return datetime.today()
 
 class IArticle(Interface):
-    """article
+    """慈善文摘
     select pubtime,title,content from article where id = 199
     """
     id = schema.Int(
@@ -66,7 +66,7 @@ class Article(ORMBase):
         )
 
 class IProject(Interface):
-    """project
+    """慈善项目
     id,projectName,registertime,description
     select pubtime,title,content from article where id = 199
     """
@@ -107,7 +107,7 @@ class Project(ORMBase):
         )
 
 class IVolunteerteam(Interface):
-    """project
+    """义工团队
     id,projectName,registertime,description
     select pubtime,title,content from article where id = 199
     +--------------+--------------+------+-----+---------+----------------+
@@ -196,6 +196,8 @@ class IDonor(Interface):
             title=_(u"juanzeng shi jian"),
             defaultFactory=nowDateTime
         )
+    
+    
 class Donor(ORMBase):
     """Database-backed implementation of project
     """
@@ -224,7 +226,7 @@ class Donor(ORMBase):
         )           
 #所有有捐赠记录的项目,捐赠公示
 class IDonate(Interface):
-    """
+    """捐赠项目
     mysql> describe donate;
 +------------+--------------+------+-----+---------+----------------+
 | Field      | Type         | Null | Key | Default | Extra          |
