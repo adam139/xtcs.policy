@@ -17,24 +17,24 @@
     <td valign="top" align="right">
     	<table width="100%" cellspacing="1" cellpadding="0" border="0" bgcolor="#cfcfcf" align="center">
 			<tbody><tr class="theader">
-			  <td width="45%" valign="middle" height="25" bgcolor="#ededed" align="center">捐赠个人或单位</td>
-			  <td width="35%" valign="middle" bgcolor="#ededed" align="center">现金(物资)</td>
+			  <td width="55%" valign="middle" height="25" bgcolor="#ededed" align="center">捐赠个人或单位</td>
+			  <td width="25%" valign="middle" bgcolor="#ededed" align="center">现金(物资)</td>
 			  <td width="20%" valign="middle" bgcolor="#ededed" align="center">时间</td>
 			</tr>
 			</tbody>
 		</table>
-    <div style="margin: 0px; overflow: hidden;height: 180px" id="soRollV">
-	  <div id="soRollV1">
+    <div style="margin: 0px; overflow: hidden;height: 180px" id="sRollV">
+	  <div id="sRollV1">
     <table width="100%" cellspacing="1" cellpadding="3" border="0" bgcolor="#E6E7E8" class="text1">                  
         <tbody tal:content="structure python: view.getMemberList()" >
         	<tr style="font-size:12px;"> 
-          <td width="45%" height="28" bgcolor="#FFFFFF" align="left">中国中亚友好协会</td>
-          <td width="35%" bgcolor="#FFFFFF" align="center">2013</td>
+          <td width="55%" height="28" bgcolor="#FFFFFF" align="left">中国中亚友好协会</td>
+          <td width="25%" bgcolor="#FFFFFF" align="center">2013</td>
           <td width="20%" bgcolor="#FFFFFF" align="center"></td>
         </tr></tbody>
     </table>
     </div>
-	  <div id="soRollV2"><!--roll placeholder-->
+	  <div id="sRollV2"><!--roll placeholder-->
     </div>    
     </div>
     </td>

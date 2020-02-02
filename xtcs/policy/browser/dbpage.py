@@ -799,10 +799,11 @@ class UpdateDonor(UpdateDonate):
         """Update model recorder
         """
 
-        data, errors = self.extractData()
+        data, errors = self.extractData()        
         if errors:
             self.status = self.formErrorsMessage
             return
+        data['id'] = self.id
         funcations = getUtility(IDonorLocator)
 
         try:

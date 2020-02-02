@@ -186,7 +186,8 @@ class IDonor(Interface):
             title=_(u"juanzeng zhe"),
         )
     money = schema.TextLine(
-            title=_(u"xianjin jin e"),
+            title=_(u"xianjin jin e"),            
+            required=False
         )
     goods = schema.TextLine(
             title=_(u"juanzeng wuping"),
@@ -217,6 +218,7 @@ class Donor(ORMBase):
         )    
     money = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
             nullable=False,
+            default=""
         )
     goods = sqlalchemy.schema.Column(sqlalchemy.types.String(32),
             nullable=False,

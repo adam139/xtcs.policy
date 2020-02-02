@@ -61,9 +61,7 @@ class DonorLocator(grok.GlobalUtility):
 
         session = Scope_session()
         if id != "":
-            recorder = session.query(Donor).\
-                from_statement(text("SELECT * FROM donor WHERE doid=:id")).\
-                params(id=id).one()
+            recorder = session.query(Donor).filter(Donor.doid ==id).one()
             session.delete(recorder)
             maintan_session(session)
         else:
@@ -81,9 +79,7 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
         session = Scope_session()
         id = kwargs['id']
         if id != "":
-            recorder = session.query(Donor).\
-                from_statement(text("SELECT * FROM donor WHERE doid=:id")).\
-                params(id=id).one()
+            recorder = session.query(Donor).filter(Donor.doid ==id).one()
             updatedattrs = [kw for kw in kwargs.keys() if kw != 'doid']
             for kw in updatedattrs:
                 setattr(recorder,kw,kwargs[kw])
@@ -94,9 +90,7 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
     def getByCode(self,id):
         session = Scope_session()        
         if id != "":
-            recorder = session.query(Donor).\
-                from_statement(text("SELECT * FROM donor WHERE doid=:id")).\
-                params(id=id).one()
+            recorder = session.query(Donor).filter(Donor.doid ==id).one()
             maintan_session(session)
             return recorder
         else:
