@@ -61,9 +61,7 @@ class DonateLocator(grok.GlobalUtility):
         session = Scope_session()
         if id != "":
 
-            recorder = session.query(Donate).\
-                from_statement(text("SELECT * FROM donate WHERE did=:did")).\
-                params(did=id).one()
+            recorder = session.query(Donate).filter(Donate.did ==id).one()
             session.delete(recorder)
             maintan_session(session)
         else:
@@ -82,9 +80,7 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
         session = Scope_session()
         id = kwargs['did']
         if id != "":
-            recorder = session.query(Donate).\
-                from_statement(text("SELECT * FROM donate WHERE did=:did")).\
-                params(did=id).one()
+            recorder = session.query(Donate).filter(Donate.did ==id).one()
             updatedattrs = [kw for kw in kwargs.keys() if kw != 'did']
             for kw in updatedattrs:
                 setattr(recorder,kw,kwargs[kw])
@@ -94,10 +90,10 @@ text("SELECT * FROM users WHERE name=:name")).params(name='ed').all()
 
     def getByCode(self,id):
         session = Scope_session()
+#         import pdb
+#         pdb.set_trace()
         if id != "":
-            recorder = session.query(Donate).\
-                from_statement(text("SELECT * FROM donate WHERE did=:did")).\
-                params(did=id).one()
+            recorder = session.query(Donate).filter(Donate.did ==id).one()
             maintan_session(session)
             return recorder
         else:

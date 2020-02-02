@@ -71,6 +71,19 @@ class DonortableView(BrowserView):
             outhtml = "%s%s" %(outhtml ,out)
         return outhtml
 
+class GuanZhuangDonortableView(DonortableView):
+    "冠状疫情捐赠"
+      
+    @memoize
+    def getMemberList(self,start=0,size=0):
+        """获取捐赠结果列表"""
+        
+        locator = getUtility(IDonorLocator)        
+        articles = locator.query(start=0,size=0,multi=0,id=22,sortchildid=3)
+        if articles == None:
+            return             
+        return self.outputList(articles)
+
 # all donate table
 class DonateView(BrowserView):
     """
@@ -145,6 +158,26 @@ class SpecifyDonorView(DonorView):
                                   size=query['size'],multi = query['multi'],id=21 )
         return recorders
 
+
+class GuangZhuangDonorView(DonorView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
+    
+    parameters:
+        query:{'start':0,'size':10}
+        id:21
+    view name:db_ajax_juanzeng
+    """
+
+    def search_multicondition(self,query):
+        "query is dic,like :{'start':0,'size':10,'':}"
+
+        locator = getUtility(IDonorLocator)
+        recorders = locator.query(start=query['start'],\
+                                  size=query['size'],multi = query['multi'],id=22 )
+        return recorders
 
 class DonatedWorkflow(BrowserView):
     """
@@ -425,6 +458,19 @@ class SpecifyDonorajaxsearch(Donorajaxsearch):
     def searchview(self,viewname="specify_donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
+
+
+class GuangZhuangDonorajaxsearch(Donorajaxsearch):
+    """AJAX action for search DB donor table.
+    receive front end ajax transform parameters
+    """
+
+    grok.name('guanzhuang_donor_ajaxsearch')
+
+    def searchview(self,viewname="guanzhuang_donor_listings"):
+        searchview = getMultiAdapter((self.context, self.request),name=viewname)
+        return searchview
+
 
 # Delete Update Input block
 class DeleteDonate(form.Form):

@@ -30,6 +30,7 @@ $(document).ready(function(){
 		});
     $('.carousel').carousel();						
 	StartRollV();
+	StartRollVs();
 	//StartRollVs();
 	//rolltext(".roll-wrapper");    
 	var ajaxurl = root + "/cishanxiangmu/tuijianxiangmu/@@barsview_mini";

@@ -113,17 +113,51 @@
 			</div>
 			</div> <!-- tabPortlet end-->
 			<div class="col-md-4 col-xs-12">
-			<!-- 捐赠金榜-->
+			<!-- 捐赠公示-->
 				<div role="tabpanel" class="portlet">
   				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
+  					<!-- 冠状疫情捐赠-->
     				<li role="presentation" class="active">
+    					<a href="#guanzhuang" aria-controls="guanzhuang" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@guanzhuang_donor_listings'">疫情捐赠</a>
+    				</li>  					
+  					<!-- 日常捐赠 无定向-->
+    				<li role="presentation" class="noactive">
     					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@specify_donor_listings'">捐赠金榜</a>
     				</li>
   				</ul>
   					<!-- Tab panes start-->
   				<div class="tab-content">
-   				<div role="tabpanel" class="tab-pane active" id="juanzengjinbang">
+   				<div role="tabpanel" class="tab-pane active" id="guanzhuang">
+					<div class="rolltables">
+						<table class="table"><tbody><tr> 
+    						<td class="nopadding">
+    							<table class="table table-bordered"><tbody>
+    								<tr class="theader row">
+			  							<td class="title">捐赠个人或单位</td>
+			  							<td class="item">现金(物资)</td>
+			  							<td class="result">日期</td>
+									</tr></tbody>
+								</table>
+    							<div id="oRollV"><div id="oRollV1">
+    								<table class="table table-bordered">                  
+        								<tbody tal:content="structure python: view.getable('guanzhuang_donor_table')" >
+        									<tr> 
+          										<td>单位甲</td>
+          										<td>201300</td>
+          										<td></td>
+        									</tr></tbody>
+    									</table>
+    								</div>
+	 							 <div id="oRollV2"><!--roll placeholder-->
+      							</div>    
+    						</div>
+    					</td></tr></tbody>
+					</table>
+				</div>     	
+    			</div>
+				<div role="tabpanel" class="tab-pane" id="juanzengjinbang">
 					<div class="rolltables">
 						<table class="table"><tbody><tr> 
     						<td class="nopadding">
@@ -150,7 +184,7 @@
     					</td></tr></tbody>
 					</table>
 				</div>     	
-    			</div>
+    			</div>    			
     		</div> <!--Tab panes end -->
   			</div>  <!--portlet end -->				
 		</div>	<!--end col-3 of row-1 -->     

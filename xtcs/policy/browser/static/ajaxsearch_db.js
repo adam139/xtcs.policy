@@ -171,7 +171,7 @@ $(document).ready(function(){
 // read query string
 // Getting URL var by its nam
   var current = window.location.href; 
-  if (current.endsWith('donate_listings') || current.endsWith('specify_donor_listings'))
+  if (current.endsWith('donate_listings') || current.endsWith('_donor_listings'))
   {searchEvent(); }
   else {	 
     var byName = $.getUrlVar('name');
