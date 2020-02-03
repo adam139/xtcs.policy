@@ -6,13 +6,13 @@ $(document).ready(function(){
 	$('a[href$="juanzenggongshi"]').on("click",function (e) {
     	  e.preventDefault();
 		  var url = $(this).attr("href");
-		  window.location.href = url + "/@@specify_donor_listings";
+		  window.location.href = url + "/@@donate_listings";
 		  return false;
     });	
 	$('a[href$="yangguangwu"]').on("click",function (e) {
     	  e.preventDefault();
 		  var url = $(this).attr("href");
-		  window.location.href = url + "/@@donate_listings";
+		  window.location.href = url + "/@@specify_donor_listings";
 		  return false;
     });	    
 	var leftHeight = $('.portletNavigationTree dd').height();
