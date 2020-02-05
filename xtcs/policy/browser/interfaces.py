@@ -4,6 +4,7 @@ from zope import schema
 from plone.theme.interfaces import IDefaultPloneLayer
 from xtcs.policy import  _
 
+
 class IThemeSpecific(Interface):
     """Marker interface that defines a ZTK browser layer. We can reference
     this in the 'layer' attribute of ZCML <browser:* /> directives to ensure

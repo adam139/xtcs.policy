@@ -23,6 +23,7 @@ from xtcs.policy.interfaces import IDonateLocator,IDonorLocator
 from xtcs.policy.mapping_db import IDonate,Donate,IDonor,Donor
 
 from xtcs.policy.interfaces import IJuanzenggongshi
+from my315ok.wechat.pay import UnifiedOrder_pub,JsApi_pub,UnifiedOrder_pub 
 # update data view
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -190,11 +191,26 @@ class DonatedWorkflow(BrowserView):
         self.request = request
         add_bundle_on_request(self.request, 'donate-legacy')
     
+    
     def get_projects(self):
         "提取系统所有公益项目"
-        
-        projects = ['','','','']
-        return projects 
+        query = {'start':0,'size':10,'multi':0}
+#         UnifiedOrder_pub()
+#         prepay_id = UnifiedOrder_pub().getPrepayId()
+       
+        locator = getUtility(IDonateLocator)
+        recorders = locator.multi_query(start=query['start'],size=query['size'],multi = query['multi'])
+
+        def outfmt(rcd):
+            out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
+            name = "project{0}".format(rcd.did)
+            out = out.format("project",name,rcd.did,rcd.aname)
+            return out
+            
+        outhtml = map(outfmt,recorders)
+        outhtml = "<br/>".join(outhtml)
+        return outhtml        
+
 
  # ajax multi-condition search relation db
 class ajaxsearch(grok.View):
@@ -326,6 +342,37 @@ class ajaxsearch(grok.View):
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
         return data
 
+
+
+class PayAjax(grok.View):
+    """AJAX action for search DB.
+    receive front end ajax transform parameters
+    """
+    grok.context(Interface)
+    grok.name('pay_ajax')
+    grok.require('zope2.View')
+    
+    def render(self):
+        "response to front end"
+
+        datadic = self.request.form
+        import pdb
+        pdb.set_trace()        
+        total_fee = int(datadic['fee']) # batch search start position
+        body = datadic['body']      # batch search size
+        openid = datadic['openid']       
+        api = JsApi_pub()
+#         api.setPrepayId(prepay_id)
+#         openid = "oQ61n01gs3t34TglBy_x2U6l8VWk"
+#         body = "ceshi"
+#         total_fee = "100"
+        out = api.getParameters(openid,body,total_fee)
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return json.dumps(out)       
+
+                 
+        
+            
 
 class Donorajaxsearch(ajaxsearch):
     """AJAX action for search DB donor table.

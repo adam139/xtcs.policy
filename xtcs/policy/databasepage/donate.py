@@ -55,6 +55,37 @@ class DonateLocator(grok.GlobalUtility):
         maintan_session(session)
         return recorders
 
+    def multi_query(self,**kwargs):
+        """以分页方式提取donate 记录，参数：start 游标起始位置；size:每次返回的记录条数;
+        fields:field list
+        if size = 0,then不分页，返回所有记录集
+        order_by(text("id"))
+        """
+
+        session = Scope_session()
+        start = int(kwargs['start'])
+        size = int(kwargs['size'])
+#         visible = int(kwargs['visible'])
+        multi = int(kwargs['multi'])
+        if multi == 1:
+            if size == 0:
+                nums = session.query(func.count(Donate.did)).filter(Donate.visible==1).scalar()
+                return int(nums)
+            else:
+                recorders = session.query(Donate).filter(Donate.visible==1).\
+            order_by(Donate.did.desc()).slice(start,size).all()
+                
+        else:            
+            if size !=0:                     
+                recorders = session.query(Donate).filter(Donate.visible==1).\
+            order_by(Donate.did.desc()).slice(0,size).all()
+            else:
+                recorders = session.query(Donate).filter(Donate.visible==1).\
+            order_by(Donate.did.desc()).all()
+            
+        maintan_session(session)
+        return recorders
+
     def DeleteByCode(self,id):
         "delete the specify id donate recorder"
 

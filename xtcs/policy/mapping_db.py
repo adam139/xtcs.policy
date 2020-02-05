@@ -247,6 +247,7 @@ class IDonate(Interface):
         ) 
     start_time = schema.Datetime(
             title=_(u"kaishi shijian"),
+            defaultFactory=nowDateTime            
         )           
     visible = schema.Int(
             title=_(u"shifou keshi?"),

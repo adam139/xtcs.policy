@@ -22,7 +22,16 @@
       layer=".interfaces.IThemeSpecific"       
       template="templates/homepage.pt"
     />
-    
+
+    <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="auth.html"
+      class=".zhifu.ZhiFuWeiXinAuthView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/zhifu_weixin_auth.pt"
+    />
+        
     <browser:page
       for="*"
       name="donor_table"
@@ -81,7 +90,7 @@
       template="templates/guanzhuang_donor_listings.pt"
     />        
     <browser:page
-      for="xtcs.policy.interfaces.IJuanzengworkflow"
+      for="Products.CMFCore.interfaces.ISiteRoot"
       name="donated_workflow"
       class=".dbpage.DonatedWorkflow"
       permission="zope.Public"
