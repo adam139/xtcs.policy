@@ -15,44 +15,21 @@ oauth2url = 'https://open.weixin.qq.com/connect/oauth2/authorize'
 
 class ZhiFuWeiXinAuthView(BrowserView):
         
-    @memoize
-    def outputjs2(self):
-        "用户同意授权，获取code"
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(IwechatSettings)
-        if bool(settings.appid):
-            appid = settings.appid
-        else:
-            appid = "wx2833460b1571bd01"            
-        if bool(settings.redirecturi):
-            redirecturi = settings.redirecturi
-        else:
-            redirecturi = 'http://www.xtcs.org'
-                          
-        out = """
-        function init() {
-        var ruri = encodeURIComponent(%(ruri)s);
-        var oauthUrl = '%(au2url)s?appid=%(appid)s&redirect_uri=' + ruri + '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-        window.location.href = oauthUrl;
-        }
-        init();
-        """ % dict(ruri=redirecturi,appid=appid,au2url=oauth2url)
-
-        return out        
+        
 
     @memoize
     def outputjs(self):
         "用户同意授权，获取code"
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(IwechatSettings)
-        if bool(settings.appid):
-            appid = settings.appid
-        else:
-            appid = "wx2833460b1571bd01"            
-        if bool(settings.redirecturi):
-            redirecturi = settings.redirecturi
-        else:
-            redirecturi = 'http://weixin.315ok.org/@@donated_workflow'
+#         registry = getUtility(IRegistry)
+#         settings = registry.forInterface(IwechatSettings)
+#         if bool(settings.appid):
+#             appid = settings.appid
+#         else:
+#             appid = "wx2833460b1571bd01"            
+#         if bool(settings.redirecturi):
+#             redirecturi = settings.redirecturi
+#         else:
+        redirecturi = 'http://weixin.315ok.org/@@donated_workflow'
         nexturl = WeixinHelper.oauth2(redirecturi)
                           
         out = """
