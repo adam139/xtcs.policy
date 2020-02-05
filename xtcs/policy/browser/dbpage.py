@@ -212,7 +212,7 @@ class DonatedWorkflow(BrowserView):
     
     def get_projects(self):
         "提取系统所有公益项目"
-        tken = self.getAccessTokenByCode()
+#         tken = self.getAccessTokenByCode()
         query = {'start':0,'size':10,'multi':0}      
         locator = getUtility(IDonateLocator)
         recorders = locator.multi_query(start=query['start'],size=query['size'],multi = query['multi'])
