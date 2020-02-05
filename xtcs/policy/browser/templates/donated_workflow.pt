@@ -142,7 +142,7 @@
 <metal:js fill-slot="javascript_bottom_slot">
 <script>
 	$(document).ready(function(){
-	if (getCookie("openid")===""){
+	if (getCookie("openid") == ""){
 	window.location.href = "http://weixin.315ok.org/@@auth.html"
 	} else {
 	  init()
