@@ -228,6 +228,8 @@ function isEmpty (obj) {
 		}
 		var body = $(".ajaxform .radio input:radio[name='project']:checked").val();
 		var openid = $(".ajaxform input[name='openid']").val();
+		alert(openid);
+		var openid ="oQ61n01gs3t34TglBy_x2U6l8VWk";
 		var data = {'fee':formval,'body':body,'openid':openid};
 		$.post("http://weixin.315ok.org/@@pay_ajax",data,function(callback) {
 			console.log(JSON.stringify(callback))
