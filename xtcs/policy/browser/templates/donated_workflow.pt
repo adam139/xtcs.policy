@@ -201,7 +201,7 @@ function getCookie(cname)
 		return false;
 		}
 		var body = $(".ajaxform .radio input:radio[name='project']:checked").val();
-		var openid = "oQ61n01gs3t34TglBy_x2U6l8VWk";
+		var openid = getCookie("openid");
 		var data = {'fee':formval,'body':body,'openid':openid};
 		$.post(action,data,function(callback) {
 function onBridgeReady(){
