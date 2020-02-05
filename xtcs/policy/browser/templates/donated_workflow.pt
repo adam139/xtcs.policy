@@ -142,12 +142,9 @@
 <metal:js fill-slot="javascript_bottom_slot">
 <script>
 	$(document).ready(function(){
-	if (getCookie("openid") == ""){
-	window.location.href = "http://weixin.315ok.org/@@auth.html"
-	} else {
-	  init()
-	}
 
+	  //init()
+  
 	function setCookie(cname,cvalue,exdays)
 {
   var d = new Date();
@@ -181,14 +178,40 @@ function getCookie(cname)
     }
     return urlParams
   }
+function isEmpty (obj) {
+  if (obj === null) return true
+  if (typeof obj === 'undefined') {
+    return true
+  }
+  if (typeof obj === 'string') {
+    if (obj === '') {
+      return true
+    }
+    var reg = new RegExp('^([ ]+)|([　]+)$')
+    return reg.test(obj)
+  }
+  return false
+}
   function init() {
     var url = decodeURIComponent(location.search)
     let params = Object.assign(getUrlParams(url))
+      if (isEmpty(params.code)){
+        window.location.href = "http://weixin.315ok.org/@@auth.html"
+        } 
+        
+
     // 获取openid
     var data = {'code':params.code};
     $.post("http://weixin.315ok.org/@@test_ajax",data,function(callback) {
-    var openid = callback.openid
+    var  res = JSON.stringify(callback)    
+    if (!isEmpty(res.errcode)&&res.errcode===40029) {
+        window.location.href = "http://weixin.315ok.org/@@auth.html"
+
+    } else {
+
+    var openid = JSON.stringify(callback.openid)
     setCookie("openid",openid,7200)
+}
     },'json')
   }
   
@@ -201,9 +224,10 @@ function getCookie(cname)
 		return false;
 		}
 		var body = $(".ajaxform .radio input:radio[name='project']:checked").val();
-		var openid = getCookie("openid");
+		var openid = "oQ61n01gs3t34TglBy_x2U6l8VWk";
 		var data = {'fee':formval,'body':body,'openid':openid};
-		$.post(action,data,function(callback) {
+		$.post("http://weixin.315ok.org/@@pay_ajax",data,function(callback) {
+			alert(JSON.stringify(callback))
 function onBridgeReady(){
    WeixinJSBridge.invoke(
       'getBrandWCPayRequest', {
