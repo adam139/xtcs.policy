@@ -356,9 +356,8 @@ class PayAjax(grok.View):
         "response to front end"
 
         datadic = self.request.form
-        import pdb
-        pdb.set_trace()        
-        total_fee = int(datadic['fee']) # batch search start position
+       
+        total_fee = str(datadic['fee']) # batch search start position
         body = datadic['body']      # batch search size
         openid = datadic['openid']       
         api = JsApi_pub()
@@ -368,7 +367,10 @@ class PayAjax(grok.View):
 #         total_fee = "100"
         out = api.getParameters(openid,body,total_fee)
         self.request.response.setHeader('Content-Type', 'application/json')
-        return json.dumps(out)       
+#         import pdb
+#         pdb.set_trace()
+        return out         
+#         return json.dumps(out)       
 
                  
         
