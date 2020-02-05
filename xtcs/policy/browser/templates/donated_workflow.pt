@@ -189,7 +189,7 @@ function getCookie(cname)
     $.post("http://weixin.315ok.org/@@test_ajax",data,function(callback) {
     var openid = callback.openid
     setCookie("openid",openid,7200)
-    },'json)
+    },'json')
   }
   
 
