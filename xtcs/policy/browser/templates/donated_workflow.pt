@@ -109,6 +109,7 @@
 			<!--选择支付方式,捐款项目,发起支付 -->
 			<div class="col-xs-12">
 			<form class="ajaxform">
+				<input type="hidden" value="" name="openid">
 				<div class="form-group">
 					<label for="InputRadio">捐款项目</label>
 						<div class="radio" tal:content="structure python:view.get_projects()">
@@ -210,7 +211,9 @@ function isEmpty (obj) {
     } else {
 
     var openid = JSON.stringify(callback.openid)
-    setCookie("openid",openid,7200)
+    //setCookie("openid",openid,7200)
+     //$("#addressSearch").attr("value", $(this).attr("data-name"));
+    $(".ajaxform input[name='openid']").attr("value", openid);
 }
     },'json')
   }
@@ -224,7 +227,7 @@ function isEmpty (obj) {
 		return false;
 		}
 		var body = $(".ajaxform .radio input:radio[name='project']:checked").val();
-		var openid = getCookie("openid");
+		var openid = $(".ajaxform input[name='openid']").val();
 		var data = {'fee':formval,'body':body,'openid':openid};
 		$.post("http://weixin.315ok.org/@@pay_ajax",data,function(callback) {
 			console.log(JSON.stringify(callback))
