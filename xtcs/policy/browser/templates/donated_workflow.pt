@@ -142,7 +142,31 @@
 <metal:js fill-slot="javascript_bottom_slot">
 <script>
 	$(document).ready(function(){
-	
+	if (getCookie()==""){
+	window.location.href = "http://weixin.315ok.org/@@auth.html"
+	} else{
+	  init()
+	}
+
+	function setCookie(cname,cvalue,exdays)
+{
+  var d = new Date();
+  d.setTime(d.getTime()+(exdays*24*60*60*1000));
+  var expires = "expires="+d.toGMTString();
+  document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+function getCookie(cname)
+{
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return "";
+}
+
 	function getUrlParams (url) {
     // var url = decodeURIComponent(location.search)
     // eslint-disable-next-line no-new-object
@@ -160,9 +184,14 @@
   function init() {
     var url = decodeURIComponent(location.search)
     let params = Object.assign(getUrlParams(url))
-    alert(params.code)
+    // 获取openid
+    var data = {'code':params.code};
+    $.post("http://weixin.315ok.org/@@test_ajax",data,function(callback) {
+    var openid = callback.openid
+    setCookie("openid",openid,7200)
+    },'json)
   }
-  init()
+  
 
 	$(".ajaxform button[name='ok']").on("click",function() {
 		var action = $("#juankuan_workflow").attr('data-ajax-target');
