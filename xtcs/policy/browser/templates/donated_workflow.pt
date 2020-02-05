@@ -142,6 +142,27 @@
 <metal:js fill-slot="javascript_bottom_slot">
 <script>
 	$(document).ready(function(){
+	
+	function getUrlParams (url) {
+    // var url = decodeURIComponent(location.search)
+    // eslint-disable-next-line no-new-object
+    var urlParams = new Object()
+    // eslint-disable-next-line eqeqeq
+    if (url.indexOf('?') != -1) {
+      var str = url.substr(1)
+      var strs = str.split('&')
+      for (var i = 0; i < strs.length; i++) {
+        urlParams[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+      }
+    }
+    return urlParams
+  }
+  function init() {
+    var url = decodeURIComponent(location.search)
+    let params = Object.assign(getUrlParams(url))
+    alert(params.code)
+  }
+  init()
 
 	$(".ajaxform button[name='ok']").on("click",function() {
 		var action = $("#juankuan_workflow").attr('data-ajax-target');
