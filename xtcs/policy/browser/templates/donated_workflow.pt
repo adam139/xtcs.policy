@@ -204,20 +204,13 @@ function isEmpty (obj) {
     // 获取openid
     var data = {'code':params.code};
     $.post("http://weixin.315ok.org/@@test_ajax",data,function(res) {
-    console.log(res)
-    console.log(JSON.stringify(res))
-    alert(res.openid);
-    // var res = JSON.stringify(callback)    
+        
     if (!isEmpty(res.errcode)&&res.errcode===40029) {
         window.location.href = "http://weixin.315ok.org/@@auth.html"
 
     } else {
-
-    // var openid = JSON.stringify(callback.openid)
     //setCookie("openid",openid,7200)
-     //$("#addressSearch").attr("value", $(this).attr("data-name"));
-     var openid = "oQ61n01gs3t34TglBy_x2U6l8VWk"
-    $(".ajaxform input[name='openid']").attr("value", openid);
+    $(".ajaxform input[name='openid']").attr("value", res.openid);
 }
     },'json')
   }
