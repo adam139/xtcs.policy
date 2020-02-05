@@ -1,4 +1,5 @@
 #-*- coding: UTF-8 -*-
+from plone import api
 from zope.interface import Interface
 from zope.component import getMultiAdapter
 from five import grok
@@ -23,7 +24,7 @@ from xtcs.policy.interfaces import IDonateLocator,IDonorLocator
 from xtcs.policy.mapping_db import IDonate,Donate,IDonor,Donor
 
 from xtcs.policy.interfaces import IJuanzenggongshi
-from my315ok.wechat.pay import UnifiedOrder_pub,JsApi_pub,UnifiedOrder_pub 
+from my315ok.wechat.pay import WeixinHelper,UnifiedOrder_pub,JsApi_pub,UnifiedOrder_pub 
 # update data view
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -191,13 +192,28 @@ class DonatedWorkflow(BrowserView):
         self.request = request
         add_bundle_on_request(self.request, 'donate-legacy')
     
+    def getAccessTokenByCode(self):
+        
+        code = self.request.form['code']
+        baseapi = WeixinHelper()        
+        token = baseapi.getAccessTokenByCode(code)
+#         import pdb
+#         pdb.set_trace()
+        return token
+    
+    def get_openid(self):
+        "提取coockie openid"
+        
+        _openid = self.request.cookies.get("_openid", "")
+        if bool(_openid):
+            new_url = "%s/@@auth.html" % api.portal.get().absolute_url()
+            self.request.response.redirect(new_url)
+        return _openid
     
     def get_projects(self):
         "提取系统所有公益项目"
-        query = {'start':0,'size':10,'multi':0}
-#         UnifiedOrder_pub()
-#         prepay_id = UnifiedOrder_pub().getPrepayId()
-       
+        tken = self.getAccessTokenByCode()
+        query = {'start':0,'size':10,'multi':0}      
         locator = getUtility(IDonateLocator)
         recorders = locator.multi_query(start=query['start'],size=query['size'],multi = query['multi'])
 
@@ -343,7 +359,31 @@ class ajaxsearch(grok.View):
         return data
 
 
+class TestAjax(grok.View):
+    """AJAX action for search DB.
+    receive front end ajax transform parameters
+    """
+    grok.context(Interface)
+    grok.name('test_ajax')
+    grok.require('zope2.View')
 
+    def getAccessTokenByCode(self):
+        
+        code = self.request.form['code']
+        baseapi = WeixinHelper()        
+        token = baseapi.getAccessTokenByCode(code)
+#         import pdb
+#         pdb.set_trace()
+        return token
+    
+    def render(self):
+        "response to front end"       
+    
+        taken = self.getAccessTokenByCode()
+
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return taken        
+            
 class PayAjax(grok.View):
     """AJAX action for search DB.
     receive front end ajax transform parameters
@@ -352,11 +392,13 @@ class PayAjax(grok.View):
     grok.name('pay_ajax')
     grok.require('zope2.View')
     
+ 
+    
     def render(self):
         "response to front end"
 
-        datadic = self.request.form
-       
+
+        datadic = self.request.form       
         total_fee = str(datadic['fee']) # batch search start position
         body = datadic['body']      # batch search size
         openid = datadic['openid']       
@@ -366,6 +408,7 @@ class PayAjax(grok.View):
 #         body = "ceshi"
 #         total_fee = "100"
         out = api.getParameters(openid,body,total_fee)
+
         self.request.response.setHeader('Content-Type', 'application/json')
 #         import pdb
 #         pdb.set_trace()

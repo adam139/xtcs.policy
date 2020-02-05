@@ -52,12 +52,12 @@ class ZhiFuWeiXinAuthView(BrowserView):
         if bool(settings.redirecturi):
             redirecturi = settings.redirecturi
         else:
-            redirecturi = 'http://weixin.315ok.org/static/pay.html'
+            redirecturi = 'http://weixin.315ok.org/@@donated_workflow'
         nexturl = WeixinHelper.oauth2(redirecturi)
                           
         out = """
         function init() {
-         window.location.href = %(oauthUrl)s;
+         window.location.href = "%(oauthUrl)s";
         }
         init();
         """ % dict(oauthUrl=nexturl)
