@@ -68,7 +68,7 @@ class TestView(unittest.TestCase):
         request.form = {
                         '_authenticator': auth,
                         'fee': 10,
-                        'body':'test' ,
+                        'did':'21' ,
                         'openid':'oQ61n01gs3t34TglBy_x2U6l8VWk',                                                                                                                    
                         }
 # Look up and invoke the view via traversal

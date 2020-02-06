@@ -10,11 +10,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker,scoped_session
 import sys
 reload(sys)
+fmt = "%Y-%m-%d %H:%M:%S"
 sys.setdefaultencoding('utf-8')
 InputDb = "xtcs.policy:Input db"
 ORMBase = declarative.declarative_base()
+linkstr = 'mysql://xtcs:XTcs82333685@404@127.0.0.1:3306/xtcs?charset=utf8'
 # engine = create_engine('mysql://www.xtcs.org:XTcs82333685@404@127.0.0.1:3306/www.xtcs.org?charset=utf8', pool_recycle=3600)
-engine = create_engine('mysql://xtcs:XTcs82333685@404@127.0.0.1:3306/xtcs?charset=utf8', pool_recycle=3600)
+engine = create_engine(linkstr, pool_recycle=3600)
 Scope_session = scoped_session(sessionmaker(autocommit=False,autoflush=False,bind=engine,expire_on_commit=False))
 Session = Scope_session()
 

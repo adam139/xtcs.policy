@@ -14,17 +14,20 @@ from plone.memoize.instance import memoize
 from xtcs.policy import _
 from Products.Five.browser import BrowserView
 # from collective.gtags.source import TagsSourceBinder
-from zope.component import getUtility
+from zope.component import getUtility,queryUtility
 # input data view
 from plone.directives import form
 from z3c.form import field, button
 from Products.statusmessages.interfaces import IStatusMessage
-from xtcs.policy.interfaces import InputError
+from xtcs.policy.interfaces import InputError,IDbapi
 from xtcs.policy.interfaces import IDonateLocator,IDonorLocator
 from xtcs.policy.mapping_db import IDonate,Donate,IDonor,Donor
+from xtcs.policy.mapping_db import OnlinePay
+from xtcs.policy import Scope_session as Session
 
 from xtcs.policy.interfaces import IJuanzenggongshi
-from my315ok.wechat.pay import WeixinHelper,UnifiedOrder_pub,JsApi_pub,UnifiedOrder_pub 
+from my315ok.wechat.pay import WeixinHelper,UnifiedOrder_pub,JsApi_pub,UnifiedOrder_pub
+from my315ok.wechat.pay import Wxpay_server_pub 
 # update data view
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -364,7 +367,7 @@ class TestAjax(grok.View):
     receive front end ajax transform parameters
     """
     grok.context(Interface)
-    grok.name('test_ajax')
+    grok.name('token_ajax')
     grok.require('zope2.View')
 
     def getAccessTokenByCode(self):
@@ -372,50 +375,97 @@ class TestAjax(grok.View):
         code = self.request.form['code']
         baseapi = WeixinHelper()        
         token = baseapi.getAccessTokenByCode(code)
-#         import pdb
-#         pdb.set_trace()
         return token
     
     def render(self):
         "response to front end"       
     
-        taken = self.getAccessTokenByCode()
-
+        token = self.getAccessTokenByCode()
         self.request.response.setHeader('Content-Type', 'application/json')
-        return taken        
+        return token        
             
+
+class NotifyAjax(grok.View,Wxpay_server_pub):
+    """AJAX action for search DB.
+    receive front end ajax transform parameters
+    """
+    grok.context(Interface)
+    grok.name('notify_ajax')
+    grok.require('zope2.View')
+         
+    def render(self):
+        base = Wxpay_server_pub()
+        datadic = self.request.items()[0][0]
+        api = WeixinHelper()      
+        datadic = api.xmlToArray(datadic)
+        openid = datadic['openid']
+        money =  datadic['total_fee']  
+        base.data = datadic
+#         paras = {"openid":openid,"money":money}
+        # 验证签名和金额是否一致 金额在用户下单插入数据库
+        # select a.* from  where openid
+#         locator = queryUtility(IDbapi, name='onlinepay')
+#         recorder = locator.getByKwargs(openid=openid,money=money)
+        recorder = Session.query(OnlinePay).filter(OnlinePay.openid==openid).\
+            filter(OnlinePay.money==str(money)).first()        
+        
+        if base.checkSign() and bool(recorder):            
+            # update status=1
+            locator.updateByCode({"id":recorder.id,"status":1}) 
+            # send template message
+            base.returnParameters = {"return_code":"SUCCESS","return_msg":"OK"}            
+            out = base.returnXml()
+        else:
+            base.returnParameters = {"return_code":"FAIL","return_msg":"签名失败"} 
+            out = base.returnXml()            
+        self.request.response.setHeader('Content-Type', 'application/xml')
+        return out        
+        
+ 
+
 class PayAjax(grok.View):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
     grok.context(Interface)
     grok.name('pay_ajax')
-    grok.require('zope2.View')
-    
+    grok.require('zope2.View')  
  
+    def insertprepay(self,**paras):
+        
+#         locator = getUtility(IDonorLocator)
+        locator = queryUtility(IDbapi, name='onlinepay')
+        locator.add(paras)
+        return       
+        
     
     def render(self):
         "response to front end"
 
-
-        datadic = self.request.form       
-        total_fee = str(datadic['fee']) # batch search start position
-        body = datadic['body']      # batch search size
+        datadic = self.request.form
+        fee = int(datadic['fee'])       
+        total_fee = str( fee* 100) # batch search start position
+        body = datadic['did']      # batch search size
         openid = datadic['openid']       
         api = JsApi_pub()
-#         api.setPrepayId(prepay_id)
-#         openid = "oQ61n01gs3t34TglBy_x2U6l8VWk"
-#         body = "ceshi"
-#         total_fee = "100"
         out = api.getParameters(openid,body,total_fee)
+        datadic['money'] = str(fee)
+        del datadic['_authenticator']
+        del datadic['fee']
+
+        datadic['status'] = 0
+        datadic['openid'] = openid
+        datadic['aname'] = '测试'
+ #openid total_fee name status=0
+        self.insertprepay(**datadic)
+       
+
+#         recorder = locator.getByKwargs()
 
         self.request.response.setHeader('Content-Type', 'application/json')
-#         import pdb
-#         pdb.set_trace()
+      
         return out         
-#         return json.dumps(out)       
-
-                 
+               
         
             
 

@@ -1,6 +1,8 @@
 #-*- coding: UTF-8 -*-
 # import xtcs.policy.types
 import sqlalchemy.schema
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy import MetaData
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects import mysql
@@ -8,11 +10,19 @@ from five import grok
 from datetime import datetime
 from zope import schema
 from zope.interface import Interface,implements
-from xtcs.policy import ORMBase
+from xtcs.policy import ORMBase,engine
 from xtcs.policy import _
 
 def nowDateTime():
     return datetime.today()
+
+# automap
+metadata = MetaData()
+metadata.reflect(engine, only=['onlinepay'])
+AutoBase = automap_base(metadata=metadata)
+AutoBase.prepare()
+OnlinePay = AutoBase.classes.onlinepay
+
 
 class IArticle(Interface):
     """慈善文摘

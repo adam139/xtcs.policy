@@ -21,6 +21,13 @@
   <utility
       name="xtcs.policy.vocabulary.donateId"
       component="xtcs.policy.vocabulary.donateId" />
+
+ <!-- db named utility -->
+  <utility
+	provides=".interfaces.IDbapi"
+	component=".dbutility.onlinepay"
+	name="onlinepay"
+	/>
     
   <genericsetup:registerProfile
       name="default"
