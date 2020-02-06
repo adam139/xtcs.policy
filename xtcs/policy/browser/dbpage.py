@@ -412,13 +412,14 @@ class NotifyAjax(grok.View,Wxpay_server_pub):
         
         if base.checkSign() and bool(recorder):            
             # update status=1
+            locator.updateByCode({"id":recorder.id,"status":1})
 #             locator.updateByCode({"id":recorder.id,"status":1})
             #locator.updateByCode({"id":recorder.id,"status":1}) 
             # send template message
             base.returnParameters = {"return_code":"SUCCESS","return_msg":"OK"}            
             out = base.returnXml()
         else:
-            locator.updateByCode({"id":recorder.id,"status":1})
+            
             base.returnParameters = {"return_code":"FAIL","return_msg":"签名失败"} 
             out = base.returnXml()            
         self.request.response.setHeader('Content-Type', 'application/xml')
