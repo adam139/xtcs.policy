@@ -781,8 +781,7 @@ class Dbapi(object):
     def getByKwargs(self,**args):
         
         tablecls = self.init_table()
-        import pdb
-        pdb.set_trace()       
+     
         if bool(args):           
             try:
                 args2 = ["%s = %s" %(kw,vl) for kw,vl in args.items()]

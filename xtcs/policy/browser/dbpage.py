@@ -1,4 +1,5 @@
 #-*- coding: UTF-8 -*-
+from __future__ import division
 from plone import api
 from zope.interface import Interface
 from zope.component import getMultiAdapter
@@ -200,8 +201,6 @@ class DonatedWorkflow(BrowserView):
         code = self.request.form['code']
         baseapi = WeixinHelper()        
         token = baseapi.getAccessTokenByCode(code)
-#         import pdb
-#         pdb.set_trace()
         return token
     
     def get_openid(self):
@@ -399,23 +398,27 @@ class NotifyAjax(grok.View,Wxpay_server_pub):
         api = WeixinHelper()      
         datadic = api.xmlToArray(datadic)
         openid = datadic['openid']
-        money =  datadic['total_fee']  
+        money =  datadic['total_fee']        
+        money = int(money)/100  
         base.data = datadic
+        locator = queryUtility(IDbapi, name='onlinepay')
 #         paras = {"openid":openid,"money":money}
         # 验证签名和金额是否一致 金额在用户下单插入数据库
         # select a.* from  where openid
 #         locator = queryUtility(IDbapi, name='onlinepay')
 #         recorder = locator.getByKwargs(openid=openid,money=money)
         recorder = Session.query(OnlinePay).filter(OnlinePay.openid==openid).\
-            filter(OnlinePay.money==str(money)).first()        
+            filter(OnlinePay.money==str(money)).order_by(OnlinePay.id.desc()).first() 
         
         if base.checkSign() and bool(recorder):            
             # update status=1
-            locator.updateByCode({"id":recorder.id,"status":1}) 
+#             locator.updateByCode({"id":recorder.id,"status":1})
+            #locator.updateByCode({"id":recorder.id,"status":1}) 
             # send template message
             base.returnParameters = {"return_code":"SUCCESS","return_msg":"OK"}            
             out = base.returnXml()
         else:
+            locator.updateByCode({"id":recorder.id,"status":1})
             base.returnParameters = {"return_code":"FAIL","return_msg":"签名失败"} 
             out = base.returnXml()            
         self.request.response.setHeader('Content-Type', 'application/xml')
@@ -435,6 +438,7 @@ class PayAjax(grok.View):
         
 #         locator = getUtility(IDonorLocator)
         locator = queryUtility(IDbapi, name='onlinepay')
+#         print paras
         locator.add(paras)
         return       
         
@@ -443,14 +447,18 @@ class PayAjax(grok.View):
         "response to front end"
 
         datadic = self.request.form
-        fee = int(datadic['fee'])       
-        total_fee = str( fee* 100) # batch search start position
+        fee = float(datadic['fee'])
+        
+        fee = round(fee,2)
+              
+        total_fee = str(int(fee * 100)) # batch search start position
+
         body = datadic['did']      # batch search size
         openid = datadic['openid']       
         api = JsApi_pub()
         out = api.getParameters(openid,body,total_fee)
         datadic['money'] = str(fee)
-        del datadic['_authenticator']
+#         del datadic['_authenticator']
         del datadic['fee']
 
         datadic['status'] = 0
