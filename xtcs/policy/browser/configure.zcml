@@ -24,6 +24,12 @@
     />
 
     <browser:page
+      for="*"
+      name="notify"
+      class=".dbpage.NotifyAjax"
+      permission="zope.Public"
+    />
+    <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="auth.html"
       class=".zhifu.ZhiFuWeiXinAuthView"

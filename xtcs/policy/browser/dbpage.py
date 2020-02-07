@@ -384,19 +384,33 @@ class TestAjax(grok.View):
         return token        
             
 
-class NotifyAjax(grok.View,Wxpay_server_pub):
+# class NotifyAjax(grok.View,Wxpay_server_pub):
+import logging
+logger = logging.getLogger("weixin notify")
+class NotifyAjax(object):    
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-    grok.context(Interface)
-    grok.name('notify_ajax')
-    grok.require('zope2.View')
+#     grok.context(Interface)
+#     grok.name('notify_ajax')
+#     grok.require('zope2.View')
          
-    def render(self):
-        base = Wxpay_server_pub()
+#     def render(self):
+    def __call__(self):
+        """weixin callback"""        
+        logger.info("weixin callback --------------------------------------entering !")
+        if self.request['method'] == 'GET':
+            logger.info("received get quest=get !")
+            self.request.response.setHeader('Content-Type', 'application/xml')          
+            return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>"
+
+        base = Wxpay_server_pub()        
         datadic = self.request.items()[0][0]
-        api = WeixinHelper()      
+        logger.info(str(datadic))
+        api = WeixinHelper()
+        logger.info("turn to xml")      
         datadic = api.xmlToArray(datadic)
+        logger.info(str(datadic))
         openid = datadic['openid']
         money =  datadic['total_fee']        
         money = int(money)/100  
@@ -422,7 +436,9 @@ class NotifyAjax(grok.View,Wxpay_server_pub):
             
             base.returnParameters = {"return_code":"FAIL","return_msg":"签名失败"} 
             out = base.returnXml()            
+
         self.request.response.setHeader('Content-Type', 'application/xml')
+
         return out        
         
  
