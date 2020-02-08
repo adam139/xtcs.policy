@@ -13,7 +13,7 @@
 <body>	
 <metal:main fill-slot="main">
     <tal:main-macro metal:define-macro="main">
-    <div id="juankuan_workflow"  tal:attributes="data-ajax-target python:portal_url + '/@@pay_ajax'"
+    <div id="juankuan_workflow"  tal:attributes="data-ajax-target python:portal_url"
     	tal:define="p python:context.absolute_url();
     			            plone_view context/@@plone;
        						toLocalizedTime nocall:plone_view/toLocalizedTime">      	
@@ -100,11 +100,8 @@
     		    </div>
   			</div> <!--Tab panes end -->
 			</div>
-			</div> <!-- tabPortlet end-->
-					
-				
-		</div>  <!-- row3 end-->	
-
+			</div> <!-- tabPortlet end-->									
+		</div>  <!-- row3 end-->
 		<div class="row row-4">
 			<!--选择支付方式,捐款项目,发起支付 -->
 			<div class="col-xs-12">
@@ -133,10 +130,8 @@
 			<button id="submit" class="btn btn-warning btn-lg" name="ok">确定</button>
 			<button class="btn btn-default btn-lg" name="cancel">取消</button>
 			</form>            		
-			</div>												
-							
-		</div>		<!--end row -->  
-     
+			</div>																		
+		</div>		<!--end row -->      
      </div>
   </tal:main-macro>
  </metal:main>
