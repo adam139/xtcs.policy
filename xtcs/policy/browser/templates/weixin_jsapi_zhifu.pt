@@ -37,15 +37,15 @@
 			 <div class="form-group">
 			 	<label for="InputName">捐款人(可以匿名)</label>
 					<input type="text" name="name" value="">			 	
-			 	<label for="InputMoney">捐款金额(单位:元)</label>
+			 	<label for="InputMoney" class="required">捐款金额(单位:元)</label>
 					<input type="text" name="money" value="">
 			 </div>             	                          
 			 <div class="form-group">
 			 	<label for="InputWay">捐款方式</label>
-						<div class="radio">
-							<label><input type="radio" name="optionsPay" id="optionsPay1" value="pay1" />微信支付</label><br />             			
-							<label><input type="radio" name="optionsPay" id="optionsPay2" value="pay2" disabled />支付宝支付</label>
-             			</div>					
+				<div class="radio">
+					<label><input type="radio" name="optionsPay" id="optionsPay1" value="pay1" checked="checked" />微信支付</label><br />             			
+					<label><input type="radio" name="optionsPay" id="optionsPay2" value="pay2" disabled />支付宝支付</label>
+             	</div>					
 			 </div>
 			<button id="submit" class="btn btn-warning btn-lg" name="ok">确定</button>
 			<button class="btn btn-default btn-lg" name="cancel">取消</button>
