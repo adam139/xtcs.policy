@@ -102,7 +102,15 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/donated_workflow.pt"
-    />        
+    />
+    <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="pay"
+      class=".dbpage.DonatedWorkflow"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/weixin_jsapi_zhifu.pt"
+    />             
     <browser:page
       for="*"
       name="footer"
