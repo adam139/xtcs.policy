@@ -22,7 +22,6 @@
       layer=".interfaces.IThemeSpecific"       
       template="templates/homepage.pt"
     />
-
     <browser:page
       for="*"
       name="notify"
@@ -31,13 +30,20 @@
     />
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
-      name="auth.html"
+      name="auth"
       class=".zhifu.ZhiFuWeiXinAuthView"
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/zhifu_weixin_auth.pt"
     />
-        
+    <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="auth.html"
+      class=".zhifu.ZhiFuWView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/zhifu_weixin_auth.pt"
+    />        
     <browser:page
       for="*"
       name="donor_table"

@@ -44,7 +44,7 @@ function init(base) {
   var url = decodeURIComponent(location.search);
   var params = Object.assign(getUrlParams(url));
   if (isEmpty(params.code)){
-    window.location.href = base +"/@@auth.html";
+    window.location.href = base +"/@@auth";
   } 
     // 获取openid
   var data = {'code':params.code};
@@ -52,7 +52,7 @@ function init(base) {
   var action = base +"/@@token_ajax";
   $.post(action,data,function(res) {        
     if (!isEmpty(res.errcode)&&res.errcode===40029) {
-       window.location.href = base +"/@@auth.html";
+       window.location.href = base +"/@@auth";
        } else {
     //setCookie("openid",openid,7200)
     $(".ajaxform input[name='openid']").attr("value", res.openid);
