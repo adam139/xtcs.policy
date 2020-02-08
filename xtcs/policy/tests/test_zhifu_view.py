@@ -32,11 +32,23 @@ class TestView(unittest.TestCase):
         import transaction
         transaction.commit()
         obj = portal.absolute_url() + '/@@auth.html'    
-        browser.open(obj)
- 
-        outstr = "wx2833460b1571bd01"
-        import pdb
-        pdb.set_trace()
+        browser.open(obj) 
+        outstr = "donated_workflow"
+        self.assertTrue(outstr in browser.contents)
+
+    def test_zhifu_weixin_auth_view(self):
+
+        app = self.layer['app']
+        portal = self.layer['portal']       
+        browser = Browser(app)
+        browser.handleErrors = False
+        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
+
+        import transaction
+        transaction.commit()
+        obj = portal.absolute_url() + '/@@auth'    
+        browser.open(obj) 
+        outstr = "pay"
         self.assertTrue(outstr in browser.contents)
         
     def test_zhifu_weixin_workflow_view(self):
@@ -47,18 +59,29 @@ class TestView(unittest.TestCase):
         browser.handleErrors = False
         browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
 
-
-        from zope.interface import alsoProvides
-        from xtcs.policy.interfaces import IJuanzengworkflow
-        alsoProvides(portal,IJuanzengworkflow)
         import transaction
         transaction.commit()        
         obj = portal.absolute_url() + '/@@donated_workflow?code=2&mail=3'    
-        browser.open(obj)
- 
-        outstr = "wx2833460b1571bd01"
+        browser.open(obj) 
+        outstr = 'name="money"'
         self.assertTrue(outstr in browser.contents)
         
+    def test_zhifu_weixin_view(self):
+
+        app = self.layer['app']
+        portal = self.layer['portal']       
+        browser = Browser(app)
+        browser.handleErrors = False
+        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
+
+        import transaction
+        transaction.commit()        
+        obj = portal.absolute_url() + '/@@pay?code=2&mail=3'    
+        browser.open(obj)
+ 
+        outstr = 'name="money"'
+
+        self.assertTrue(outstr in browser.contents)        
         
     def test_ajax_search(self):
         request = self.layer['request']        
@@ -66,15 +89,15 @@ class TestView(unittest.TestCase):
         secret = keyManager.secret()
         auth = hmac.new(secret, TEST_USER_NAME, sha).hexdigest()
         request.form = {
-                        '_authenticator': auth,
+#                         '_authenticator': auth,
                         'fee': 10,
-                        'did':'21' ,
+                        'code':12,
+                        'aname':'testuser',
+                        'did':'21',
                         'openid':'oQ61n01gs3t34TglBy_x2U6l8VWk',                                                                                                                    
                         }
 # Look up and invoke the view via traversal
         view = self.portal.restrictedTraverse('@@pay_ajax')
         result = view()
-
-
-        self.assertEqual(json.loads(result),10)         
+        self.assertEqual(len(json.loads(result)),6)         
   
