@@ -63,8 +63,7 @@ function init(base) {
 $(document).ready(function(){
 	var base = $("#juankuan_workflow").attr('data-ajax-target');
     init(base);
-  $(".ajaxform button[name='ok']").on("click",function(base) {
-	//var base = $("#juankuan_workflow").attr('data-ajax-target');
+    $(".ajaxform button[name='ok']").on("click",function(base) {
 	var aname = $(".ajaxform input[name='name']").val();
 	var money = $(".ajaxform input[name='money']").val();
 	if (isEmpty(parseFloat(money)))  {
@@ -77,8 +76,8 @@ $(document).ready(function(){
 	var data = {'aname':aname,'fee':money,'did':project,'openid':openid,'code':code};
 	$.post(base + "/@@pay_ajax",data,function(callback) {
       console.log(JSON.stringify(callback));
-function onBridgeReady(){
-   WeixinJSBridge.invoke(
+      function onBridgeReady(){
+      WeixinJSBridge.invoke(
       'getBrandWCPayRequest', {
          "appId":callback.appId,     //公众号名称，由商户传入     
          "timeStamp":callback.timeStamp,         //时间戳，自1970年以来的秒数     
@@ -89,30 +88,28 @@ function onBridgeReady(){
       },
       function(res){
       if(res.err_msg == "get_brand_wcpay_request:ok" ){
-      	var zhifu_result = "ok";
-      	$.post("http://weixin.315ok.org/@@successnotify",
-      	       {"result":zhifu_result},function(callback){
-      		
-      	},'json');
-      // 使用以上方式判断前端返回,微信团队郑重提示：
-            //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+      	//var zhifu_result = "ok";
+      	//$.post("http://weixin.315ok.org/@@successnotify",
+      	//       {"result":zhifu_result},function(callback){  },'json');
+        // 使用以上方式判断前端返回,微信团队郑重提示：
+        //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
       } 
    }); 
-}
+ }
 if (typeof WeixinJSBridge == "undefined"){
    if( document.addEventListener ){
        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-   }else if (document.attachEvent){
+    }
+   else if (document.attachEvent){
        document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+    }
    }
-}else{
+ else{
    onBridgeReady();
-}
-							
-		},'json');
+ }							
+},'json');
 		return false;
-	});
-			
+	});			
 }
 );
