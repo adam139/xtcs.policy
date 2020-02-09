@@ -50,6 +50,14 @@ class TestView(unittest.TestCase):
         browser.open(obj) 
         outstr = "pay"
         self.assertTrue(outstr in browser.contents)
+        obj = portal.absolute_url() + '/@@hotauth'    
+        browser.open(obj) 
+        outstr = "hotpay"
+        self.assertTrue(outstr in browser.contents)
+        obj = portal.absolute_url() + '/@@auth.html'    
+        browser.open(obj) 
+        outstr = "donated_workflow"
+        self.assertTrue(outstr in browser.contents)                
         
     def test_zhifu_weixin_workflow_view(self):
 
@@ -82,6 +90,23 @@ class TestView(unittest.TestCase):
         outstr = 'name="money"'
 
         self.assertTrue(outstr in browser.contents)        
+
+    def test_hot_zhifu_view(self):
+
+        app = self.layer['app']
+        portal = self.layer['portal']       
+        browser = Browser(app)
+        browser.handleErrors = False
+        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
+
+        import transaction
+        transaction.commit()        
+        obj = portal.absolute_url() + '/@@hotpay?code=2&mail=3'    
+        browser.open(obj)
+ 
+        outstr = 'name="money"'
+
+        self.assertTrue(outstr in browser.contents)
         
     def test_ajax_search(self):
         request = self.layer['request']        

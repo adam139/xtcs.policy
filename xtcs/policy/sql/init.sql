@@ -5,14 +5,7 @@
 use xtcs;
 
 -- online pay 
-/*
-60 ganzhi table
-from:甲子
-to:癸亥
-id :
-initial value :1 
-end value:60
-*/
+
 create table if not exists onlinepay (
     id integer unsigned not null auto_increment primary key,
     did integer unsigned not null,

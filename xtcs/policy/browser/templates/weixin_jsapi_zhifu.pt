@@ -13,20 +13,16 @@
 <body>	
 <metal:main fill-slot="main">
     <tal:main-macro metal:define-macro="main">
-    <div id="juankuan_workflow"  tal:attributes="data-ajax-target python:portal_url"
-    	tal:define="p python:context.absolute_url();
-    			            plone_view context/@@plone;
-       						toLocalizedTime nocall:plone_view/toLocalizedTime">      	
- 	
-
-		<div class="row row-4">
+    <div id="juankuan_workflow"  
+    	tal:attributes="data-ajax-base python:portal_url;data-ajax-auth python:'/@@hotauth'">
+		<div class="row">
 			<!--选择支付方式,捐款项目,发起支付 -->
 			<div class="col-xs-12">
 			<form class="ajaxform">
 				<input type="hidden" value="" name="openid">
 				<input type="hidden" value="" name="code">	
 				<div class="form-group">
-					<label for="InputRadio">捐款项目</label>
+					<label for="InputRadio"><span class="required">捐款项目</span></label>
 						<div class="radio" tal:content="structure python:view.get_projects()">
 							<label><input type="radio" name="optionsProject" id="optionsProject1" value="project1" >助学慈善项目</label><br />
 							<label><input type="radio" name="optionsProject" id="optionsProject2" value="project2" >助医慈善项目</label><br />
@@ -35,10 +31,10 @@
              			</div>             			             			
              	</div>
 			 <div class="form-group">
-			 	<label for="InputName">捐款人(可以匿名)</label>
-					<input type="text" name="name" value="">			 	
-			 	<label for="InputMoney" class="required">捐款金额(单位:元)</label>
-					<input type="text" name="money" value="">
+			 	<label for="InputName"><span class="required">捐款人</span></label>
+					<input type="text" class="form-control" name="name" value="">			 	
+			 	<label for="InputMoney"><span class="required">捐款金额(单位:元)</span></label>
+					<input type="text" class="form-control" name="money" value="">
 			 </div>             	                          
 			 <div class="form-group">
 			 	<label for="InputWay">捐款方式</label>

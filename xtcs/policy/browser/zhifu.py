@@ -42,6 +42,24 @@ class ZhiFuWeiXinAuthView(ZhiFuWView):
         init();
         """ % dict(oauthUrl=nexturl)
         return out
-    
+
+
+class ZhiFuHotAuthView(ZhiFuWView):
+    "fetch access_token by code,"
+
+    @memoize
+    def outputjs(self):
+        "用户同意授权，获取code"
+#         registry = getUtility(IRegistry)
+#         settings = registry.forInterface(IwechatSettings)                          
+        redirecturi = 'http://weixin.315ok.org/@@hotpay'
+        nexturl = WeixinHelper.oauth2(redirecturi)
+        out = """
+        function init() {
+         window.location.href = "%(oauthUrl)s";
+        }
+        init();
+        """ % dict(oauthUrl=nexturl)
+        return out    
                
  

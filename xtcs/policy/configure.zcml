@@ -13,6 +13,7 @@
       title="xtcs.policy:Input db"
       />  
   <i18n:registerTranslations directory="locales" />
+
     <include package=".browser" />     
     <include package=".portlet" />
     <grok:grok package="." /> 

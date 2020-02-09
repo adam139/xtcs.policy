@@ -44,15 +44,15 @@ function init(base) {
   var url = decodeURIComponent(location.search);
   var params = Object.assign(getUrlParams(url));
   if (isEmpty(params.code)){
-    window.location.href = base +"/@@auth";
+    window.location.href = authurl;
   } 
-    // 获取openid
+    // get openid
   var data = {'code':params.code};
   $(".ajaxform input[name='code']").attr("value", data);
   var action = base +"/@@token_ajax";
   $.post(action,data,function(res) {        
     if (!isEmpty(res.errcode)&&res.errcode===40029) {
-       window.location.href = base +"/@@auth";
+       window.location.href = authurl;
        } else {
     //setCookie("openid",openid,7200)
     $(".ajaxform input[name='openid']").attr("value", res.openid);
@@ -61,9 +61,10 @@ function init(base) {
   }
 
 $(document).ready(function(){
-	var base = $("#juankuan_workflow").attr('data-ajax-target');
+	var base = $("#juankuan_workflow").attr('data-ajax-base');
+	var authurl = base + $("#juankuan_workflow").attr('data-ajax-auth');
     init(base);
-    $(".ajaxform button[name='ok']").on("click",function(base) {
+    $(".ajaxform button[name='ok']").on("click",function() {
 	var aname = $(".ajaxform input[name='name']").val();
 	var money = $(".ajaxform input[name='money']").val();
 	if (isEmpty(parseFloat(money)))  {
@@ -79,20 +80,21 @@ $(document).ready(function(){
       function onBridgeReady(){
       WeixinJSBridge.invoke(
       'getBrandWCPayRequest', {
-         "appId":callback.appId,     //公众号名称，由商户传入     
-         "timeStamp":callback.timeStamp,         //时间戳，自1970年以来的秒数     
-         "nonceStr":callback.nonceStr, //随机串     
+         "appId":callback.appId,     
+         "timeStamp":callback.timeStamp,    
+         "nonceStr":callback.nonceStr,     
          "package":callback.package,     
-         "signType":callback.signType,         //微信签名方式：     
-         "paySign":callback.paySign //微信签名 
+         "signType":callback.signType,     
+         "paySign":callback.paySign
       },
       function(res){
       if(res.err_msg == "get_brand_wcpay_request:ok" ){
-      	//var zhifu_result = "ok";
-      	//$.post("http://weixin.315ok.org/@@successnotify",
-      	//       {"result":zhifu_result},function(callback){  },'json');
-        // 使用以上方式判断前端返回,微信团队郑重提示：
-        //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+      	<%--
+      	var zhifu_result = "ok";
+      	$.post("http://weixin.315ok.org/@@successnotify",
+      	       {"result":zhifu_result},function(callback){  },'json');
+
+        --%>
       } 
    }); 
  }

@@ -395,9 +395,8 @@ class TokenAjax(grok.View):
     def getAccessTokenByCode(self):
         
         try:
-            code = self.request.form['code']
-            baseapi = CustomWeixinHelper()        
-            token = baseapi.getAccessTokenByCode(code)
+            code = self.request.form['code']      
+            token = CustomWeixinHelper.getAccessTokenByCode(code)
             return token
         except:
             return ""
@@ -430,8 +429,8 @@ class NotifyAjax(object):
         base = Wxpay_server_pub()     
         datadic = self.request['xml']
         logger.info(str(datadic))
-        api = CustomWeixinHelper()     
-        datadic = api.xmlToArray(datadic)
+#         api = CustomWeixinHelper()     
+        datadic = CustomWeixinHelper.xmlToArray(datadic)
         openid = datadic['openid']
         money =  datadic['total_fee']        
         money = int(money)/100  
@@ -449,8 +448,8 @@ class NotifyAjax(object):
             # send template message
             message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
             nw = datetime.datetime.now().strftime(fmt)
-            access_token = api.getAccessToken()
-            api.sendTextMessage(openid, message.format(nw,money), access_token)
+            access_token = CustomWeixinHelper.getAccessToken()
+            CustomWeixinHelper.sendTextMessage(openid, message.format(nw,money), access_token)
 
         else:            
             out = 'no'        
