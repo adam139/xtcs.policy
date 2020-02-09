@@ -6,6 +6,7 @@ from zope.component import getMultiAdapter
 from five import grok
 import json
 import datetime
+fmt = "%Y-%m-%d %H:%M:%S"
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore import permissions
@@ -27,7 +28,7 @@ from xtcs.policy.mapping_db import OnlinePay
 from xtcs.policy import Scope_session as Session
 
 from xtcs.policy.interfaces import IJuanzenggongshi
-from my315ok.wechat.pay import WeixinHelper
+from my315ok.wechat.pay import CustomWeixinHelper
 from my315ok.wechat.pay import UnifiedOrder_pub
 from my315ok.wechat.pay import JsApi_pub
 from my315ok.wechat.pay import Wxpay_server_pub
@@ -188,34 +189,18 @@ class GuangZhuangDonorView(DonorView):
                                   size=query['size'],multi = query['multi'],id=22 )
         return recorders
 
-class DonatedWorkflow(BrowserView):
+
+
+class WeixinPay(BrowserView):
     """
     在线捐款流程。
     view name:donated_workflow
     """
-    def __init__(self,context, request):
-        # Each view instance receives context and request as construction parameters
-        self.context = context
-        self.request = request
-        add_bundle_on_request(self.request, 'donate-legacy')
+    def get_auth_page(self):
+        ""
+        return "@@auth"
     
-    def getAccessTokenByCode(self):
-        
-        code = self.request.form['code']
-        baseapi = WeixinHelper()        
-        token = baseapi.getAccessTokenByCode(code)
-        return token
-    
-    def get_openid(self):
-        "提取coockie openid"
-        
-        _openid = self.request.cookies.get("_openid", "")
-        if bool(_openid):
-            new_url = "%s/@@auth.html" % api.portal.get().absolute_url()
-            self.request.response.redirect(new_url)
-        return _openid
-    
-    def get_projects(self):
+    def get_projects(self,id=None):
         "提取系统所有公益项目"
 #         tken = self.getAccessTokenByCode()
         query = {'start':0,'size':10,'multi':0}      
@@ -229,8 +214,44 @@ class DonatedWorkflow(BrowserView):
             return out
             
         outhtml = map(outfmt,recorders)
+        if bool(outhtml):
+            first = outhtml[0]
+            index = first.find('value') 
+            outhtml[0] = first[:index] + ' checked ' + first[index:]
+             
         outhtml = "<br/>".join(outhtml)
-        return outhtml       
+        return outhtml
+
+class CurrentWeixinPay(WeixinPay):
+    """
+    在线捐款流程。
+    view name:donated_workflow
+    """
+    def get_projects(self,id):
+        "提取当前公益项目,id is project id"
+        locator = getUtility(IDonateLocator)
+        rcd = locator.getByCode(id)
+        out = dict()
+        out['title'] = rcd.aname
+        st = '<label><input type="radio" name="{0}" id="{1}" value="{2}" checked>{3}</label>'
+        pid = "project{0}".format(rcd.did)
+        out['html']  = st.format("project",pid ,rcd.did,rcd.aname)
+        return out
+        
+
+        
+    
+class DonatedWorkflow(WeixinPay):
+    """
+    在线捐款流程。
+    view name:donated_workflow
+    """
+    def __init__(self,context, request):
+        # Each view instance receives context and request as construction parameters
+        self.context = context
+        self.request = request
+        add_bundle_on_request(self.request, 'donate-legacy')    
+       
 
  # ajax multi-condition search relation db
 class ajaxsearch(grok.View):
@@ -375,7 +396,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']
-            baseapi = WeixinHelper()        
+            baseapi = CustomWeixinHelper()        
             token = baseapi.getAccessTokenByCode(code)
             return token
         except:
@@ -409,7 +430,7 @@ class NotifyAjax(object):
         base = Wxpay_server_pub()     
         datadic = self.request['xml']
         logger.info(str(datadic))
-        api = WeixinHelper()     
+        api = CustomWeixinHelper()     
         datadic = api.xmlToArray(datadic)
         openid = datadic['openid']
         money =  datadic['total_fee']        
@@ -426,6 +447,10 @@ class NotifyAjax(object):
             locator.updateByCode({"id":recorder.id,"status":1})
             out = 'ok'
             # send template message
+            message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
+            nw = datetime.datetime.now().strftime(fmt)
+            access_token = api.getAccessToken()
+            api.sendTextMessage(openid, message.format(nw,money), access_token)
 
         else:            
             out = 'no'        
@@ -487,7 +512,7 @@ class PayAjax(grok.View):
         datadic['openid'] = openid
         if datadic['aname'] =="":
             logger.info("start get nickname !")
-            help_api = WeixinHelper()
+            help_api = CustomWeixinHelper()
             logger.info("authorize code is:%s" % datadic['code'])
             token = help_api.getAccessTokenByCode(datadic['code'])
             logger.info("access token is:%s" % token)
@@ -735,9 +760,7 @@ class InputDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-        import time
-        from datetime import datetime
-        fmt = "%Y-%m-%d %H:%M:%S"        
+        import time        
         dtst = data['start_time']
         if isinstance(dtst,datetime):
             # datetime convert to timestamp
