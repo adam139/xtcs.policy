@@ -89,12 +89,11 @@ $(document).ready(function(){
       },
       function(res){
       if(res.err_msg == "get_brand_wcpay_request:ok" ){
-      	<%--
-      	var zhifu_result = "ok";
-      	$.post("http://weixin.315ok.org/@@successnotify",
-      	       {"result":zhifu_result},function(callback){  },'json');
 
-        --%>
+      	//var zhifu_result = "ok";
+      	//$.post("http://weixin.315ok.org/@@successnotify",
+      	//       {"result":zhifu_result},function(callback){  },'json');
+
       } 
    }); 
  }
