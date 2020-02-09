@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="here/main_template/macros/master"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"      
+      i18n:domain="xtcs.policy">        
+<head>
+<metal:override fill-slot="top_slot"
+    tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);
+                disable_column_two python:request.set('disable_plone.rightcolumn',1);"/>
+</head>
+<body>	
+<metal:main fill-slot="main">
+    <tal:main-macro metal:define-macro="main">
+    <div id="juankuan_workflow"  
+    	tal:attributes="data-ajax-base python:portal_url;data-ajax-auth python:'/@@hotauth'">
+      <div class="jumbotron">
+      	<div class="container">
+      		<h3 class="text-center" style="color:#de0000">众志成城,抗击</h3>
+      		<h1 tal:content="structure python:view.get_projects(22)['title']"></h1>
+      		<h3 class="text-center" style="color:#df0000">万众一心,我要捐款</h3>		
+		<div class="row">
+			<!--选择支付方式,捐款项目,发起支付 -->
+			<div class="col-xs-12">
+			<form class="ajaxform">
+				<input type="hidden" value="" name="openid">
+				<input type="hidden" value="" name="code">
+				  <div class="radio" style="display:none" 
+				  	tal:content="structure python:view.get_projects(22)['html']">
+				  </div>
+			 <div class="form-group">
+			 	<label for="InputName"><span class="required">捐款人</span></label>
+					<input type="text" class="form-control" name="name" value="">			 	
+			 	<label for="InputMoney"><span class="required">捐款金额(单位:元)</span></label>
+					<input type="text" class="form-control" name="money" value="">
+			 </div>             	                          
+			 <div class="form-group">
+			 	<label for="InputWay">捐款方式</label>
+				<div class="radio">
+					<label><input type="radio" name="optionsPay" id="optionsPay1" value="pay1" checked="checked" />微信支付</label><br />             			
+					<label><input type="radio" name="optionsPay" id="optionsPay2" value="pay2" disabled />支付宝支付</label>
+             	</div>					
+			 </div>
+			<div class="row">
+			<div class="col-xs-6">
+			<button id="submit" class="btn btn-warning btn-lg" name="ok">确定</button>
+			</div>
+			<div class="col-xs-6">
+			<button class="btn btn-default btn-lg" name="cancel">取消</button>
+			</div>
+			</div>
+			</form>            		
+			</div>																		
+		</div>		<!--end row -->
+      	</div>	
+      </div>		      
+     </div>
+  </tal:main-macro>
+ </metal:main>
+  <metal:js fill-slot="javascript_bottom_slot">
+	<script type="text/javascript"
+		tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+     tal:attributes="src string:${navroot}/++resource++xtcs.policy/weixinjsapi.js">		
+	</script>	
+	</metal:js> 
+</body>
+</html>

@@ -38,6 +38,14 @@
     />
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
+      name="hotauth"
+      class=".zhifu.ZhiFuHotAuthView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/zhifu_weixin_auth.pt"
+    />        
+    <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
       name="auth.html"
       class=".zhifu.ZhiFuWView"
       permission="zope.Public"
@@ -112,11 +120,19 @@
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="pay"
-      class=".dbpage.DonatedWorkflow"
+      class=".dbpage.WeixinPay"
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/weixin_jsapi_zhifu.pt"
-    />             
+    />
+    <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="hotpay"
+      class=".dbpage.CurrentWeixinPay"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/current_project_zhifu.pt"
+    />                 
     <browser:page
       for="*"
       name="footer"
