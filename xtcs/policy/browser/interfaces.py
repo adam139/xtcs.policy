@@ -4,6 +4,55 @@ from zope import schema
 from plone.theme.interfaces import IDefaultPloneLayer
 from xtcs.policy import  _
 
+class IwechatSettings(Interface):
+    """Describes registry records
+    """
+    
+    appid = schema.ASCII(
+            title=_(u"app id"),
+            description=_(u"weixin app id"),
+        )
+    appsecret = schema.ASCII(
+                             title=_(u"app secret"),
+                             description=_(u"weixin app secret"),
+                             )
+    token = schema.ASCII(
+                             title=_(u"app token"),
+                             description=_(u"weixin app token"),
+                             )
+    access_token = schema.ASCII(
+                             title=_(u"gongzhong hao access token"),
+                             description=_(u"gongzhong hao access token"),
+                             )
+    access_token_time = schema.Datetime(
+                             title=_(u"access token update time"),
+                             description=_(u"gongzhong hao access token update time"),
+                             )    
+    jsapi_access_token = schema.ASCII(
+                             title=_(u"jsapi access token"),
+                             description=_(u"jsapi web page authorized access token"),
+                             )
+    jsapi_ticket = schema.ASCII(
+                             title=_(u"jsapi ticket"),
+                             description=_(u"jsapi web page authorized access ticket"),
+                             )    
+    jsapi_ticket_time = schema.Datetime(
+                             title=_(u"jsapi ticket update time"),
+                             description=_(u"jsapi access ticket update time"),
+                             )
+    jsapi_access_token_time = schema.Datetime(
+                             title=_(u"access token update time"),
+                             description=_(u"jsapi access token update time"),
+                             )                    
+    preview = schema.ASCIILine(
+            title=_(u"Preview image URL"),
+            required=False,
+        )
+    redirecturi = schema.ASCIILine(
+            title=_(u"the redirect uri of jsapi authorize page"),
+            required=False,
+        )
+
 
 class IThemeSpecific(Interface):
     """Marker interface that defines a ZTK browser layer. We can reference

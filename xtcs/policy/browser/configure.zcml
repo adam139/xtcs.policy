@@ -22,6 +22,13 @@
       layer=".interfaces.IThemeSpecific"       
       template="templates/homepage.pt"
     />
+ <!--Register the control panel for wechat settings -->
+  <browser:page
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      name="wechat-controlpanel"
+      class=".controlpanel.WechatControlPanel"
+      permission="cmf.ManagePortal" 
+      />     
     <browser:page
       for="*"
       name="notify"

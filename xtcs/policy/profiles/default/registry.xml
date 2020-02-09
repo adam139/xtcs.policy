@@ -66,7 +66,23 @@ prefix="plone" />
     <value key="last_compilation">2017-07-31 08:00:00</value>
     <value key="compile">False</value>
     <value key="enabled">True</value>
-  </records>  
+  </records>
+  <!-- control panel-->
+   <records prefix="xtcs.policy.browser.interfaces.IwechatSettings" 
+  	interface="xtcs.policy.browser.interfaces.IwechatSettings">
+    <value key="appid">wx77d2frty25808f911</value>
+    <value key="appsecret">b66e860a2rtyy882dc40d3daab6a79a</value>
+    <value key="token">plone2018</value>
+    <value key="access_token">plone2018</value>
+    <value key="access_token_time">2014-08-14 00:00:00</value>
+    <value key="jsapi_access_token">plone2018</value>
+    <value key="jsapi_access_token_time">2014-08-14 00:00:00</value>
+    <value key="jsapi_ticket">plone2018</value>
+    <value key="jsapi_ticket_time">2014-08-14 00:00:00</value>        
+    <value key="preview">http://images.315ok.org/xtshzz/images/qrcode.jpg</value>
+    <value key="redirecturi">http://www.xtcs.org/</value>
+  </records> 
+    
   <!-- custom TinyMCE templates -->	
 <!-- activate the plugin -->
 <record name="plone.custom_plugins" interface="Products.CMFPlone.interfaces.controlpanel.ITinyMCESchema" field="custom_plugins">

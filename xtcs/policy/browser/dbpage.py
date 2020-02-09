@@ -5,7 +5,13 @@ from zope.interface import Interface
 from zope.component import getMultiAdapter
 from five import grok
 import json
-import datetime
+from datetime import date
+import time
+from datetime import datetime
+from datetime import timedelta
+from zope.component import getUtility
+from plone.registry.interfaces import IRegistry
+from xtcs.policy.browser.interfaces import IwechatSettings
 fmt = "%Y-%m-%d %H:%M:%S"
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
@@ -28,7 +34,7 @@ from xtcs.policy.mapping_db import OnlinePay
 from xtcs.policy import Scope_session as Session
 
 from xtcs.policy.interfaces import IJuanzenggongshi
-from my315ok.wechat.pay import CustomWeixinHelper
+from my315ok.wechat.pay import WeixinHelper
 from my315ok.wechat.pay import UnifiedOrder_pub
 from my315ok.wechat.pay import JsApi_pub
 from my315ok.wechat.pay import Wxpay_server_pub
@@ -39,6 +45,65 @@ from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFPlone.resources import add_bundle_on_request
 from zExceptions import NotFound
 from xtcs.policy import InputDb
+
+
+# our helper class
+class CustomWeixinHelper(WeixinHelper):
+    "overrite get access token method for cached and refresh"
+    
+    @classmethod
+    def getAccessToken(cls):
+        """获取access_token
+        需要缓存access_token,由于缓存方式各种各样，不在此提供
+        http://mp.weixin.qq.com/wiki/11/0e4b294685f817b95cbed85ba5e82b8f.html
+        """
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IwechatSettings)
+        stime = settings.access_token_time
+        token = settings.access_token
+        if len(token) and stime + timedalta(seconds=7000) < datetime.now():
+            return token        
+        _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
+        token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
+        settings.access_token_time = datetime.now()
+        settings.access_token = token
+        return token
+
+
+    @classmethod
+    def getAccessTokenByCode(cls, code):
+        """通过code换取网页授权access_token, 该access_token与getAccessToken()返回是不一样的
+        http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
+        """
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IwechatSettings)        
+        stime = settings.jsapi_access_token_time
+        token = settings.jsapi_access_token
+        if len(token) and stime + timedalta(seconds=7000) < datetime.now():
+            return token         
+        _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
+        token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
+        settings.jsapi_access_token_time = datetime.now()
+        settings.jsapi_access_token =  token       
+        return token
+
+    @classmethod
+    def getJsapiTicket(cls, access_token):
+        """获取jsapi_ticket
+        """
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IwechatSettings)        
+        stime = settings.jsapi_ticket_time
+        ticket = settings.jsapi_ticket
+        if len(ticket) and stime + timedalta(seconds=7000) < datetime.now():
+            return token         
+        _JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
+        ticket = HttpClient().get(_JSAPI_URL.format(access_token))
+        settings.jsapi_ticket_time = datetime.now()
+        settings.jsapi_ticket = ticket         
+        return ticket
+    
+
 
 grok.templatedir('templates')
 
@@ -265,22 +330,22 @@ class ajaxsearch(grok.View):
     
     def Datecondition(self,key):
         "构造日期搜索条件"
-        end = datetime.datetime.today()
+        end = datetime.today()
 #最近一周
         if key == 1:
-            start = end - datetime.timedelta(7)
+            start = end - timedelta(7)
 #最近一月
         elif key == 2:
-            start = end - datetime.timedelta(30)
+            start = end - timedelta(30)
 #最近一年
         elif key == 3:
-            start = end - datetime.timedelta(365)
+            start = end - timedelta(365)
 #最近两年
         elif key == 4:
-            start = end - datetime.timedelta(365*2)
+            start = end - timedelta(365*2)
 #最近五年
         else:
-            start = end - datetime.timedelta(365*5)
+            start = end - timedelta(365*5)
 #            return    { "query": [start,],"range": "min" }
         datecondition = { "query": [start, end],"range": "minmax" }
         return datecondition
@@ -334,7 +399,7 @@ class ajaxsearch(grok.View):
         contexturl = self.context.absolute_url()
         if bool(self.searchview().isAddable):
             for i in resultDicLists:
-                regtime = datetime.datetime.utcfromtimestamp(i.start_time)            
+                regtime = datetime.utcfromtimestamp(i.start_time)            
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-7 text-left">
@@ -365,7 +430,7 @@ class ajaxsearch(grok.View):
                 k = k + 1
         else:
             for i in resultDicLists:
-                regtime = datetime.datetime.utcfromtimestamp(i.start_time)            
+                regtime = datetime.utcfromtimestamp(i.start_time)            
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-9 text-left">
@@ -447,7 +512,7 @@ class NotifyAjax(object):
             out = 'ok'
             # send template message
             message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
-            nw = datetime.datetime.now().strftime(fmt)
+            nw = datetime.now().strftime(fmt)
             access_token = CustomWeixinHelper.getAccessToken()
             CustomWeixinHelper.sendTextMessage(openid, message.format(nw,money), access_token)
 
@@ -759,7 +824,7 @@ class InputDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-        import time        
+      
         dtst = data['start_time']
         if isinstance(dtst,datetime):
             # datetime convert to timestamp
