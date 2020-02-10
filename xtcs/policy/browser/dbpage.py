@@ -74,7 +74,7 @@ class CustomWeixinHelper(WeixinHelper):
         if 'errcode' not in token.keys(): 
             settings.access_token_time = datetime.now()
             settings.access_token = token['access_token']
-        return token
+        return token['access_token']
 
 
     @classmethod
