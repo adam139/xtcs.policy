@@ -8,15 +8,24 @@ use xtcs;
 
 create table if not exists onlinepay (
     id integer unsigned not null auto_increment primary key,
-    did integer unsigned not null,
-    aname varchar(65) not null default '',    
-    money varchar(65) not null default '',
-    goods varchar(65) not null default '',
+    projectId integer unsigned not null,
+    aname varchar(64) not null default '',    
+    money decimal(13,2) not null default 0.00,
+    goods varchar(64) not null default '',
     atime DATETIME not null DEFAULT CURRENT_TIMESTAMP,
     openid varchar(32) not null default 'noweixin',
     status tinyint(1) not null  default 0,
-    index pay_openid(openid) 
+    index pay_openid(openid),
+    index pay_name(aname)
     
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
+-- openid accesstoken cache table for weixin
 
+create table if not exists accesstoken (
+    id integer unsigned not null auto_increment primary key,
+    openid varchar(32) not null default 'weixindefaultopenid',
+    token varchar(128) not null default 'weixindefaultaccesstoken',
+    index weixin_openid(openid)
+    
+) engine=InnoDB DEFAULT CHARSET=utf8;
