@@ -64,7 +64,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.access_token_time
         token = settings.access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
-#         if len(token) and stime + timedalta(seconds=7000) < datetime.now():
+#         if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
 #             return token        
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
@@ -85,7 +85,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.jsapi_access_token_time
         token = settings.jsapi_access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
-#         if len(token) and stime + timedalta(seconds=7000) < datetime.now():
+#         if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
 #             return token         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
         token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
@@ -571,6 +571,7 @@ class PayAjax(grok.View):
         "response to front end"
         """def getSnsapiUserInfo(cls, access_token, openid, lang="zh_CN"):"""
 
+        logger.info ("enter pay_ajax render.")
         datadic = self.request.form
         fee = float(datadic['fee'])        
         fee = round(fee,2)              
@@ -578,6 +579,7 @@ class PayAjax(grok.View):
         body = datadic['did']      
         openid = datadic['openid']       
         api = JsApi_pub()
+        logger.info ("openid:%s,body:%s,total_fee:%s." % (openid,body,total_fee))
         out = api.getParameters(openid,body,total_fee)
         datadic['money'] = str(fee)
         datadic['status'] = 0
