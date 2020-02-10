@@ -66,7 +66,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.access_token_time
         token = settings.access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
-        if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
+        if bool(token) and stime + timedalta(seconds=7000) > datetime.now():
             return token        
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
@@ -87,7 +87,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.jsapi_access_token_time
         token = settings.jsapi_access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
-        if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
+        if bool(token) and stime + timedalta(seconds=7000) > datetime.now():
             logger.info("return cache token")
             return token         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
@@ -105,7 +105,7 @@ class CustomWeixinHelper(WeixinHelper):
         settings = registry.forInterface(IwechatSettings)        
         stime = settings.jsapi_ticket_time
         ticket = settings.jsapi_ticket
-        if bool(ticket) and stime + timedalta(seconds=7000) < datetime.now():
+        if bool(ticket) and stime + timedalta(seconds=7000) > datetime.now():
             return token         
         _JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
         ticket = HttpClient().get(_JSAPI_URL.format(access_token))
