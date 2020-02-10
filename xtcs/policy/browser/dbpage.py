@@ -62,7 +62,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.access_token_time
         token = settings.access_token
         if len(token) and stime + timedalta(seconds=7000) < datetime.now():
-            return token        
+#             return token        
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         settings.access_token_time = datetime.now()
@@ -80,7 +80,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.jsapi_access_token_time
         token = settings.jsapi_access_token
         if len(token) and stime + timedalta(seconds=7000) < datetime.now():
-            return token         
+#             return token         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
         token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
         settings.jsapi_access_token_time = datetime.now()
@@ -96,7 +96,7 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.jsapi_ticket_time
         ticket = settings.jsapi_ticket
         if len(ticket) and stime + timedalta(seconds=7000) < datetime.now():
-            return token         
+#             return token         
         _JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
         ticket = HttpClient().get(_JSAPI_URL.format(access_token))
         settings.jsapi_ticket_time = datetime.now()

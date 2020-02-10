@@ -61,7 +61,7 @@
   <metal:js fill-slot="javascript_bottom_slot">
 	<script type="text/javascript"
 		tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-     tal:attributes="src string:${navroot}/++resource++xtcs.policy/weixinjsapi.js">		
+     tal:attributes="src string:${navroot}/++resource++xtcs.policy/payjsapi.js">		
 	</script>	
 	</metal:js> 
 </body>
