@@ -38,7 +38,8 @@ from my315ok.wechat.pay import WeixinHelper
 from my315ok.wechat.pay import UnifiedOrder_pub
 from my315ok.wechat.pay import JsApi_pub
 from my315ok.wechat.pay import Wxpay_server_pub
-from my315ok.wechat.pay import OrderQuery_pub 
+from my315ok.wechat.pay import OrderQuery_pub
+from my315ok.wechat.pay import WxPayConf_pub 
 # update data view
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -64,8 +65,8 @@ class CustomWeixinHelper(WeixinHelper):
         stime = settings.access_token_time
         token = settings.access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
-#         if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
-#             return token        
+        if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
+            return token        
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         logger.info("new token is:%s" % token)
@@ -79,14 +80,14 @@ class CustomWeixinHelper(WeixinHelper):
         """通过code换取网页授权access_token, 该access_token与getAccessToken()返回是不一样的
         http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
         """
-        logger.info("enter get page accesstoken")
+        logger.info("enter getAccessTokenByCode. code:'%s'" % code)
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IwechatSettings)        
         stime = settings.jsapi_access_token_time
         token = settings.jsapi_access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
-#         if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
-#             return token         
+        if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
+            return token         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
         token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
         settings.jsapi_access_token_time = datetime.now()
@@ -102,8 +103,8 @@ class CustomWeixinHelper(WeixinHelper):
         settings = registry.forInterface(IwechatSettings)        
         stime = settings.jsapi_ticket_time
         ticket = settings.jsapi_ticket
-#         if len(ticket) and stime + timedalta(seconds=7000) < datetime.now():
-#             return token         
+        if bool(ticket) and stime + timedalta(seconds=7000) < datetime.now():
+            return token         
         _JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
         ticket = HttpClient().get(_JSAPI_URL.format(access_token))
         settings.jsapi_ticket_time = datetime.now()
@@ -468,7 +469,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            token = WeixinHelper.getAccessTokenByCode(code)
+            token = CustomWeixinHelper.getAccessTokenByCode(code)
             return token
         except:
             return ""
