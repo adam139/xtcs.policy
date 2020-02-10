@@ -1,6 +1,6 @@
 <nav id="portal-breadcrumbs" class="plone-breadcrumb" role="navigation"
          i18n:domain="plone"
-         tal:define="breadcrumbs view/breadcrumbs">
+         tal:define="breadcrumbs view/breadcrumbs" tal:condition="python:len(breadcrumbs)">
   <div class="container-fluid">
     <span id="breadcrumbs-you-are-here" class="hiddenStructure"
             i18n:translate="you_are_here">You are here:</span>
