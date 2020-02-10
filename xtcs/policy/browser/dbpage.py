@@ -109,8 +109,7 @@ class CustomWeixinHelper(WeixinHelper):
         ticket = HttpClient().get(_JSAPI_URL.format(access_token))
         settings.jsapi_ticket_time = datetime.now()
         settings.jsapi_ticket = ticket         
-        return ticket
-    
+        return ticket    
 
 
 grok.templatedir('templates')
@@ -176,14 +175,12 @@ class DonateView(BrowserView):
     view name:donate_listings
     """
     @property
-    def isEditable(self):
-      
-        return self.pm().checkPermission(permissions.ManagePortal,self.context)
-    
+    def isEditable(self):      
+        return self.pm().checkPermission(permissions.ManagePortal,self.context)    
     @property
     def isAddable(self):
-
-        return self.pm().checkPermission(permissions.AddPortalContent,self.context)  
+        return self.pm().checkPermission(permissions.AddPortalContent,self.context)
+      
     @memoize
     def pm(self):
         context = aq_inner(self.context)
@@ -263,7 +260,6 @@ class GuangZhuangDonorView(DonorView):
         return recorders
 
 
-
 class WeixinPay(BrowserView):
     """
     在线捐款流程。
@@ -309,9 +305,7 @@ class CurrentWeixinPay(WeixinPay):
         st = '<label><input type="radio" name="{0}" id="{1}" value="{2}" checked>{3}</label>'
         pid = "project{0}".format(rcd.did)
         out['html']  = st.format("project",pid ,rcd.did,rcd.aname)
-        return out
-        
-
+        return out       
         
     
 class DonatedWorkflow(WeixinPay):
@@ -469,8 +463,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            token = WeixinHelper.getAccessTokenByCode(code)
-            return token
+            return WeixinHelper.getAccessTokenByCode(code)
         except:
             return ""
         
@@ -480,10 +473,8 @@ class TokenAjax(grok.View):
     
         token = self.getAccessTokenByCode()
         self.request.response.setHeader('Content-Type', 'application/json')
-        return token        
-            
+        return token                   
 
-# class NotifyAjax(grok.View,Wxpay_server_pub):
 
 class NotifyAjax(object):    
     """AJAX action for search DB.
@@ -500,15 +491,14 @@ class NotifyAjax(object):
 
         base = Wxpay_server_pub()     
         datadic = self.request['xml']
-        logger.info(str(datadic))
-#         api = CustomCustomWeixinHelper()     
+        logger.info(str(datadic))   
         datadic = WeixinHelper.xmlToArray(datadic)
         openid = datadic['openid']
         money =  datadic['total_fee']        
         money = int(money)/100  
         base.data = datadic
         locator = queryUtility(IDbapi, name='onlinepay')
-        # 验证签名和金额是否一致 金额在用户下单插入数据库
+#         验证签名和金额是否一致 金额在用户下单插入数据库
 #         recorder = locator.getByKwargs(openid=openid,money=money)
         recorder = Session.query(OnlinePay).filter(OnlinePay.openid==openid).\
             filter(OnlinePay.money==str(money)).order_by(OnlinePay.id.desc()).first() 
@@ -522,13 +512,12 @@ class NotifyAjax(object):
                 message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
                 nw = datetime.now().strftime(fmt)
                 text = message.format(nw,money).encode('utf-8')
-                logger.info("start send text message:%s" % text)
+#                 logger.info("start send text message:%s" % text)
                 access_token = CustomWeixinHelper.getAccessToken()
-                logger.info("base accesstoken:%s" % access_token)
+#                 logger.info("base accesstoken:%s" % access_token)
                 WeixinHelper.sendTextMessage(openid, text, access_token)
             except:
-                logger.info("send text message:'%s'failed"  % text)
-                
+                logger.info("send text message:'%s'failed"  % text)                
         else:            
             out = 'no'        
         self.request.response.setHeader('Content-Type', 'text/plain')        
@@ -576,7 +565,7 @@ class PayAjax(grok.View):
         "response to front end"
         """def getSnsapiUserInfo(cls, access_token, openid, lang="zh_CN"):"""
 
-        logger.info ("enter pay_ajax render.")
+#         logger.info ("enter pay_ajax render.")
         datadic = self.request.form
         fee = float(datadic['fee'])        
         fee = round(fee,2)              
@@ -584,7 +573,7 @@ class PayAjax(grok.View):
         body = datadic['did']      
         openid = datadic['openid']       
         api = JsApi_pub()
-        logger.info ("openid:%s,body:%s,total_fee:%s." % (openid,body,total_fee))
+#         logger.info ("openid:%s,body:%s,total_fee:%s." % (openid,body,total_fee))
         out = api.getParameters(openid,body,total_fee)
         datadic['money'] = str(fee)
         datadic['status'] = 0
@@ -754,7 +743,6 @@ class GuangZhuangDonorajaxsearch(Donorajaxsearch):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
 
-
 # Delete Update Input block
 class DeleteDonate(form.Form):
     "delete the specify model recorder"
@@ -779,18 +767,11 @@ class DeleteDonate(form.Form):
     def getContent(self):
         # Get the model table query funcations
         locator = getUtility(IDonateLocator)
-        #to do
-        #fetch the pending deleting  record
         return locator.getByCode(self.id)
 
     def update(self):
         self.request.set('disable_border', True)
-
-        # Get the model table query funcations
-
-        #Let z3c.form do its magic
         super(DeleteDonate, self).update()
-
 
     @button.buttonAndHandler(_(u"Delete"))
     def submit(self, action):
@@ -832,7 +813,7 @@ class InputDonate(form.Form):
 
     def update(self):
         self.request.set('disable_border', True)
-        # Let z3c.form do its magic
+
         super(InputDonate, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -904,7 +885,7 @@ class UpdateDonate(form.Form):
     def update(self):
         self.request.set('disable_border', True)
 
-        # Let z3c.form do its magic
+
         super(UpdateDonate, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -1012,7 +993,7 @@ class InputDonor(InputDonate):
         # fetch first record as sample data
 #         self.screening = locator.screeningById(self.screeningId)
 
-        # Let z3c.form do its magic
+
         super(InputDonor, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -1072,7 +1053,7 @@ class UpdateDonor(UpdateDonate):
 
     def update(self):
         self.request.set('disable_border', True)
-        # Let z3c.form do its magic
+
         super(UpdateDonor, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -1103,7 +1084,3 @@ class UpdateDonor(UpdateDonate):
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
         self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
-
-##end发射机 数据库操作
-
-
