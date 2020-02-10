@@ -81,6 +81,7 @@ class CustomWeixinHelper(WeixinHelper):
         """通过code换取网页授权access_token, 该access_token与getAccessToken()返回是不一样的
         http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
         """
+        import ast
         logger.info("enter getAccessTokenByCode. code:'%s'" % code)
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IwechatSettings)        
@@ -89,7 +90,7 @@ class CustomWeixinHelper(WeixinHelper):
         logger.info("old token is:%s,old time is:%s" % (token,stime))
         if bool(token) and stime + timedelta(seconds=7000) > datetime.now():
             logger.info("return cache token")
-            return token         
+            return ast.literal_eval(token)         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
         token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
         settings.jsapi_access_token_time = datetime.now()
