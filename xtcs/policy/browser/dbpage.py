@@ -518,7 +518,7 @@ class NotifyAjax(object):
             try:
                 message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
                 nw = datetime.now().strftime(fmt)
-                text = message.format(nw,money)
+                text = message.format(nw,money).encode('utf-8')
                 logger.info("start send text message:%s" % text)
                 access_token = CustomWeixinHelper.getAccessToken()
                 logger.info("base accesstoken:%s" % access_token)
@@ -587,14 +587,18 @@ class PayAjax(grok.View):
         datadic['status'] = 0
         datadic['openid'] = openid
         if datadic['aname'] =="":
-            logger.info("start get nickname !")
-            help_api = WeixinHelper()
-            logger.info("authorize code is:%s" % datadic['code'])
-            token = help_api.getAccessTokenByCode(datadic['code'])
-            logger.info("access token is:%s" % token)
-            userinfo = help_api.getSnsapiUserInfo(token,openid)
-            logger.info("user nickname  is:%s" % userinfo['nickname'])            
-            datadic['aname'] = userinfo['nickname']
+            try:
+                logger.info("start get nickname !")
+                help_api = WeixinHelper()
+                logger.info("authorize code is:%s" % datadic['code'])
+                token = help_api.getAccessTokenByCode(datadic['code'])
+                logger.info("access token is:%s" % token)
+                userinfo = help_api.getSnsapiUserInfo(token,openid)
+                logger.info("user nickname  is:%s" % userinfo['nickname'])            
+                datadic['aname'] = userinfo['nickname']
+            except:
+                logger.info("fetch  nickname failed !")
+                datadic['aname'] == u"匿名".encode('utf-8')                
 
         del datadic['fee']
         del datadic['code']
