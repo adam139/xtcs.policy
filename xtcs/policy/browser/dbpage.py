@@ -461,7 +461,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            token = WeixinHelper.getAccessTokenByCode(code)
+            token = CustomWeixinHelper.getAccessTokenByCode(code)
             return token
         except:
             return ""
@@ -494,8 +494,8 @@ class NotifyAjax(object):
         base = Wxpay_server_pub()     
         datadic = self.request['xml']
         logger.info(str(datadic))
-#         api = CustomWeixinHelper()     
-        datadic = WeixinHelper.xmlToArray(datadic)
+#         api = CustomCustomWeixinHelper()     
+        datadic = CustomWeixinHelper.xmlToArray(datadic)
         openid = datadic['openid']
         money =  datadic['total_fee']        
         money = int(money)/100  
@@ -513,8 +513,8 @@ class NotifyAjax(object):
             # send template message
             message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
             nw = datetime.now().strftime(fmt)
-            access_token = WeixinHelper.getAccessToken()
-            WeixinHelper.sendTextMessage(openid, message.format(nw,money), access_token)
+            access_token = CustomWeixinHelper.getAccessToken()
+            CustomWeixinHelper.sendTextMessage(openid, message.format(nw,money), access_token)
 
         else:            
             out = 'no'        
@@ -576,7 +576,7 @@ class PayAjax(grok.View):
         datadic['openid'] = openid
         if datadic['aname'] =="":
             logger.info("start get nickname !")
-            help_api = WeixinHelper()
+            help_api = CustomWeixinHelper()
             logger.info("authorize code is:%s" % datadic['code'])
             token = help_api.getAccessTokenByCode(datadic['code'])
             logger.info("access token is:%s" % token)
