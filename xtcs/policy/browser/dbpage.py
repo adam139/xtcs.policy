@@ -45,7 +45,8 @@ from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFPlone.resources import add_bundle_on_request
 from zExceptions import NotFound
 from xtcs.policy import InputDb
-
+import logging
+logger = logging.getLogger("weixin notify")
 
 # our helper class
 class CustomWeixinHelper(WeixinHelper):
@@ -57,14 +58,17 @@ class CustomWeixinHelper(WeixinHelper):
         需要缓存access_token,由于缓存方式各种各样，不在此提供
         http://mp.weixin.qq.com/wiki/11/0e4b294685f817b95cbed85ba5e82b8f.html
         """
+        logger.info("enter get accesstoken")
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IwechatSettings)
         stime = settings.access_token_time
         token = settings.access_token
+        logger.info("old token is:%s,old time is:%s" % (token,stime))
 #         if len(token) and stime + timedalta(seconds=7000) < datetime.now():
 #             return token        
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
+        logger.info("new token is:%s" % token)
         settings.access_token_time = datetime.now()
         settings.access_token = token
         return token
@@ -75,16 +79,19 @@ class CustomWeixinHelper(WeixinHelper):
         """通过code换取网页授权access_token, 该access_token与getAccessToken()返回是不一样的
         http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
         """
+        logger.info("enter get page accesstoken")
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IwechatSettings)        
         stime = settings.jsapi_access_token_time
         token = settings.jsapi_access_token
+        logger.info("old token is:%s,old time is:%s" % (token,stime))
 #         if len(token) and stime + timedalta(seconds=7000) < datetime.now():
 #             return token         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
         token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
         settings.jsapi_access_token_time = datetime.now()
-        settings.jsapi_access_token =  token       
+        settings.jsapi_access_token =  token
+        logger.info("new token is:%s" % token)       
         return token
 
     @classmethod
@@ -461,7 +468,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            token = WeixinHelper.getAccessTokenByCode(code)
+            token = CustomWeixinHelper.getAccessTokenByCode(code)
             return token
         except:
             return ""
@@ -476,8 +483,7 @@ class TokenAjax(grok.View):
             
 
 # class NotifyAjax(grok.View,Wxpay_server_pub):
-import logging
-logger = logging.getLogger("weixin notify")
+
 class NotifyAjax(object):    
     """AJAX action for search DB.
     receive front end ajax transform parameters
