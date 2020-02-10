@@ -40,7 +40,7 @@ function isEmpty (obj) {
   }
   return false;
   }
-function init(authurl) {
+function init(authurl,base) {
   var url = decodeURIComponent(location.search);
   var params = Object.assign(getUrlParams(url));
   if (isEmpty(params.code)){
@@ -63,7 +63,7 @@ function init(authurl) {
 $(document).ready(function(){
 	var base = $("#juankuan_workflow").attr('data-ajax-base');
 	var authurl = base + $("#juankuan_workflow").attr('data-ajax-auth');
-    init(authurl);
+    init(authurl,base);
     $(".ajaxform button[name='ok']").on("click",function() {
 	var aname = $(".ajaxform input[name='name']").val();
 	var money = $(".ajaxform input[name='money']").val();
