@@ -20,6 +20,8 @@ class TestSetup(unittest.TestCase):
         settings = registry.forInterface(IwechatSettings)
         self.assertEqual(settings.appid, "wx77d2frty25808f911")
         self.assertEqual(settings.redirecturi, "http://www.xtcs.org/")
+        import pdb
+        pdb.set_trace()
 
         self.assertEqual(settings.access_token_time, datetime.strptime("2014-08-14 00:00:00", '%Y-%m-%d %H:%M:%S'))
 

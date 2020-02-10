@@ -72,6 +72,7 @@ class CustomWeixinHelper(WeixinHelper):
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         logger.info("new token is:%s" % token)
         if 'errcode' not in token.keys(): 
+            logger.info("new token '%s' saved to cache" % token['access_token'])
             settings.access_token_time = datetime.now()
             settings.access_token = token['access_token']
         return token['access_token']
