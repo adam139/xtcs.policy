@@ -71,6 +71,8 @@ class CustomWeixinHelper(WeixinHelper):
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         logger.info("new token is:%s" % token)
+        import ast
+        token = ast.literal_eval(token)
         if 'errcode' not in token.keys(): 
             logger.info("new token '%s' saved to cache" % token['access_token'])
             settings.access_token_time = datetime.now()
