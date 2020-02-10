@@ -517,8 +517,10 @@ class NotifyAjax(object):
             locator.updateByCode({"id":recorder.id,"status":1})
             out = 'ok'
             # send template message
+            
             message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
             nw = datetime.now().strftime(fmt)
+            logger.info("start send text message:%s" % message.format(nw,money))
             access_token = WeixinHelper.getAccessToken()
             WeixinHelper.sendTextMessage(openid, message.format(nw,money), access_token)
 
