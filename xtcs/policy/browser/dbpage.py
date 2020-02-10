@@ -71,8 +71,9 @@ class CustomWeixinHelper(WeixinHelper):
         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         logger.info("new token is:%s" % token)
-        settings.access_token_time = datetime.now()
-        settings.access_token = token
+        if 'errcode' not in token.keys(): 
+            settings.access_token_time = datetime.now()
+            settings.access_token = token['access_token']
         return token
 
 
@@ -465,7 +466,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            token = CustomWeixinHelper.getAccessTokenByCode(code)
+            token = WeixinHelper.getAccessTokenByCode(code)
             return token
         except:
             return ""
@@ -518,7 +519,7 @@ class NotifyAjax(object):
             message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
             nw = datetime.now().strftime(fmt)
             logger.info("start send text message:%s" % message.format(nw,money))
-            access_token = WeixinHelper.getAccessToken()
+            access_token = CustomWeixinHelper.getAccessToken()
             logger.info("base accesstoken:%s" % access_token)
             WeixinHelper.sendTextMessage(openid, message.format(nw,money), access_token)
 
