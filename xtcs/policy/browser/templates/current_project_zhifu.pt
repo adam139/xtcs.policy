@@ -129,8 +129,9 @@ $(document).ready(function(){
     $(".ajaxform button[name='ok']").on("click",function() {
 	var aname = $(".ajaxform input[name='name']").val();
 	var money = $(".ajaxform input[name='money']").val();
-	if (isEmpty(parseFloat(money)))  {
+	if (isNaN(parseFloat(money)))  {
 	    alert( "必须输入有效的数字,可以有两位小数" );
+	    $(".ajaxform input[name='money']").focus();
 		return false;
 		}
 	var project = $(".ajaxform .radio input:radio[name='project']:checked").val();
