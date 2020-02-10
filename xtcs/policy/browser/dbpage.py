@@ -515,14 +515,17 @@ class NotifyAjax(object):
             locator.updateByCode({"id":recorder.id,"status":1})
             out = 'ok'
             # send template message
-            
-            message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
-            nw = datetime.now().strftime(fmt)
-            text = message.format(nw,money)
-            logger.info("start send text message:%s" % text)
-            access_token = CustomWeixinHelper.getAccessToken()
-            logger.info("base accesstoken:%s" % access_token)
-            WeixinHelper.sendTextMessage(openid, text, access_token)
+            try:
+                message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
+                nw = datetime.now().strftime(fmt)
+                text = message.format(nw,money)
+                logger.info("start send text message:%s" % text)
+                access_token = CustomWeixinHelper.getAccessToken()
+                logger.info("base accesstoken:%s" % access_token)
+                WeixinHelper.sendTextMessage(openid, text, access_token)
+            except:
+                logger.info("send text message:'%s'failed"  % text)
+                
         else:            
             out = 'no'        
         self.request.response.setHeader('Content-Type', 'text/plain')        
