@@ -88,6 +88,7 @@ class CustomWeixinHelper(WeixinHelper):
         token = settings.jsapi_access_token
         logger.info("old token is:%s,old time is:%s" % (token,stime))
         if bool(token) and stime + timedalta(seconds=7000) < datetime.now():
+            logger.info("return cache token")
             return token         
         _CODEACCESS_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={0}&secret={1}&code={2}&grant_type=authorization_code"
         token = HttpClient().get(_CODEACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET, code))
