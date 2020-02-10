@@ -22,8 +22,9 @@
       layer=".interfaces.IThemeSpecific"       
       template="templates/homepage.pt"
     />
- <!--Register the control panel for wechat settings -->
-  <browser:page
+    
+    <!--Register the control panel for wechat settings -->
+    <browser:page
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       name="wechat-controlpanel"
       class=".controlpanel.WechatControlPanel"
@@ -188,25 +189,8 @@
 		name="xtcs-policy-macros"
 		for="*"
 		permission="zope2.View"
-		class=".macros.Macros"/>
-     
-   <z3c:widgetTemplate
-        mode="input"
- 		widget="collective.z3cform.datetimewidget.interfaces.IDateWidget"        
- 		layer=".interfaces.IThemeSpecific"
- 		template="templates/date_input.pt" />
- 		
-   <z3c:widgetTemplate
-        mode="input"
- 		widget="plone.formwidget.namedfile.interfaces.INamedFileWidget"        
- 		layer=".interfaces.IThemeSpecific"
- 		template="templates/file_input.pt" />
- 		 		
-   <z3c:widgetTemplate
-        mode="input"
- 		widget="plone.formwidget.captcha.interfaces.ICaptchaWidget"        
- 		layer=".interfaces.IThemeSpecific"
- 		template="templates/captcha_input.pt" /> 		
+		class=".macros.Macros"/>    
+		
 
     <include package="z3c.jbot" file="meta.zcml" />
 
