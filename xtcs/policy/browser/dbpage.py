@@ -84,10 +84,10 @@ class CustomWeixinHelper(WeixinHelper):
 
         logger.info("enter getAccessTokenByCode. code:'%s'" % code)
         
-        token = super().getAccessTokenByCode(code)
+        token = WeixinHelper.getAccessTokenByCode(code)
         if 'errcode' not in token.keys():
             #refresh access_token
-            token = super().refreshAccessToken(token['refresh_token'])
+            token = WeixinHelper.refreshAccessToken(token['refresh_token'])
         logger.info("new refresh token is:%s" % token)       
         return token
 
