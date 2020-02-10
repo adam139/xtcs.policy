@@ -468,7 +468,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            token = CustomWeixinHelper.getAccessTokenByCode(code)
+            token = WeixinHelper.getAccessTokenByCode(code)
             return token
         except:
             return ""
