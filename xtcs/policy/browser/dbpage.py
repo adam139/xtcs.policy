@@ -68,8 +68,9 @@ class CustomWeixinHelper(WeixinHelper):
         logger.info("old token is:%s,old time is:%s" % (token,stime))
         if bool(token) and stime + timedelta(seconds=7000) > datetime.now():
             return token        
-        _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
-        token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
+#         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
+#         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
+        token = super(CustomWeixinHelper,cls).getAccessToken()
         logger.info("new token is:%s" % token)
         import ast
         token = ast.literal_eval(token)
@@ -88,10 +89,10 @@ class CustomWeixinHelper(WeixinHelper):
 
         logger.info("enter getAccessTokenByCode. code:'%s'" % code)
         
-        token = WeixinHelper.getAccessTokenByCode(code)
+        token =  super(CustomWeixinHelper,cls).getAccessTokenByCode(code)
         if 'errcode' not in token.keys():
             #refresh access_token
-            token = WeixinHelper.refreshAccessToken(token['refresh_token'])
+            token = super(CustomWeixinHelper,cls).refreshAccessToken(token['refresh_token'])
         logger.info("new refresh token is:%s" % token)       
         return token
 
@@ -105,14 +106,11 @@ class CustomWeixinHelper(WeixinHelper):
         ticket = settings.jsapi_ticket
         if bool(ticket) and stime + timedelta(seconds=7000) > datetime.now():
             return token         
-        _JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
-        ticket = HttpClient().get(_JSAPI_URL.format(access_token))
+        ticket = super(CustomWeixinHelper,cls).getJsapiTicket(access_token)
         settings.jsapi_ticket_time = datetime.now()
         settings.jsapi_ticket = ticket         
         return ticket    
 
-
-grok.templatedir('templates')
 
 class DonortableView(BrowserView):
     "捐赠金榜,显示日常捐赠"
@@ -484,15 +482,21 @@ class NotifyAjax(object):
     def __call__(self):
         """weixin callback"""        
         logger.info("weixin callback ------entering !")
+        self.request.response.setHeader('Content-Type', 'text/plain')
         if self.request['method'] == 'GET':
             logger.info("received get quest=get !")
             self.request.response.setHeader('Content-Type', 'application/xml')          
             return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>"
 
-        base = Wxpay_server_pub()     
-        datadic = self.request['xml']
+        if "xml" not in self.request:return "no"     
+        datadic = self.request['xml']        
         logger.info(str(datadic))   
         datadic = WeixinHelper.xmlToArray(datadic)
+        if 'result_code' not in datadic:
+            return "no"
+        elif datadic['result_code'] == "FAIL":
+            return "no"
+        base = Wxpay_server_pub()
         openid = datadic['openid']
         money =  datadic['total_fee']        
         money = int(money)/100  
@@ -501,12 +505,12 @@ class NotifyAjax(object):
 #         验证签名和金额是否一致 金额在用户下单插入数据库
 #         recorder = locator.getByKwargs(openid=openid,money=money)
         recorder = Session.query(OnlinePay).filter(OnlinePay.openid==openid).\
-            filter(OnlinePay.money==str(money)).order_by(OnlinePay.id.desc()).first() 
+            filter(OnlinePay.money==str(money)).filter(OnlinePay.state==0).\
+            order_by(OnlinePay.id.desc()).first() 
         
         if base.checkSign() and bool(recorder):            
             # update status=1
             locator.updateByCode({"id":recorder.id,"status":1})
-            out = 'ok'
             # send template message
             try:
                 message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
@@ -517,11 +521,11 @@ class NotifyAjax(object):
 #                 logger.info("base accesstoken:%s" % access_token)
                 WeixinHelper.sendTextMessage(openid, text, access_token)
             except:
-                logger.info("send text message:'%s'failed"  % text)                
+                logger.info("send text message:'%s'failed"  % text)
+            return 'ok'                    
         else:            
-            out = 'no'        
-        self.request.response.setHeader('Content-Type', 'text/plain')        
-        return out               
+            return 'no'                       
+             
 
 
 class SuccessNotifyAjax(object):    
@@ -915,7 +919,6 @@ class UpdateDonate(form.Form):
         IStatusMessage(self.request).add(confirm, type='info')
         self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
 
-##发射机数据库操作
 class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
