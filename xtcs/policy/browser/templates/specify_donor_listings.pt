@@ -59,7 +59,7 @@
                     	</a></li>
                 </ul>
                 </div>
-                <div class="col-xs-12 col-sm-4">
+                <div class="col-xs-12 col-sm-4" tal:condition="python:view.isAddable">
                 	<a class="btn btn-primary" 
                 		tal:attributes="href python:context.absolute_url() + '/@@input_donor'" alt="添加捐赠记录">添加捐赠记录</a>
                 </div>

@@ -51,7 +51,6 @@
             	<ul id="eventListSort" class="pager">
                     <li><span>排序：</span></li>                    
                     <li><a class="a" id="bycode" href="javascript:void(0)">
-
                     	<span data-name="did" class="glyphicon glyphicon-arrow-up">代码</span>
                     	</a></li>
                     <li><a class="a" id="startTimestamp" href="javascript:void(0)">
@@ -59,7 +58,7 @@
                     	</a></li>
                 </ul>
                 </div>
-                <div class="col-xs-12 col-sm-4">
+                <div class="col-xs-12 col-sm-4" tal:condition="python:view.isAddable">
                 	<a class="btn btn-primary" 
                 		tal:attributes="href python:context.absolute_url() + '/@@input_donate'" alt="添加公示项目">添加公示项目</a>
                 </div>
