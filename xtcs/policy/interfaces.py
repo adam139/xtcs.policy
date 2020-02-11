@@ -76,7 +76,7 @@ class IDbapi (Interface):
         :tc:will be checked table column
         :cv:the tc should equal value
         :key1:first table primary key
-        :key:second table fk's refer to first table         
+        :key2:second table fk's refer to first table         
         """
 
     def update_asso_table(kwargs,searchcnd):
@@ -205,16 +205,33 @@ class IDbapi (Interface):
         "fetch the oldest recorder from db"
         
     def getByCode(id,pk=None):
-        "get the recorder by table's primary key id"
+        """get the recorder by table's primary key        
+        parameters:
+        id primary key's value: int
+        pk primary field name: string
+        """
         
-    def DeleteByCode(id):
-        "delete the recorder"
+    def DeleteByCode(id,pk=None):
+        
+        """delete the recorder
+        parameters:
+        id primary key' value: int
+        pk primary field name: string
+        """
         
     def deleteByKwargs(kwargs):
         "delete the first recorder where obey conditions that is provided by kwargs dictionary"
         
     def updateByCode(kwargs):
-        "update the recorder by id that is provided by kwargs"
+        """update the recorder by primary key that is provided by kwargs
+        parameters:
+        kwargs :dic
+        here has two call case:
+          1. kwargs should at least contain key 'id' that is default primary key,
+        kwargs['id'] will as primary value for located the recorder.
+          2. if kwargs also contain key 'pk',then primary key will be kwargs['pk'],
+        and kwargs['id'] will as primary['pk'] 's value for located the recorder
+        """
         
     def getByKwargs(**args):
         "get first recorder by multiple conditions that is provided by args dictionary"

@@ -727,10 +727,11 @@ class Dbapi(object):
         else:
             return "id can't be empty"        
 
-    def DeleteByCode(self,id):
+    def DeleteByCode(self,id,pk=None):
         "delete the specify id recorder"
 
-        if id != "":
+        if not bool(id): return "id can't be empty"
+        if not bool(pk): 
             try:
                 recorder = self.getByCode(id)                
                 session.delete(recorder)
@@ -744,13 +745,25 @@ class Dbapi(object):
                 session.close()
                 return rt
         else:
-            return "id can't be empty"
+            try:
+                recorder = self.getByCode(id,pk)                
+                session.delete(recorder)
+                session.commit()
+#                 self.fire_event(RecorderDeleted,recorder)
+                rt = True
+            except:
+                session.rollback()
+                rt = sys.exc_info()[1]
+            finally:
+                session.close()
+                return rt            
 
     def updateByCode(self,kwargs):
         "update the speicy table recorder"
 
         id = kwargs['id']
-        if id != "":
+        if not bool(id): return None
+        if "pk" not in kwargs:               
             try:
                 recorder = self.getByCode(id)
                 updatedattrs = [kw for kw in kwargs.keys() if kw != 'id']
@@ -762,7 +775,16 @@ class Dbapi(object):
             finally:
                 session.close()                
         else:
-            return None
+            try:
+                recorder = self.getByCode(id,kwargs['pk'])
+                updatedattrs = [kw for kw in kwargs.keys() if kw != 'pk' and kw != 'id']
+                for kw in updatedattrs:
+                    setattr(recorder,kw,kwargs[kw])
+                session.commit()
+            except:
+                session.rollback()
+            finally:
+                session.close() 
 
     def getByCode(self,id,pk=None):
         
