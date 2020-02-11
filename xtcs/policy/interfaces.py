@@ -60,9 +60,22 @@ class IDbapi (Interface):
             max:batch size for Oracle
             with_entities:if using serial number fetch recorder's columns,1 True,0 False      
         """         
+
+    def query_with_filter(kwargs,filter_args):
+        """single table query attach filter arguments
+        parameters:
+        :kwargs's keys parameters: dic
+            start:start location
+            size:batch size
+            keyword:full search keyword
+            direction:sort direction
+            max:batch size for Oracle
+            with_entities:if using serial number fetch recorder's columns,1 True,0 False      
+        :filter_args is multiple filter fields :dic
+        """
         
     def multi_query(kwargs,tmaper,tbl,tc,cv,key1,key2):
-        """
+        """ join two table query
         parameters:
         :kwargs's keys parameters:
             start:start location

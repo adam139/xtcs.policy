@@ -989,14 +989,6 @@ class InputDonor(InputDonate):
 
     def update(self):
         self.request.set('disable_border', True)
-
-        # Get the model table query funcations
-#         locator = getUtility(IDonateLocator)
-        # to do
-        # fetch first record as sample data
-#         self.screening = locator.screeningById(self.screeningId)
-
-
         super(InputDonor, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))

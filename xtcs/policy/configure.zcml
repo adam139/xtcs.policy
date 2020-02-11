@@ -29,6 +29,11 @@
 	component=".dbutility.onlinepay"
 	name="onlinepay"
 	/>
+  <utility
+	provides=".interfaces.IDbapi"
+	component=".dbutility.donor"
+	name="donor"
+	/>
     
   <genericsetup:registerProfile
       name="default"

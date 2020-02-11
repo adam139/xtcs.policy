@@ -544,6 +544,229 @@ class Dbapi(object):
                 nums = 0
             return nums
 
+    def filter_args2sql(self,filter_args):
+        """filter parameters dic transfer to sql where statement
+        input:{"did":21,"state":0}
+        output: "did = 21 AND state =0"
+        """
+        items = [[k,v] for k,v in filter_args.iteritems()]
+        out = map(lambda x:"%s = %s" % (x[0],x[1]) ,items)
+
+        return ' AND '.join(out)
+
+    def filter_args2ormfilter(self,filter_args):
+        """filter parameters dic transfer to sql where statement
+        input:{"did":21,"state":0}
+        output: [getattr(tablecls,did) == 21,getattr(tablecls,state) == 0]
+        """
+        tablecls = self.init_table()
+        items = [[k,v] for k,v in filter_args.iteritems()]
+        out = map(lambda x:getattr(tablecls,x[0]) == x[1] ,items)
+       
+        return out         
+    
+    def query_with_filter(self,kwargs,filter_args):
+        """分页查询
+        kwargs's keys parameters:
+        start:start location
+        size:batch size
+        keyword:full search keyword
+        direction:sort direction
+        max:batch size for Oracle
+        with_entities:if using serial number fetch recorder's columns,1 True,0 False      
+        """        
+        tablecls = self.init_table()        
+        start = int(kwargs['start']) 
+        size = int(kwargs['size'])
+        max = size + start + 1
+        keyword = kwargs['SearchableText']
+        orderby = kwargs['order_by']        
+        direction = kwargs['sort_order'].strip()
+        import pdb
+        pdb.set_trace()        
+        try:
+            with_entities = kwargs['with_entities']
+        except:
+            kwargs['with_entities'] = 1
+            with_entities = 1                                       
+        if size != 0:
+            if keyword == "":
+                if direction == "reverse":
+                    if linkstr.startswith("oracle"):
+                        sqltext = """SELECT * FROM 
+                    (SELECT a.*,rownum rn FROM 
+                    (SELECT * FROM %s WHERE %s ORDER BY %s DESC) a  
+                    WHERE rownum < :max) WHERE rn > :start""" % (self.table,
+                                                                 self.filter_args2sql(filter_args),
+                                                                 orderby)
+                    else:                            
+                        max = max - 1                        
+                        sqltext = """SELECT * FROM %s WHERE %s 
+                         ORDER BY %s DESC limit :start,:max""" % (self.table,
+                                                                  self.filter_args2sql(filter_args),
+                                                                  orderby)                    
+                    selectcon = text(sqltext)
+                else:
+                    if linkstr.startswith("oracle"):
+                        sqltext = """SELECT * FROM 
+                    (SELECT a.*,rownum rn FROM 
+                    (SELECT * FROM %s WHERE %s ORDER BY %s ASC) a  
+                    WHERE rownum < :max) WHERE rn > :start""" % (self.table,
+                                                                 self.filter_args2sql(filter_args),
+                                                                 orderby)
+                    else:                  
+                        max = max - 1                        
+                        sqltext = """SELECT * FROM %s WHERE %s 
+                         ORDER BY %s ASC limit :start,:max""" % (self.table,
+                                                                 self.filter_args2sql(filter_args),
+                                                                 orderby)                                        
+                    selectcon = text(sqltext)                    
+                if bool(with_entities):
+                    clmns = self.get_columns()
+                    try:
+                        recorders = session.query(tablecls).with_entities(*clmns).\
+                            from_statement(selectcon.params(start=start,max=max)).all()
+                    except:
+                        session.rollback()
+                elif linkstr.startswith("oracle"):
+                    ftrclmns = self.filter_args2ormfilter(filter_args)
+                    try:
+                        recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                    except:
+                        session.rollback()
+                else:
+                    ftrclmns = self.filter_args2ormfilter(filter_args)
+                    try:
+                        recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start)
+                    except:
+                        session.rollback()                    
+            else:
+                keysrchtxt = self.search_clmns2sqltxt(self.fullsearch_clmns)
+                if direction == "reverse":
+                    if linkstr.startswith("oracle"):                                                                
+                        sqltxt = """SELECT * FROM
+                    (SELECT a.*,rownum rn FROM 
+                    (SELECT * FROM %(tbl)s WHERE %(ktxt)s AND %(filter_cols)s ORDER BY %(orderby)s DESC ) a 
+                     WHERE rownum < :max) WHERE rn > :start
+                    """ % dict(tbl=self.table,
+                               ktxt=keysrchtxt,
+                               filter_cols=self.filter_args2sql(filter_args),
+                               orderby=orderby)
+                    else:
+                        max = max - 1
+                        sqltext = """SELECT * FROM %(tbl)s
+                        WHERE %(ktxt)s AND %(filter_cols)s 
+                        ORDER BY %(orderby)s DESC limit :start,:max
+                         """ % dict(tbl=self.table,
+                                    ktxt=keysrchtxt,
+                                    filter_cols=self.filter_args2sql(filter_args),
+                                    orderby=orderby)                        
+                    selectcon = text(sqltxt)
+                else:
+                    if linkstr.startswith("oracle"):                     
+                        sqltxt = """SELECT * FROM
+                    (SELECT a.*,rownum rn FROM 
+                    (SELECT * FROM %(tbl)s WHERE %(ktxt)s AND %(filter_cols)s ORDER BY %(orderby)s ASC ) a 
+                     WHERE rownum < :max) WHERE rn > :start
+                    """ % dict(tbl=self.table,
+                               ktxt=keysrchtxt,
+                               filter_cols=self.filter_args2sql(filter_args),
+                               orderby=orderby)
+                    else:
+                        max = max - 1
+                        sqltxt = """SELECT * FROM %(tbl)s
+                        WHERE %(ktxt)s AND %(filter_cols)s 
+                        ORDER BY %(orderby)s ASC limit :start,:max
+                         """ % dict(tbl=self.table,
+                                    ktxt=keysrchtxt,
+                                    filter_cols=self.filter_args2sql(filter_args),
+                                    orderby=orderby)                                                                 
+                    selectcon = text(sqltxt)
+                if bool(with_entities):
+                    clmns = self.get_columns()
+                    try:
+                        recorders = session.query(tablecls).with_entities(*clmns).\
+                            from_statement(selectcon.params(x=keyword,start=start,max=max)).all()
+                    except:
+                        session.rollback()
+                elif linkstr.startswith("oracle"):
+                    ftrclmns = self.filter_args2ormfilter(filter_args)
+                    try:
+                        recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                    except:
+                        session.rollback()                                    
+                else:
+                    ftrclmns = self.filter_args2ormfilter(filter_args)
+                    try:
+                        recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start)
+                    except:
+                        session.rollback()
+            try:
+                if not bool(recorders):
+                    recorders = []
+            except:
+                recorders = []
+            return recorders
+        else:
+            if keyword == "":
+                selectcon = text("SELECT * FROM %s WHERE %s " % (self.table,self.filter_args2sql(filter_args)))
+                if bool(with_entities):
+                    clmns = self.get_columns()
+                    try:
+                        recorders = session.query(tablecls).with_entities(*clmns).\
+                            from_statement(selectcon).all()
+                    except:
+                        session.rollback()
+                else:
+                    ftrclmns = self.filter_args2ormfilter(filter_args)
+                    try:
+                        recorders = session.query(tablecls).filter(*ftrclmns).all()
+                    except:
+                        session.rollback()                    
+            else:
+                keysrchtxt = self.search_clmns2sqltxt(self.fullsearch_clmns)
+                sqltext = """SELECT * FROM %(tbl)s WHERE %(ktxt)s AND %(filter_cols)s  
+                 """ % dict(tbl=self.table,ktxt=keysrchtxt,filter_cols=self.filter_args2sql(filter_args))
+                selectcon = text(sqltext)                
+                if bool(with_entities):
+                    clmns = self.get_columns()
+                    try:
+                        recorders = session.query(tablecls).with_entities(*clmns).\
+                            from_statement(selectcon.params(x=keyword)).all()
+                    except:
+                        session.rollback()
+                else:
+                    ftrclmns = self.filter_args2ormfilter(filter_args)
+                    keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
+                    if bool(keysearchcnd):
+                        if len(keysearchcnd) > 1:
+                            try:
+                                recorders = session.query(tablecls).filter(or_(*keysearchcnd)). \
+                    filter(*ftrclmns).all()
+                            except:
+                                session.rollback()
+                        else:
+                            try:
+                                recorders = session.query(tablecls).filter(keysearchcnd[0]). \
+                    filter(*ftrclmns).all()
+                            except:
+                                session.rollback()                                                                                  
+                    else:
+                        try:
+                            recorders = session.query(tablecls).filter(*ftrclmns).all()
+                        except:
+                            session.rollback()                                                                                                  
+            
+            if bool(recorders):
+                nums = len(recorders)
+            else:
+                nums = 0
+            return nums
+    
     def multi_query(self,kwargs,tmaper,tbl,tc,cv,key1,key2):
         """多表连接分页查询
         kwargs's keys parameters:

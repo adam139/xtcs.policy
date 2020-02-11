@@ -131,17 +131,16 @@ class TestParametersDatabase(unittest.TestCase):
 
     def test_Donor_query(self):
         from xtcs.policy.mapping_db import  Donor
-        from xtcs.policy.interfaces import IDonorLocator
-        from zope.component import getUtility
+        from xtcs.policy.interfaces import IDbapi
+        from zope.component import getUtility,queryUtility
 
-
-        locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=180,multi=1,did=7,id=18)
+        locator = queryUtility(IDbapi, name='donor')
+        args = {"start":0,"size":10,'SearchableText':'','sort_order':'reverse','order_by':'atime'}
+        filter_args = {"did":21}        
+        rdrs = locator.query_with_filter(args,filter_args)
         import pdb
         pdb.set_trace()
-        if articles == None:
-            return
-        self.assertEqual(len(articles),100)
+        self.assertEqual(len(rdrs),10)
 
     def test_donate_query(self):
 
