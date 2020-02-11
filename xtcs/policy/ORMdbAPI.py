@@ -19,7 +19,8 @@ from xtcs.policy import linkstr
 from xtcs.policy import _
 
 class Dbapi(object):
-    """Sqlalchemy ORM format db API base class"""
+    """Sqlalchemy ORM  db API base class"""
+    
     implements(IDbapi)
     
     def __init__(self,session,package,table,factorycls,columns=None,fullsearch_clmns=None):
@@ -763,11 +764,11 @@ class Dbapi(object):
         else:
             return None
 
-    def getByCode(self,id):
+    def getByCode(self,id,pk=None):
         
         tablecls = self.init_table()        
-        if id != "":
-#             sqltext = "SELECT * FROM %(tbl)s WHERE id=:id" % dict(tbl=self.table)            
+        if not bool(id):return None          
+        if not bool(pk):
             try:
                 recorder = session.query(tablecls).\
                 filter(tablecls.id == id).one()
@@ -776,7 +777,13 @@ class Dbapi(object):
                 session.rollback()
                 return None
         else:
-            return None
+            try:
+                recorder = session.query(tablecls).\
+                filter(getattr(tablecls,pk) == id).one()
+                return recorder
+            except:
+                session.rollback()
+                return None
 
     def getByKwargs(self,**args):
         

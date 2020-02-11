@@ -204,7 +204,7 @@ class IDbapi (Interface):
     def fetch_oldest():
         "fetch the oldest recorder from db"
         
-    def getByCode(id):
+    def getByCode(id,pk=None):
         "get the recorder by table's primary key id"
         
     def DeleteByCode(id):
