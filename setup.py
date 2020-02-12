@@ -25,6 +25,7 @@ setup(name='xtcs.policy',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'mysqlclient==1.4.6',
           'Products.CMFPlone',
           'collective.z3cform.datetimewidget',       
           'five.grok',
