@@ -938,10 +938,11 @@ class DeleteDonor(DeleteDonate):
 
     def getContent(self):
         # Get the model table query funcations
-        locator = getUtility(IDonorLocator)
+#         locator = getUtility(IDonorLocator)
+        locator = queryUtility(IDbapi, name='donor')
         # to do
         # fetch first record as sample data
-        return locator.getByCode(self.id)
+        return locator.getByCode(self.id,"doid")
 
     def update(self):
         self.request.set('disable_border', True)
@@ -961,7 +962,7 @@ class DeleteDonor(DeleteDonate):
             return
         funcations = getUtility(IDonorLocator)
         try:
-            funcations.DeleteByCode(self.id)
+            funcations.DeleteByCode(self.id,"doid")
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
             self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
@@ -999,7 +1000,8 @@ class InputDonor(InputDonate):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = getUtility(IDonorLocator)
+#         funcations = getUtility(IDonorLocator)
+        funcations = queryUtility(IDbapi, name='donor')
         locator = getUtility(IDonateLocator)
         try:
             id = data['did']
@@ -1041,10 +1043,9 @@ class UpdateDonor(UpdateDonate):
 
     def getContent(self):
         # Get the model table query funcations
-        locator = getUtility(IDonorLocator)
-        # to do
-        # fetch first record as sample data
-        return locator.getByCode(self.id)
+#         locator = getUtility(IDonorLocator)
+        locator = queryUtility(IDbapi, name='donor')
+        return locator.getByCode(self.id,"doid")
 
     def update(self):
         self.request.set('disable_border', True)
@@ -1061,8 +1062,10 @@ class UpdateDonor(UpdateDonate):
             self.status = self.formErrorsMessage
             return
         data['id'] = self.id
-        funcations = getUtility(IDonorLocator)
-
+        # add self define primary key parameter
+        data['pk'] = "doid" 
+#         funcations = getUtility(IDonorLocator)
+        funcations = queryUtility(IDbapi, name='donor')
         try:
             funcations.updateByCode(data)
         except InputError, e:
