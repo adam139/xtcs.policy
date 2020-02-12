@@ -31,6 +31,11 @@
 	/>
   <utility
 	provides=".interfaces.IDbapi"
+	component=".dbutility.donate"
+	name="donate"
+	/>	
+  <utility
+	provides=".interfaces.IDbapi"
 	component=".dbutility.donor"
 	name="donor"
 	/>
