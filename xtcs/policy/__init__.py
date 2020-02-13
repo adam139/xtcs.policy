@@ -17,7 +17,7 @@ ORMBase = declarative.declarative_base()
 # linkstr = 'mysql://xtcs:XTcs82333685@404@127.0.0.1:3306/xtcs?charset=utf8'
 linkstr = 'mysql+mysqldb://xtcs:XTcs82333685@404@127.0.0.1:3306/xtcs?charset=utf8'
 # engine = create_engine('mysql://www.xtcs.org:XTcs82333685@404@127.0.0.1:3306/www.xtcs.org?charset=utf8', pool_recycle=3600)
-engine = create_engine(linkstr,echo=True, pool_recycle=3600)
+engine = create_engine(linkstr,echo=False, pool_recycle=3600)
 Scope_session = scoped_session(sessionmaker(autocommit=False,autoflush=False,bind=engine,expire_on_commit=False))
 Session = Scope_session()
 

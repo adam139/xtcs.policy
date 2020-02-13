@@ -19,11 +19,14 @@
 		<div id="ajaxsearch" style="display: none" 
 			tal:attributes="data-ajax-target python:context.absolute_url() + '/@@donor_ajaxsearch'"></div>
 		<div class="container-fluid">
-			<div class="row ajaxsearch hidden">
+			<div class="row">
+                <h1 class="documentFirstHeading">湘潭6.22暴雨灾害捐款</h1>				
+			</div>			
+			<div class="row ajaxsearch">
 				<div class="form-group col-xs-9 col-sm-6 col-sm-offset-3">
 					<input type="text"
 						onkeypress="if(event.keyCode==13) {searchEventParent();return false}"
-						placeholder="输入关键词"
+						placeholder="输入捐赠人部分名称"
 						name="SearchableText"
 						id="searchKeyword"
 						class="form-control search-query">
@@ -34,14 +37,12 @@
 					</button>
 				</div>
 			</div>
-			<div class="row">
-                <h1 class="documentFirstHeading">湘潭6.22暴雨灾害捐款</h1>				
-			</div>			
+			
 			<input type="hidden" value="0" id="dateSearch">
-			<input type="hidden" value="0" id="idSearch">
-			<input type="hidden" value="1" id="multiFlag">	
+			<input type="hidden" value="21" id="idSearch">
+			<input type="hidden" value="21" id="multiFlag">	
 			<!-- search fashej table ,so index name define as "sbdm" -->
-			<input type="hidden" value="id" id="solrSortColumn">
+			<input type="hidden" value="doid" id="solrSortColumn">
 			<input type="hidden" value="desc" id="solrSortDirection">
 
             <!--搜索选择结果排序-->
@@ -52,10 +53,7 @@
                     <li><span>排序：</span></li>                    
                     <li><a class="a" id="bycode" href="javascript:void(0)">
 
-                    	<span data-name="did" class="glyphicon glyphicon-arrow-up">代码</span>
-                    	</a></li>
-                    <li><a class="a" id="startTimestamp" href="javascript:void(0)">
-                    	<span data-name="created" class="glyphicon glyphicon-arrow-up">时间</span>
+                    	<span data-name="did" class="glyphicon glyphicon-arrow-up">时间</span>
                     	</a></li>
                 </ul>
                 </div>
