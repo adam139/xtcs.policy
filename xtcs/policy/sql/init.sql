@@ -26,7 +26,8 @@ create table if not exists onlinepay (
 create table if not exists accesstoken (
     id integer unsigned not null auto_increment primary key,
     openid varchar(128)  UNIQUE not null default 'weixindefaultopenid',
-    token varchar(128) not null default 'weixindefaultaccesstoken', 
+    token varchar(128) not null default 'weixindefaultaccesstoken',
+    expiredtime  DATETIME not null DEFAULT CURRENT_TIMESTAMP,
     index weixin_openid(openid)
     
 ) engine=InnoDB DEFAULT CHARSET=utf8;
