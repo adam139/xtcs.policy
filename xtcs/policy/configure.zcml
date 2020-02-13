@@ -26,6 +26,11 @@
  <!-- db named utility -->
   <utility
 	provides=".interfaces.IDbapi"
+	component=".dbutility.accesstoken"
+	name="accesstoken"
+	/>  
+  <utility
+	provides=".interfaces.IDbapi"
 	component=".dbutility.onlinepay"
 	name="onlinepay"
 	/>
