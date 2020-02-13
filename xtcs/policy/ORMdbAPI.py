@@ -618,7 +618,8 @@ class Dbapi(object):
         max = size + start + 1
         keyword = kwargs['SearchableText']
         orderby = kwargs['order_by']        
-        direction = kwargs['sort_order'].strip()        
+        direction = kwargs['sort_order'].strip()
+        
         try:
             with_entities = kwargs['with_entities']
         except:

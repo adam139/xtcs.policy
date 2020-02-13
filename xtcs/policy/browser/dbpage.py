@@ -47,6 +47,7 @@ from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFPlone.resources import add_bundle_on_request
 from zExceptions import NotFound
 from xtcs.policy import InputDb
+from xtcs.policy.utility import fetch_url_parameters
 import logging
 logger = logging.getLogger("weixin notify")
 
@@ -110,343 +111,6 @@ class CustomWeixinHelper(WeixinHelper):
         settings.jsapi_ticket_time = datetime.now()
         settings.jsapi_ticket = ticket         
         return ticket    
-
-
-class DonortableView(BrowserView):
-    "捐赠金榜,显示日常捐赠"
-      
-    @memoize
-    def getMemberList(self,start=0,size=0):
-        """获取捐赠结果列表"""
-        
-        locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=0,multi=0,id=21,sortchildid=3)
-        if articles == None:
-            return             
-        return self.outputList(articles)
-
-    def outputList(self,braindata): 
-        outhtml = ""
-       
-        for i in braindata:
-            astr = i.atime.strftime('%Y-%m-%d')
-            if astr != '2000-01-01':
-                atime = astr
-            else:
-                atime= u""                        
-            if bool(i.goods):
-                if bool(i.money):
-                    money = "%s(%s)" % (i.money,i.goods)
-                else:
-                    money = "(%s)" % (i.goods)
-            else:
-                money = i.money            
-            out = """<tr>
-            <td class="title">%(title)s</td>
-            <td class="item">%(money)s</td>
-            <td class="atime">%(atime)s</td></tr>""" % dict(
-                                            title=i.aname,
-                                            money= money,
-                                            atime=atime)           
-            outhtml = "%s%s" %(outhtml ,out)
-        return outhtml
-
-class GuanZhuangDonortableView(DonortableView):
-    "冠状疫情捐赠"
-      
-    @memoize
-    def getMemberList(self,start=0,size=0):
-        """获取捐赠结果列表"""
-        
-        locator = getUtility(IDonorLocator)        
-        articles = locator.query(start=0,size=0,multi=0,id=22,sortchildid=3)
-        if articles == None:
-            return             
-        return self.outputList(articles)
-
-# all donate table
-class DonateView(BrowserView):
-    """
-    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
-    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
-    该参数，查询数据库，并返回结果。
-    view name:donate_listings
-    """
-    @property
-    def isEditable(self):      
-        return self.pm().checkPermission(permissions.ManagePortal,self.context)    
-    @property
-    def isAddable(self):
-        return self.pm().checkPermission(permissions.AddPortalContent,self.context)
-      
-    @memoize
-    def pm(self):
-        context = aq_inner(self.context)
-        pm = getToolByName(context, "portal_membership")
-        return pm
-
-    def getPathQuery(self):
-
-        """返回 db url
-        """
-        query = {}
-        query['path'] = "/".join(self.context.getPhysicalPath())
-        return query
-
-    def search_multicondition(self,query):
-        "query is dic,like :{'start':0,'size':10,'':}"
-        locator = getUtility(IDonateLocator)
-        recorders = locator.query(start=query['start'],size=query['size'],multi = query['multi'])
-        return recorders
-
-# donor table
-class DonorView(DonateView):
-    """
-    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
-    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
-    该参数，查询数据库，并返回结果。
-    view name:db_ajax_juanzeng
-    """
-
-    def search_multicondition(self,query):
-        "query is dic,like :{'start':0,'size':10,'':}"
-
-        locator = getUtility(IDonorLocator)
-        recorders = locator.query(start=query['start'],\
-                                  size=query['size'],multi = query['multi'],id =query['id'] )
-        return recorders
-
-class SpecifyDonorView(DonorView):
-    """
-    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
-    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
-    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
-    
-    parameters:
-        query:{'start':0,'size':10}
-        id:21
-    view name:db_ajax_juanzeng
-    """
-
-    def search_multicondition(self,query):
-        "query is dic,like :{'start':0,'size':10,'':}"
-
-        locator = getUtility(IDonorLocator)
-        recorders = locator.query(start=query['start'],\
-                                  size=query['size'],multi = query['multi'],id=21 )
-        return recorders
-
-
-class GuangZhuangDonorView(DonorView):
-    """
-    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
-    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
-    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
-    
-    parameters:
-        query:{'start':0,'size':10}
-        id:21
-    view name:db_ajax_juanzeng
-    """
-
-    def search_multicondition(self,query):
-        "query is dic,like :{'start':0,'size':10,'':}"
-
-        locator = getUtility(IDonorLocator)
-        recorders = locator.query(start=query['start'],\
-                                  size=query['size'],multi = query['multi'],id=22 )
-        return recorders
-
-
-class WeixinPay(BrowserView):
-    """
-    在线捐款流程。
-    view name:donated_workflow
-    """
-    def get_auth_page(self):
-        ""
-        return "@@auth"
-    
-    def get_projects(self,id=None):
-        "提取系统所有公益项目"
-
-        query = {'start':0,'size':10,'multi':0}      
-        locator = getUtility(IDonateLocator)
-        recorders = locator.multi_query(start=query['start'],size=query['size'],multi = query['multi'])
-
-        def outfmt(rcd):
-            out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
-            name = "project{0}".format(rcd.did)
-            out = out.format("project",name,rcd.did,rcd.aname)
-            return out
-            
-        outhtml = map(outfmt,recorders)
-        if bool(outhtml):
-            first = outhtml[0]
-            index = first.find('value') 
-            outhtml[0] = first[:index] + ' checked ' + first[index:]
-             
-        outhtml = "<br/>".join(outhtml)
-        return outhtml
-
-class CurrentWeixinPay(WeixinPay):
-    """
-    在线捐款流程。
-    view name:donated_workflow
-    """
-    def get_projects(self,id):
-        "提取当前公益项目,id is project id"
-        locator = getUtility(IDonateLocator)
-        rcd = locator.getByCode(id)
-        out = dict()
-        out['title'] = rcd.aname
-        st = '<label><input type="radio" name="{0}" id="{1}" value="{2}" checked>{3}</label>'
-        pid = "project{0}".format(rcd.did)
-        out['html']  = st.format("project",pid ,rcd.did,rcd.aname)
-        return out       
-        
-    
-class DonatedWorkflow(WeixinPay):
-    """
-    在线捐款流程。
-    view name:donated_workflow
-    """
-    def __init__(self,context, request):
-        # Each view instance receives context and request as construction parameters
-        self.context = context
-        self.request = request
-        add_bundle_on_request(self.request, 'donate-legacy')    
-       
-
- # ajax multi-condition search relation db
-class ajaxsearch(grok.View):
-    """AJAX action for search DB.
-    receive front end ajax transform parameters
-    """
-    grok.context(Interface)
-    grok.name('donate_ajaxsearch')
-    grok.require('zope2.View')
-#     grok.require('emc.project.view_projectsummary')
-    
-    def Datecondition(self,key):
-        "构造日期搜索条件"
-        end = datetime.today()
-#最近一周
-        if key == 1:
-            start = end - timedelta(7)
-#最近一月
-        elif key == 2:
-            start = end - timedelta(30)
-#最近一年
-        elif key == 3:
-            start = end - timedelta(365)
-#最近两年
-        elif key == 4:
-            start = end - timedelta(365*2)
-#最近五年
-        else:
-            start = end - timedelta(365*5)
-#            return    { "query": [start,],"range": "min" }
-        datecondition = { "query": [start, end],"range": "minmax" }
-        return datecondition
-
-    def searchview(self,viewname="donate_listings"):
-        searchview = getMultiAdapter((self.context, self.request),name=viewname)
-        return searchview
-
-    def render(self):
-#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
-        searchview = self.searchview()
- # datadic receive front ajax post data
-        datadic = self.request.form
-        start = int(datadic['start']) # batch search start position
-        size = int(datadic['size'])      # batch search size
-        id = int(datadic['id'])
-        multi = int(datadic['multi'])
-
-        origquery = {}
-#         origquery['sort_on'] = sortcolumn
-#         # sql db sortt_order:asc,desc
-#         origquery['sort_order'] = sortdirection
-#  #模糊搜索
-#         if keyword != "":
-#             origquery['SearchableText'] = '%'+keyword+'%'
-#origquery provide  batch search
-        origquery['size'] = size
-        origquery['start'] = start
-        origquery['id'] = id
-        origquery['multi'] = multi
-#totalquery  search all
-        totalquery = origquery.copy()
-        totalquery['size'] = 0
-        totalquery['multi'] = 1
-        # search all   size = 0 return numbers of recorders
-        totalnum = searchview.search_multicondition(totalquery)
-        resultDicLists = searchview.search_multicondition(origquery)
-        del origquery
-        del totalquery
-#call output function
-# resultDicLists like this:[(u'C7', u'\u4ed6\u7684\u624b\u673a')]
-        data = self.output(start,size,totalnum, resultDicLists)      
-        self.request.response.setHeader('Content-Type', 'application/json')
-        return json.dumps(data)
-
-    def output(self,start,size,totalnum,resultDicLists):
-        """根据参数total,resultDicLists,返回json 输出,resultDicLists like this:
-        [(u'C7', u'\u4ed6\u7684\u624b\u673a')]"""
-        outhtml = ""
-        k = 0
-        contexturl = self.context.absolute_url()
-        if bool(self.searchview().isAddable):
-            for i in resultDicLists:
-                regtime = datetime.utcfromtimestamp(i.start_time)            
-                out = """<tr class="text-left">
-                                <td class="col-md-1 text-center">%(num)s</td>
-                                <td class="col-md-7 text-left">
-                                <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
-                                </td>
-                                <td class="col-md-2">%(regtime)s</td>
-                                <td class="col-md-1 text-center">
-                                <a href="%(edit_url)s" title="edit">
-                                  <span class="glyphicon glyphicon-pencil" aria-hidden="true">
-                                  </span>
-                                </a>
-                                </td>
-                                <td class="col-md-1 text-center">
-                                <a href="%(delete_url)s" title="delete">
-                                  <span class="glyphicon glyphicon-trash" aria-hidden="true">
-                                  </span>
-                                </a>
-                                </td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
-                                                name = "%s" % i.aname,                                                
-                                                id = "%s" % i.did,
-                                                num=str(k + 1),
-                                                regtime = regtime.strftime("%Y-%m-%d"),
-                                                title=i.aname,
-                                                edit_url="%s/@@update_donate/%s" % (contexturl,i.did),
-                                                delete_url="%s/@@delete_donate/%s" % (contexturl,i.did))
-                outhtml = "%s%s" %(outhtml ,out)
-                k = k + 1
-        else:
-            for i in resultDicLists:
-                regtime = datetime.utcfromtimestamp(i.start_time)            
-                out = """<tr class="text-left">
-                                <td class="col-md-1 text-center">%(num)s</td>
-                                <td class="col-md-9 text-left">
-                                <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
-                                </td>
-                                <td class="col-md-2">%(regtime)s</td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
-                                                name = "%s" % i.aname,                                                
-                                                id = "%s" % i.did,
-                                                num=str(k + 1),
-                                                regtime = regtime.strftime("%Y-%m-%d"),
-                                                title=i.aname)
-                outhtml = "%s%s" %(outhtml ,out)
-                k = k + 1                
-        data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
-        return data
 
 
 class TokenAjax(grok.View):
@@ -603,6 +267,338 @@ class PayAjax(grok.View):
         return out        
             
 
+class WeixinPay(BrowserView):
+    """
+    在线捐款流程。
+    view name:donated_workflow
+    """
+    def get_auth_page(self):
+        ""
+        return "@@auth"
+    
+    def get_projects(self,id=None):
+        "提取系统所有公益项目"
+
+        args = {"start":0,"size":10,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'did'}      
+        locator = queryUtility(IDbapi, name='donate')
+        recorders = locator.query(args)
+
+        def outfmt(rcd):
+            out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
+            name = "project{0}".format(rcd.did)
+            out = out.format("project",name,rcd.did,rcd.aname)
+            return out
+            
+        outhtml = map(outfmt,recorders)
+        if bool(outhtml):
+            first = outhtml[0]
+            index = first.find('value') 
+            outhtml[0] = first[:index] + ' checked ' + first[index:]
+             
+        outhtml = "<br/>".join(outhtml)
+        return outhtml
+
+class CurrentWeixinPay(WeixinPay):
+    """
+    在线捐款流程。
+    view name:donated_workflow
+    """
+    def get_projects(self,id):
+        "提取当前公益项目,id is project id"
+        locator = queryUtility(IDbapi, name='donate')
+        rcd = locator.getByCode(id,"did")
+        out = dict()
+        out['title'] = rcd.aname
+        st = '<label><input type="radio" name="{0}" id="{1}" value="{2}" checked>{3}</label>'
+        pid = "project{0}".format(rcd.did)
+        out['html']  = st.format("project",pid ,rcd.did,rcd.aname)
+        return out       
+        
+    
+class DonatedWorkflow(WeixinPay):
+    """
+    在线捐款流程。
+    view name:donated_workflow
+    """
+    def __init__(self,context, request):
+        # Each view instance receives context and request as construction parameters
+        self.context = context
+        self.request = request
+        add_bundle_on_request(self.request, 'donate-legacy') 
+            
+
+class DonortableView(BrowserView):
+    "捐赠金榜,显示日常捐赠"
+      
+    @memoize
+    def getMemberList(self,start=0,size=0):
+        """获取捐赠结果列表"""
+        
+        locator = queryUtility(IDbapi, name='donor')
+        args = {"start":0,"size":1000,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'doid'}
+        filter_args = {"did":21}               
+        articles = locator.query_with_filter(args,filter_args)
+        if articles == None:
+            return             
+        return self.outputList(articles)
+
+    def outputList(self,braindata): 
+        outhtml = ""
+       
+        for i in braindata:
+            astr = i.atime.strftime('%Y-%m-%d')
+            if astr != '2000-01-01':
+                atime = astr
+            else:
+                atime= u""                        
+            if bool(i.goods):
+                if bool(i.money):
+                    money = "%s(%s)" % (i.money,i.goods)
+                else:
+                    money = "(%s)" % (i.goods)
+            else:
+                money = i.money            
+            out = """<tr>
+            <td class="title">%(title)s</td>
+            <td class="item">%(money)s</td>
+            <td class="atime">%(atime)s</td></tr>""" % dict(
+                                            title=i.aname,
+                                            money= money,
+                                            atime=atime)           
+            outhtml = "%s%s" %(outhtml ,out)
+        return outhtml
+
+class GuanZhuangDonortableView(DonortableView):
+    "冠状疫情捐赠"
+      
+    @memoize
+    def getMemberList(self,start=0,size=0):
+        """获取捐赠结果列表"""
+        
+        locator = queryUtility(IDbapi, name='donor')
+        args = {"start":0,"size":1000,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'doid'}
+        filter_args = {"did":22}               
+        articles = locator.query_with_filter(args,filter_args)
+        if articles == None:
+            return             
+        return self.outputList(articles)
+
+# all donate table
+class DonateView(BrowserView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，查询数据库，并返回结果。
+    view name:donate_listings
+    """
+    @property
+    def isEditable(self):      
+        return self.pm().checkPermission(permissions.ManagePortal,self.context)    
+    @property
+    def isAddable(self):
+        return self.pm().checkPermission(permissions.AddPortalContent,self.context)
+      
+    @memoize
+    def pm(self):
+        context = aq_inner(self.context)
+        pm = getToolByName(context, "portal_membership")
+        return pm
+
+    def getPathQuery(self):
+
+        """返回 db url
+        """
+        query = {}
+        query['path'] = "/".join(self.context.getPhysicalPath())
+        return query
+
+    def search_multicondition(self,query):
+        "query is dic,like :{'start':0,'size':10,'':}"
+        locator = queryUtility(IDbapi, name='donate')
+#         args = {"start":0,"size":100,'SearchableText':'',
+#                 'with_entities':0,'sort_order':'reverse','order_by':'did'}        
+        recorders = locator.query(query)
+        return recorders
+
+# donor table
+class DonorView(DonateView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，查询数据库，并返回结果。
+    view name:db_ajax_juanzeng
+    """
+
+    def search_multicondition(self,args,filter_args):
+        "query is dic,like :{'start':0,'size':10,'':}"
+        locator = queryUtility(IDbapi, name='donor')
+        recorders = locator.query_with_filter(args,filter_args)
+        return recorders
+
+class SpecifyDonorView(DonorView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
+    
+    parameters:
+        query:{'start':0,'size':10}
+        id:21
+    view name:db_ajax_juanzeng
+    """
+
+
+class GuangZhuangDonorView(DonorView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
+    
+    parameters:
+        query:{'start':0,'size':10}
+        id:21
+    view name:db_ajax_juanzeng
+    """
+
+      
+
+ # ajax multi-condition search relation db
+class ajaxsearch(grok.View):
+    """AJAX action for search DB.
+    receive front end ajax transform parameters
+    """
+    grok.context(Interface)
+    grok.name('donate_ajaxsearch')
+    grok.require('zope2.View')
+#     grok.require('emc.project.view_projectsummary')
+    
+    def Datecondition(self,key):
+        "构造日期搜索条件"
+        end = datetime.today()
+#最近一周
+        if key == 1:
+            start = end - timedelta(7)
+#最近一月
+        elif key == 2:
+            start = end - timedelta(30)
+#最近一年
+        elif key == 3:
+            start = end - timedelta(365)
+#最近两年
+        elif key == 4:
+            start = end - timedelta(365*2)
+#最近五年
+        else:
+            start = end - timedelta(365*5)
+#            return    { "query": [start,],"range": "min" }
+        datecondition = { "query": [start, end],"range": "minmax" }
+        return datecondition
+
+    def searchview(self,viewname="donate_listings"):
+        searchview = getMultiAdapter((self.context, self.request),name=viewname)
+        return searchview
+
+    def render(self):
+#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
+        searchview = self.searchview()
+ # datadic receive front ajax post data
+        datadic = self.request.form
+        start = int(datadic['start']) # batch search start position
+        size = int(datadic['size'])      # batch search size
+        sortcolumn = datadic['sortcolumn']
+        sortdirection = datadic['sortdirection']
+        keyword = datadic['searchabletext'].strip()
+        origquery = {}
+        origquery['order_by'] = sortcolumn
+        # sql db sortt_order:asc,desc
+        origquery['sort_order'] = sortdirection
+#  #模糊搜索
+
+        origquery['SearchableText'] = keyword
+#origquery provide  batch search
+        origquery['size'] = size
+        origquery['start'] = start
+#         origquery['id'] = id
+        origquery['with_entities'] = 0
+#totalquery  search all
+        totalquery = origquery.copy()
+        totalquery['size'] = 0
+        # search all   size = 0 return numbers of recorders
+        totalnum = searchview.search_multicondition(totalquery)
+        resultDicLists = searchview.search_multicondition(origquery)
+        del origquery
+        del totalquery
+#call output function
+# resultDicLists like this:[(u'C7', u'\u4ed6\u7684\u624b\u673a')]
+
+        data = self.output(start,size,totalnum, resultDicLists)
+              
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return json.dumps(data)
+
+    def output(self,start,size,totalnum,resultDicLists):
+        """根据参数total,resultDicLists,返回json 输出,resultDicLists like this:
+        [(u'C7', u'\u4ed6\u7684\u624b\u673a')]"""
+        outhtml = ""
+        k = 0
+        contexturl = self.context.absolute_url()
+        if bool(self.searchview().isAddable):
+            for i in resultDicLists:
+                regtime = datetime.utcfromtimestamp(i.start_time)            
+                out = """<tr class="text-left">
+                                <td class="col-md-1 text-center">%(num)s</td>
+                                <td class="col-md-7 text-left">
+                                <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
+                                </td>
+                                <td class="col-md-2">%(regtime)s</td>
+                                <td class="col-md-1 text-center">
+                                <a href="%(edit_url)s" title="edit">
+                                  <span class="glyphicon glyphicon-pencil" aria-hidden="true">
+                                  </span>
+                                </a>
+                                </td>
+                                <td class="col-md-1 text-center">
+                                <a href="%(delete_url)s" title="delete">
+                                  <span class="glyphicon glyphicon-trash" aria-hidden="true">
+                                  </span>
+                                </a>
+                                </td>
+                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
+                                                name = "%s" % i.aname,                                                
+                                                id = "%s" % i.did,
+                                                num=str(k + 1),
+                                                regtime = regtime.strftime("%Y-%m-%d"),
+                                                title=i.aname,
+                                                edit_url="%s/@@update_donate/%s" % (contexturl,i.did),
+                                                delete_url="%s/@@delete_donate/%s" % (contexturl,i.did))
+                outhtml = "%s%s" %(outhtml ,out)
+                k = k + 1
+        else:
+            for i in resultDicLists:
+                regtime = datetime.utcfromtimestamp(i.start_time)            
+                out = """<tr class="text-left">
+                                <td class="col-md-1 text-center">%(num)s</td>
+                                <td class="col-md-9 text-left">
+                                <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
+                                </td>
+                                <td class="col-md-2">%(regtime)s</td>
+                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
+                                                name = "%s" % i.aname,                                                
+                                                id = "%s" % i.did,
+                                                num=str(k + 1),
+                                                regtime = regtime.strftime("%Y-%m-%d"),
+                                                title=i.aname)
+                outhtml = "%s%s" %(outhtml ,out)
+                k = k + 1                
+        data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
+        return data
+
+
+
+
 class Donorajaxsearch(ajaxsearch):
     """AJAX action for search DB donor table.
     receive front end ajax transform parameters
@@ -621,38 +617,38 @@ class Donorajaxsearch(ajaxsearch):
         datadic = self.request.form
         start = int(datadic['start']) # batch search start position
         size = int(datadic['size'])      # batch search size
+        sortcolumn = datadic['sortcolumn']
+        sortdirection = datadic['sortdirection']
+        keyword = datadic['searchabletext'].strip()
         id = int(datadic['id'])
-        multi = int(datadic['multi'])
-
         origquery = {}
-#         origquery['sort_on'] = sortcolumn
-#         # sql db sortt_order:asc,desc
-#         origquery['sort_order'] = sortdirection
-#  #模糊搜索
-#         if keyword != "":
-#             origquery['SearchableText'] = '%'+keyword+'%'
+        origquery['order_by'] = sortcolumn
+        # sql db sortt_order:asc,desc
+        origquery['sort_order'] = sortdirection
+#  #模糊搜索       
+        origquery['SearchableText'] = keyword
 #origquery provide  batch search
         origquery['size'] = size
         origquery['start'] = start
-        origquery['id'] = id
-        origquery['multi'] = multi
+#         origquery['id'] = id
+        origquery['with_entities'] = 0
+        filterquery = {'did':id}
+        locator = queryUtility(IDbapi, name='donate')
+        name = locator.getByCode(id,"did").aname
+        
 #totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
-        totalquery['multi'] = 1
-        
         # search all   size = 0 return numbers of recorders
-        totalnum = searchview.search_multicondition(totalquery)
-        resultDicLists = searchview.search_multicondition(origquery)
+        totalnum = searchview.search_multicondition(totalquery,filterquery)
+        resultDicLists = searchview.search_multicondition(origquery,filterquery)
         del origquery
         del totalquery
-#call output function
-# resultDicLists like this:[(u'C7', u'\u4ed6\u7684\u624b\u673a')]
-        data = self.output(start,size,totalnum, resultDicLists)      
+        data = self.output(start,size,id,name,totalnum, resultDicLists)              
         self.request.response.setHeader('Content-Type', 'application/json')
         return json.dumps(data)
     
-    def output(self,start,size,totalnum,resultDicLists):
+    def output(self,start,size,id,name,totalnum,resultDicLists):
         """根据参数total,resultDicLists,返回json 输出,resultDicLists like this:
         [(u'C7', u'\u4ed6\u7684\u624b\u673a')]"""
         outhtml = ""
@@ -672,6 +668,7 @@ class Donorajaxsearch(ajaxsearch):
                         money = "(%s)" % (i.goods)
                 else:
                     money = i.money
+                url_suffix = "{0}?name={1}&id={2}".format(i.doid,name,id)
                 out = """<tr class="text-left">
                                 <td class="col-md-8">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
@@ -688,12 +685,12 @@ class Donorajaxsearch(ajaxsearch):
                                   </span>
                                 </a>
                                 </td>
-                                </tr> """% dict(
-                                            name=i.aname,
-                                            money= money,
-                                            atime= atime,
-                                            edit_url="%s/@@update_donor/%s" % (contexturl,i.doid),
-                                            delete_url="%s/@@delete_donor/%s" % (contexturl,i.doid))
+                                </tr> """ % dict(
+                                    name=i.aname,
+                                    money= money,
+                                    atime= atime,
+                                    edit_url="%s/@@update_donor/%s" % (contexturl,url_suffix),
+                                    delete_url="%s/@@delete_donor/%s" % (contexturl,url_suffix))
                 outhtml = "%s%s" %(outhtml ,out)
                 k = k + 1
         else:
@@ -769,9 +766,8 @@ class DeleteDonate(form.Form):
             raise NotFound()
 
     def getContent(self):
-        # Get the model table query funcations
-        locator = getUtility(IDonateLocator)
-        return locator.getByCode(self.id)
+        locator = queryUtility(IDbapi, name='donate')
+        return locator.getByCode(self.id,"did")
 
     def update(self):
         self.request.set('disable_border', True)
@@ -786,9 +782,9 @@ class DeleteDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = getUtility(IDonateLocator)
+        funcations = queryUtility(IDbapi, name='donate')
         try:
-            funcations.DeleteByCode(self.id)
+            funcations.DeleteByCode(self.id,'did')
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
             self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
@@ -836,9 +832,8 @@ class InputDonate(form.Form):
             dtst = int(time.mktime(dtst))
             
             data['start_time'] = dtst
-        funcations = getUtility(IDonateLocator)
-        try:
-            
+        funcations = queryUtility(IDbapi, name='donate')
+        try:            
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
@@ -868,15 +863,12 @@ class UpdateDonate(form.Form):
     label = _(u"update donate data")
     fields = field.Fields(IDonate).omit('did')
     ignoreContext = False
-    xhdm = None
-    #receive url parameters
+    id = None
     # reset content
     def getContent(self):
         # Get the model table query funcations
-        locator = getUtility(IDonateLocator)
-        # to do
-        # fetch first record as sample data
-        return locator.getByCode(self.id)
+        locator = queryUtility(IDbapi, name='donate')
+        return locator.getByCode(self.id,"did")
 
 
     def publishTraverse(self, request, name):
@@ -888,8 +880,6 @@ class UpdateDonate(form.Form):
 
     def update(self):
         self.request.set('disable_border', True)
-
-
         super(UpdateDonate, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -901,7 +891,8 @@ class UpdateDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = getUtility(IDonateLocator)
+        funcations = queryUtility(IDbapi, name='donate')
+        data['pk'] = "did"
         try:
             funcations.updateByCode(data)
         except InputError, e:
@@ -926,30 +917,35 @@ class DeleteDonor(DeleteDonate):
     label = _(u"delete donate data")
     fields = field.Fields(IDonor).omit('did','doid')
 
-
     id = None
-    #receive url parameters
+    #receive url parameters    
+    def redirectUrl(self):
+        pars = self.request['HTTP_REFERER'].split('?')
+        if len(pars) > 1:
+            urlpars = pars[1]
+            result = fetch_url_parameters(urlpars)
+            if result.has_key('name') and result.has_key('id'): 
+                rdurl = "/@@donor_listings/?name={0}&id={1}".format(result['name'],result['id'])
+            else:
+                rdurl = "/@@donate_listings"
+        else:
+            rdurl = "/@@donate_listings"
+        return rdurl
+        
     def publishTraverse(self, request, name):
         if self.id is None:
-            self.id = name
+            self.id = name              
             return self
         else:
             raise NotFound()
 
     def getContent(self):
-        # Get the model table query funcations
-#         locator = getUtility(IDonorLocator)
         locator = queryUtility(IDbapi, name='donor')
-        # to do
-        # fetch first record as sample data
         return locator.getByCode(self.id,"doid")
 
     def update(self):
         self.request.set('disable_border', True)
-
-        #Let z3c.form do its magic
         super(DeleteDonor, self).update()
-
 
     @button.buttonAndHandler(_(u"Delete"))
     def submit(self, action):
@@ -960,26 +956,28 @@ class DeleteDonor(DeleteDonate):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = getUtility(IDonorLocator)
+        funcations = queryUtility(IDbapi, name='donor')
+        rdurl = self.redirectUrl()
         try:
             funcations.DeleteByCode(self.id,"doid")
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+            self.request.response.redirect(self.context.absolute_url() + rdurl)
         confirm = _(u"Your data  has been deleted.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(self.context.absolute_url() + rdurl)
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
         """Cancel the data delete
         """
         confirm = _(u"Delete cancelled.")
+        rdurl = self.redirectUrl()
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+        self.request.response.redirect(self.context.absolute_url() + rdurl)
 
 
-class InputDonor(InputDonate):
+class InputDonor(DeleteDonor):
     """input db donor table data
     """
 
@@ -1002,10 +1000,10 @@ class InputDonor(InputDonate):
             return
 #         funcations = getUtility(IDonorLocator)
         funcations = queryUtility(IDbapi, name='donor')
-        locator = getUtility(IDonateLocator)
+        locator = queryUtility(IDbapi, name='donate')
         try:
             id = data['did']
-            name = locator.getByCode(id).aname
+            name = locator.getByCode(id,'did').aname
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
@@ -1025,31 +1023,27 @@ class InputDonor(InputDonate):
         self.request.response.redirect(self.context.absolute_url() + '/@@donate_listings')
 
 
-class UpdateDonor(UpdateDonate):
+class UpdateDonor(DeleteDonor):
     """update model table row data
     """
     grok.name('update_donor')
     label = _(u"update donor data")
     fields = field.Fields(IDonor).omit('doid')
-
-    id = None
-    #receive url parameters
+    id = None              
+    
     def publishTraverse(self, request, name):
         if self.id is None:
-            self.id = name
+            self.id = name              
             return self
         else:
             raise NotFound()
 
-    def getContent(self):
-        # Get the model table query funcations
-#         locator = getUtility(IDonorLocator)
+    def getContent(self):                                         
         locator = queryUtility(IDbapi, name='donor')
         return locator.getByCode(self.id,"doid")
 
     def update(self):
         self.request.set('disable_border', True)
-
         super(UpdateDonor, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -1065,20 +1059,22 @@ class UpdateDonor(UpdateDonate):
         # add self define primary key parameter
         data['pk'] = "doid" 
 #         funcations = getUtility(IDonorLocator)
-        funcations = queryUtility(IDbapi, name='donor')
+        funcations = queryUtility(IDbapi, name='donor')        
+        rdurl = self.redirectUrl()
         try:
             funcations.updateByCode(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
-            self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+            self.request.response.redirect(self.context.absolute_url() + rdurl)
         confirm = _(u"Thank you! Your data  will be update in back end DB.")
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+        self.request.response.redirect(self.context.absolute_url() + rdurl)
 
     @button.buttonAndHandler(_(u"Cancel"))
     def cancel(self, action):
         """Cancel the data input
         """
         confirm = _(u"Input cancelled.")
+        rdurl = self.redirectUrl()
         IStatusMessage(self.request).add(confirm, type='info')
-        self.request.response.redirect(self.context.absolute_url() + '/@@donor_listings')
+        self.request.response.redirect(self.context.absolute_url() + rdurl)
