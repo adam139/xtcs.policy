@@ -91,10 +91,18 @@ class CustomWeixinHelper(WeixinHelper):
         logger.info("enter getAccessTokenByCode. code:'%s'" % code)
         
         token =  super(CustomWeixinHelper,cls).getAccessTokenByCode(code)
+        if isinstance(token,str):
+            import ast
+            token = ast.literal_eval(token)        
         if 'errcode' not in token.keys():
             #refresh access_token
             token = super(CustomWeixinHelper,cls).refreshAccessToken(token['refresh_token'])
-        logger.info("new refresh token is:%s" % token)       
+            logger.info("new refresh token is:%s" % token)
+            if isinstance(token,str):
+                import ast
+                token = ast.literal_eval(token)         
+        
+        # new openid accesstoken expire_time write to db       
         return token
 
     @classmethod
@@ -125,7 +133,7 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            return WeixinHelper.getAccessTokenByCode(code)
+            return CustomWeixinHelper.getAccessTokenByCode(code)
         except:
             return ""
         
@@ -134,6 +142,9 @@ class TokenAjax(grok.View):
         "response to front end"       
     
         token = self.getAccessTokenByCode()
+        #set cookie for store openid
+        if token.has_key("openid"):            
+            self.request.response.setCookie("openid", token["openid"])
         self.request.response.setHeader('Content-Type', 'application/json')
         return token                   
 
@@ -272,9 +283,6 @@ class WeixinPay(BrowserView):
     在线捐款流程。
     view name:donated_workflow
     """
-    def get_auth_page(self):
-        ""
-        return "@@auth"
     
     def get_projects(self,id=None):
         "提取系统所有公益项目"
