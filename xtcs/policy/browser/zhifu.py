@@ -7,8 +7,38 @@ from Products.Five.browser import BrowserView
 from my315ok.wechat.lib import WeixinHelper 
 
 
-class ZhiFuWView(BrowserView):    
+class Base(BrowserView):
+    """read request cookie"""
     
+    def __init__(self,context, request):
+        ""
+        self.context = context
+        self.request = request    
+    
+    def getOpenId(self):
+        openid = self.request.cookies.get("openid", "")
+    
+    def __call__(self):
+        if bool(self.getOpenId()):
+            self.request.response.redirect(self.redirectUrl())
+        else:
+            self.request.response.redirect(self.winxinAuthUrl())
+    
+    def redirectUrl(self):
+        redirecturi = 'http://weixin.315ok.org/@@donated_workflow'
+        return redirecturi
+        
+    
+    def winxinAuthUrl(self):
+        
+        nexturl = WeixinHelper.oauth2(self.redirectUrl())
+        return nexturl 
+        
+    
+class ZhiFuWView(BrowserView):
+    
+       
+        
     @memoize
     def outputjs(self):
         "用户同意授权，获取code"
