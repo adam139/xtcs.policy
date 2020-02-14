@@ -151,9 +151,29 @@ class TokenAjax(grok.View):
         
         try:
             code = self.request.form['code']      
-            return CustomWeixinHelper.getAccessTokenByCode(code)
+            return WeixinHelper.getAccessTokenByCode(code)
         except:
             return ""
+
+    def updateToken(self,token):
+        if 'errcode' not in token.keys():
+        
+            locator = queryUtility(IDbapi, name='accesstoken')
+            timelimit = datetime.now + timedelta(seconds=token['expires_in'])
+            openid = token['openid']
+            data = {"openid":openid,"token":token['access_token'],
+                            "expiredtime":timelimit}
+            args = {"start":0,"size":1,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+            filter_args = {"openid":openid}
+            rdrs = locator.query_with_filter(args,filter_args)
+            if bool(rdrs):
+                data['id'] = rdrs[0].id
+                locator.updateByCode(data)
+            else:
+                    #new user
+                locator.add(data)
+            self.request.response.setCookie("openid", token["openid"])        
         
     
     def render(self):
@@ -161,8 +181,10 @@ class TokenAjax(grok.View):
     
         token = self.getAccessTokenByCode()
         #set cookie for store openid
-        if token.has_key("openid"):            
-            self.request.response.setCookie("openid", token["openid"])
+        import ast
+        if isinstance(token,str):
+            token2 = ast.literal_eval(token)
+        self.updateToken(token2)
         self.request.response.setHeader('Content-Type', 'application/json')
         return token                   
 

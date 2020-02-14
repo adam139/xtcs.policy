@@ -22,7 +22,7 @@ class Base(BrowserView):
     def getOpenId(self):
         openid = self.request.cookies.get("openid", "")
         if bool(openid):
-            locator = queryUtility(IDbapi, name='donor')
+            locator = queryUtility(IDbapi, name='accesstoken')
             args = {"start":0,"size":1,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
             filter_args = {"openid":openid}
