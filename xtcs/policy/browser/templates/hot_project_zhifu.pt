@@ -60,11 +60,12 @@
      </div>
   </tal:main-macro>
  </metal:main>
+
   <metal:js fill-slot="javascript_bottom_slot">
 	<script type="text/javascript"
 		tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-     tal:attributes="src string:${navroot}/++resource++xtcs.policy/weixinjsapi2.js">		
+     tal:attributes="src string:${navroot}/++resource++xtcs.policy/weixinjsapi3.js">		
 	</script>	
-	</metal:js>
+	</metal:js> 
 </body>
 </html>

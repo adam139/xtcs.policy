@@ -88,22 +88,40 @@ class CustomWeixinHelper(WeixinHelper):
         http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
         """
 
-        logger.info("enter getAccessTokenByCode. code:'%s'" % code)
-        
+        logger.info("enter getAccessTokenByCode. code:'%s'" % code)        
         token =  super(CustomWeixinHelper,cls).getAccessTokenByCode(code)
-        if isinstance(token,str):
-            import ast
+        import ast
+        if isinstance(token,str):            
             token = ast.literal_eval(token)        
         if 'errcode' not in token.keys():
             #refresh access_token
             token = super(CustomWeixinHelper,cls).refreshAccessToken(token['refresh_token'])
             logger.info("new refresh token is:%s" % token)
-            if isinstance(token,str):
-                import ast
-                token = ast.literal_eval(token)         
-        
-        # new openid accesstoken expire_time write to db       
-        return token
+            if isinstance(token,str):                
+                token = ast.literal_eval(token)
+            if 'errcode' not in token.keys():
+                #new openid accesstoken expire_time write to db
+                locator = queryUtility(IDbapi, name='accesstoken')
+                timelimit = datetime.now + timedelta(seconds=token['expires_in'])
+                openid = token['openid']
+                data = {"openid":openid,"token":token['access_token'],
+                            "expiredtime":timelimit}
+                args = {"start":0,"size":1,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+                filter_args = {"openid":openid}
+                rdrs = locator.query_with_filter(args,filter_args)
+                if bool(rdrs):
+                    data['id'] = rdrs[0].id
+                    locator.updateByCode(data)
+                else:
+                    #new user
+                    locator.add(data)
+                return token
+            else:
+                return {}
+        else:
+            return {}
+
 
     @classmethod
     def getJsapiTicket(cls, access_token):
