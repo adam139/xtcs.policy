@@ -159,7 +159,7 @@ class TokenAjax(grok.View):
         if 'errcode' not in token.keys():
         
             locator = queryUtility(IDbapi, name='accesstoken')
-            timelimit = datetime.now + timedelta(seconds=token['expires_in'])
+            timelimit = datetime.now() + timedelta(seconds=token['expires_in'])
             openid = token['openid']
             data = {"openid":openid,"token":token['access_token'],
                             "expiredtime":timelimit}
