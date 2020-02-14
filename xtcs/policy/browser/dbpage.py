@@ -220,7 +220,7 @@ class NotifyAjax(object):
 #         验证签名和金额是否一致 金额在用户下单插入数据库
 #         recorder = locator.getByKwargs(openid=openid,money=money)
         recorder = Session.query(OnlinePay).filter(OnlinePay.openid==openid).\
-            filter(OnlinePay.money==str(money)).filter(OnlinePay.state==0).\
+            filter(OnlinePay.money==str(money)).filter(OnlinePay.status==0).\
             order_by(OnlinePay.id.desc()).first() 
         
         if base.checkSign() and bool(recorder):            
