@@ -61,18 +61,18 @@ class CustomWeixinHelper(WeixinHelper):
         需要缓存access_token,由于缓存方式各种各样，不在此提供
         http://mp.weixin.qq.com/wiki/11/0e4b294685f817b95cbed85ba5e82b8f.html
         """
-        logger.info("enter get accesstoken")
+#         logger.info("enter get accesstoken")
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IwechatSettings)
         stime = settings.access_token_time
         token = settings.access_token
-        logger.info("old token is:%s,old time is:%s" % (token,stime))
+#         logger.info("old token is:%s,old time is:%s" % (token,stime))
         if bool(token) and stime + timedelta(seconds=7000) > datetime.now():
             return token        
 #         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
 #         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         token = super(CustomWeixinHelper,cls).getAccessToken()
-        logger.info("new token is:%s" % token)
+#         logger.info("new token is:%s" % token)
         import ast
         token = ast.literal_eval(token)
         if 'errcode' not in token.keys(): 
@@ -170,8 +170,7 @@ class TokenAjax(grok.View):
             if bool(rdrs):
                 data['id'] = rdrs[0].id
                 locator.updateByCode(data)
-            else:
-                    #new user
+            else:                   
                 locator.add(data)
             self.request.response.setCookie("openid", token["openid"])        
         
@@ -289,8 +288,10 @@ class PayAjax(grok.View):
         fee = float(datadic['fee'])        
         fee = round(fee,2)              
         total_fee = str(int(fee * 100))
-        body = datadic['did']      
-        openid = datadic['openid']       
+        did = datadic['did']      
+        openid = datadic['openid']
+        locator = queryUtility(IDbapi, name='donate')
+        body = locator.getByCode(did,"did").aname.encode('utf-8')       
         api = JsApi_pub()
 #         logger.info ("openid:%s,body:%s,total_fee:%s." % (openid,body,total_fee))
         out = api.getParameters(openid,body,total_fee)
@@ -352,6 +353,11 @@ class CurrentWeixinPay(WeixinPay):
     在线捐款流程。
     view name:donated_workflow
     """
+    def getProjectId(self):
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IwechatSettings)        
+        return settings.hot_project        
+        
     def get_projects(self,id):
         "提取当前公益项目,id is project id"
         locator = queryUtility(IDbapi, name='donate')
