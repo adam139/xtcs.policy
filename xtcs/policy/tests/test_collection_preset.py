@@ -10,13 +10,8 @@ from plone.app.testing import TEST_USER_ID, login, TEST_USER_NAME, \
     TEST_USER_PASSWORD, setRoles
 from plone.testing.z2 import Browser
 import unittest
-from plone.namedfile.file import NamedBlobImage,NamedBlobFile,NamedImage
-import os
-from plone.app.textfield.value import RichTextValue
-from xtcs.policy.mapping_db import  Article
-from xtcs.policy.interfaces import IArticleLocator
-from zope.component import getUtility
-from xtcs.policy import Session as session
+
+
 
 def getFile(filename):
     """ return contents of the file with the given name """
@@ -32,6 +27,7 @@ class TestView(unittest.TestCase):
 
         for item in STRUCTURE:
             _create_content(item, portal)         
+    
     def test_sort_on(self):
 # check collection sort_on,sort_reversed etc.        
 

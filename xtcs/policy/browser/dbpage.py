@@ -3,13 +3,11 @@ from __future__ import division
 from plone import api
 from zope.interface import Interface
 from zope.component import getMultiAdapter
-from five import grok
 import json
 from datetime import date
 import time
 from datetime import datetime
 from datetime import timedelta
-from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
 from xtcs.policy.browser.interfaces import IwechatSettings
 fmt = "%Y-%m-%d %H:%M:%S"
@@ -26,8 +24,7 @@ from plone.directives import form
 from z3c.form import field, button
 from Products.statusmessages.interfaces import IStatusMessage
 from xtcs.policy.interfaces import InputError,IDbapi
-from xtcs.policy.interfaces import IDonateLocator,IDonorLocator
-from xtcs.policy.mapping_db import IDonate,Donate,IDonor,Donor
+from xtcs.policy.mapping_db import IDonate,IDonor
 from xtcs.policy.mapping_db import OnlinePay
 from xtcs.policy import Scope_session as Session
 
@@ -136,13 +133,13 @@ class CustomWeixinHelper(WeixinHelper):
         return ticket    
 
 
-class TokenAjax(grok.View):
+class TokenAjax(BrowserView):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-    grok.context(Interface)
-    grok.name('token_ajax')
-    grok.require('zope2.View')
+#     grok.context(Interface)
+#     grok.name('token_ajax')
+#     grok.require('zope2.View')
 
     def getAccessTokenByCode(self):
         
@@ -172,7 +169,7 @@ class TokenAjax(grok.View):
             self.request.response.setCookie("openid", token["openid"])        
         
     
-    def render(self):
+    def __call__(self):
         "response to front end"       
     
         token = self.getAccessTokenByCode()
@@ -263,20 +260,20 @@ class SuccessNotifyAjax(object):
         return out
  
 
-class PayAjax(grok.View):
+class PayAjax(BrowserView):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-    grok.context(Interface)
-    grok.name('pay_ajax')
-    grok.require('zope2.View')  
+#     grok.context(Interface)
+#     grok.name('pay_ajax')
+#     grok.require('zope2.View')  
  
     def insertprepay(self,**paras):       
         locator = queryUtility(IDbapi, name='onlinepay')
         locator.add(paras)
         return              
     
-    def render(self):
+    def __call__(self):
         "response to front end"
         """def getSnsapiUserInfo(cls, access_token, openid, lang="zh_CN"):"""
 
@@ -566,13 +563,13 @@ class GuangZhuangDonorView(DonorView):
       
 
  # ajax multi-condition search relation db
-class ajaxsearch(grok.View):
+class AjaxSearch(BrowserView):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-    grok.context(Interface)
-    grok.name('donate_ajaxsearch')
-    grok.require('zope2.View')
+#     grok.context(Interface)
+#     grok.name('donate_ajaxsearch')
+#     grok.require('zope2.View')
 #     grok.require('emc.project.view_projectsummary')
     
     def Datecondition(self,key):
@@ -601,7 +598,7 @@ class ajaxsearch(grok.View):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
 
-    def render(self):
+    def __call__(self):
 #        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
         searchview = self.searchview()
  # datadic receive front ajax post data
@@ -699,18 +696,17 @@ class ajaxsearch(grok.View):
 
 
 
-class Donorajaxsearch(ajaxsearch):
+class Donorajaxsearch(AjaxSearch):
     """AJAX action for search DB donor table.
     receive front end ajax transform parameters
     """
 
-    grok.name('donor_ajaxsearch')
 
     def searchview(self,viewname="donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
 
-    def render(self):
+    def __call__(self):
 #        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
         searchview = self.searchview()
  # datadic receive front ajax post data
@@ -826,7 +822,7 @@ class SpecifyDonorajaxsearch(Donorajaxsearch):
     receive front end ajax transform parameters
     """
 
-    grok.name('specify_donor_ajaxsearch')
+#     grok.name('specify_donor_ajaxsearch')
 
     def searchview(self,viewname="specify_donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
@@ -838,7 +834,7 @@ class GuangZhuangDonorajaxsearch(Donorajaxsearch):
     receive front end ajax transform parameters
     """
 
-    grok.name('guanzhuang_donor_ajaxsearch')
+#     grok.name('guanzhuang_donor_ajaxsearch')
 
     def searchview(self,viewname="guanzhuang_donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
@@ -848,9 +844,9 @@ class GuangZhuangDonorajaxsearch(Donorajaxsearch):
 class DeleteDonate(form.Form):
     "delete the specify model recorder"
     implements(IPublishTraverse)
-    grok.context(IJuanzenggongshi)
-    grok.name('delete_donate')
-    grok.require('xtcs.policy.input_db')
+#     grok.context(IJuanzenggongshi)
+#     grok.name('delete_donate')
+#     grok.require('xtcs.policy.input_db')
 
     label = _(u"delete donate data")
     fields = field.Fields(IDonate).omit('did','start_time')
@@ -903,10 +899,10 @@ class DeleteDonate(form.Form):
 class InputDonate(form.Form):
     """input db donate table data
     """
-
-    grok.context(IJuanzenggongshi)
-    grok.name('input_donate')
-    grok.require('xtcs.policy.input_db')
+# 
+#     grok.context(IJuanzenggongshi)
+#     grok.name('input_donate')
+#     grok.require('xtcs.policy.input_db')
     label = _(u"Input donate data")
     fields = field.Fields(IDonate).omit('did')
     ignoreContext = True
@@ -956,12 +952,9 @@ class UpdateDonate(form.Form):
     """
 
     implements(IPublishTraverse)
-    grok.context(IJuanzenggongshi)
-    grok.name('update_donate')
-    grok.require('xtcs.policy.input_db')
 
     label = _(u"update donate data")
-    fields = field.Fields(IDonate).omit('did')
+    fields = field.Fields(IDonate).omit('did','start_time')
     ignoreContext = False
     id = None
     # reset content
@@ -992,6 +985,7 @@ class UpdateDonate(form.Form):
             self.status = self.formErrorsMessage
             return
         funcations = queryUtility(IDbapi, name='donate')
+        data['id'] = self.id
         data['pk'] = "did"
         try:
             funcations.updateByCode(data)
@@ -1013,7 +1007,7 @@ class UpdateDonate(form.Form):
 class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
-    grok.name('delete_donor')
+#     grok.name('delete_donor')
     label = _(u"delete donate data")
     fields = field.Fields(IDonor).omit('did','doid')
 
@@ -1081,7 +1075,7 @@ class InputDonor(InputDonate):
     """input db donor table data
     """
 
-    grok.name('input_donor')
+#     grok.name('input_donor')
 
     label = _(u"Input donor data")
     fields = field.Fields(IDonor).omit('doid')
@@ -1126,7 +1120,7 @@ class InputDonor(InputDonate):
 class UpdateDonor(DeleteDonor):
     """update model table row data
     """
-    grok.name('update_donor')
+#     grok.name('update_donor')
     label = _(u"update donor data")
     fields = field.Fields(IDonor).omit('doid')
     id = None              

@@ -19,11 +19,14 @@
 		<div id="ajaxsearch" style="display: none" 
 			tal:attributes="data-ajax-target python:context.absolute_url() + '/@@guanzhuang_donor_ajaxsearch'"></div>
 		<div class="container-fluid">
+			<div class="row">
+                <h1 class="documentFirstHeading">冠状病毒疫情捐赠公示</h1>				
+			</div>				
 			<div class="row ajaxsearch">
 				<div class="form-group col-xs-9 col-sm-6 col-sm-offset-3">
 					<input type="text"
 						onkeypress="if(event.keyCode==13) {searchEventParent();return false}"
-						placeholder="输入关键词"
+						placeholder="输入捐赠人部分名称"
 						name="SearchableText"
 						id="searchKeyword"
 						class="form-control search-query">
@@ -33,10 +36,7 @@
 						<span class="glyphicon glyphicon-search"></span>
 					</button>
 				</div>
-			</div>
-			<div class="row">
-                <h1 class="documentFirstHeading">冠状病毒疫情捐赠公示</h1>				
-			</div>			
+			</div>		
 			<input type="hidden" value="0" id="dateSearch">
 			<input type="hidden" value="22" id="idSearch">
 			<input type="hidden" value="1" id="multiFlag">	

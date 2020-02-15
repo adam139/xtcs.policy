@@ -16,7 +16,8 @@
 
     <include package=".browser" />     
     <include package=".portlet" />
-    <grok:grok package="." /> 
+    <!--
+    <grok:grok package="." />  -->
   <!-- -*- cusomize indexer -*- -->
 
   <utility

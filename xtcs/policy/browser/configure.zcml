@@ -14,6 +14,8 @@
      name="xtcs.policy"
      directory="static" />
      
+    <include file="dbpages.zcml"/>
+         
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="index.html"
@@ -30,12 +32,7 @@
       class=".controlpanel.WechatControlPanel"
       permission="cmf.ManagePortal" 
       />     
-    <browser:page
-      for="*"
-      name="notify"
-      class=".dbpage.NotifyAjax"
-      permission="zope.Public"
-    />
+
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="auth"

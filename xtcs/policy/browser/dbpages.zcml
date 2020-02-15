@@ -1,0 +1,85 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="xtcs.policy">
+
+     <browser:page
+        name="pay_ajax"
+        for="*"
+        permission="zope2.View"
+        class=".dbpage.PayAjax"/>
+     <browser:page
+        name="token_ajax"
+        for="*"
+        permission="zope2.View"
+        class=".dbpage.TokenAjax"/>
+     <browser:page
+        for="*"
+        name="notify"
+        class=".dbpage.NotifyAjax"
+        permission="zope.Public"/>                        
+     <browser:page
+        name="donate_ajaxsearch"
+        for="*"
+        permission="zope2.View"
+        class=".dbpage.AjaxSearch"/> 
+     <browser:page
+        name="donor_ajaxsearch"
+        for="*"
+        permission="zope2.View"
+        class=".dbpage.Donorajaxsearch"/>
+     <browser:page
+        name="specify_donor_ajaxsearch"
+        for="*"
+        permission="zope2.View"
+        class=".dbpage.SpecifyDonorajaxsearch"/>
+
+     <browser:page
+        name="guanzhuang_donor_ajaxsearch"
+        for="*"
+        permission="zope2.View"
+        class=".dbpage.GuangZhuangDonorajaxsearch"/>
+
+                                                
+     
+     <!-- input form views define--> 
+     <browser:page
+        name="input_donate"
+        for="xtcs.policy.interfaces.IJuanzenggongshi"
+        permission="xtcs.policy.input_db"
+        class=".dbpage.InputDonate"/> 
+     <browser:page
+        name="input_donor"
+        for="xtcs.policy.interfaces.IJuanzenggongshi"
+        permission="xtcs.policy.input_db"
+        class=".dbpage.InputDonor"/>
+
+
+     <!-- update form views define--> 
+     <browser:page
+        name="update_donate"
+        for="xtcs.policy.interfaces.IJuanzenggongshi"
+        permission="xtcs.policy.input_db"
+        class=".dbpage.UpdateDonate"/> 
+     <browser:page
+        name="update_donor"
+        for="xtcs.policy.interfaces.IJuanzenggongshi"
+        permission="xtcs.policy.input_db"
+        class=".dbpage.UpdateDonor"/>
+
+        
+    <!-- delete form view -->
+     <browser:page
+        name="delete_donate"
+        for="xtcs.policy.interfaces.IJuanzenggongshi"
+        permission="xtcs.policy.input_db"
+        class=".dbpage.DeleteDonate"/> 
+     <browser:page
+        name="delete_donor"
+        for="xtcs.policy.interfaces.IJuanzenggongshi"
+        permission="xtcs.policy.input_db"
+        class=".dbpage.DeleteDonor"/>            
+                                    
+               
+</configure>    

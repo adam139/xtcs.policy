@@ -14,7 +14,7 @@ from plone.namedfile.file import NamedBlobImage,NamedBlobFile,NamedImage
 import os
 from plone.app.textfield.value import RichTextValue
 from xtcs.policy.mapping_db import  Article
-from xtcs.policy.interfaces import IArticleLocator
+
 from zope.component import getUtility
 from xtcs.policy import Session as session
 
@@ -33,72 +33,8 @@ class TestView(unittest.TestCase):
         start = datetime.datetime.today()
         end = start + datetime.timedelta(7)
         for item in STRUCTURE:
-            _create_content(item, portal)         
- 
-# import articles        
-        locator = getUtility(IArticleLocator)
-        # cishandongtai
-        articles = locator.query(start=0,size=25,multi=1,sortparentid=1003,sortchildid=3)
-        if articles == None:return
-        for article in articles:                                  
-            docid = str(article.id)       
-            portal['cishanzixun']['cishandongtai'].invokeFactory('Document', docid)
-            document = portal['cishanzixun']['cishandongtai'][docid]
-            document.title = article.title
-            document.description = "This is my document."
-            document.text = RichTextValue(article.content)        
-        # gongyixinwen
-        articles = locator.query(start=0,size=5,multi=1,sortparentid=1003,sortchildid=1)
-        if articles == None:return
-        for article in articles:                                  
-            docid = str(article.id)       
-            portal['cishanzixun']['gongyixinwen'].invokeFactory('Document', docid)
-            document = portal['cishanzixun']['gongyixinwen'][docid]
-            document.title = article.title
-            document.description = "This is my document."
-            document.text = RichTextValue(article.content)         
-        # huodongtonggao
-        articles = locator.query(start=0,size=2,multi=1,sortparentid=1003,sortchildid=2)
-        if articles == None:return
-        for article in articles:                                  
-            docid = str(article.id)       
-            portal['cishanzixun']['huodongtonggao'].invokeFactory('Document', docid)
-            document = portal['cishanzixun']['huodongtonggao'][docid]
-            document.title = article.title
-            document.description = "This is my document."
-            document.text = RichTextValue(article.content)        
-        # zhengcefagui
-        articles = locator.query(start=0,size=2,multi=1,sortparentid=1008,sortchildid=8)
-        if articles == None:return
-        for article in articles:                                  
-            docid = str(article.id)       
-            portal['zuzhiguanli']['zhengcefagui'].invokeFactory('Document', docid)
-            document = portal['zuzhiguanli']['zhengcefagui'][docid]
-            document.title = article.title
-            document.description = "This is my document."
-            document.text = RichTextValue(article.content) 
-
-        # guizhangzhidu
-        articles = locator.query(start=0,size=2,multi=1,sortparentid=1008,sortchildid=6)
-        if articles == None:return
-        for article in articles:                                  
-            docid = str(article.id)       
-            portal['zuzhiguanli']['zhengcefagui'].invokeFactory('Document', docid)
-            document = portal['zuzhiguanli']['zhengcefagui'][docid]
-            document.title = article.title
-            document.description = "This is my document."
-            document.text = RichTextValue(article.content)
-
-        # yigonghuodong
-        articles = locator.query(start=0,size=2,multi=1,sortparentid=1006,sortchildid=18)
-        if articles == None:return
-        for article in articles:                                  
-            docid = str(article.id)       
-            portal['yigongzhongxin']['yigonghuodong'].invokeFactory('Document', docid)
-            document = portal['yigongzhongxin']['yigonghuodong'][docid]
-            document.title = article.title
-            document.description = "This is my document."
-            document.text = RichTextValue(article.content)           
+            _create_content(item, portal)        
+          
              
         data = getFile('image.jpg').read()
         item = portal['cishanzixun']['tupianxinwen']['prdt1']
