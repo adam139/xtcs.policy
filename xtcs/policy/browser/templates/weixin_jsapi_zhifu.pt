@@ -14,7 +14,7 @@
 <metal:main fill-slot="main">
     <tal:main-macro metal:define-macro="main">
     <div id="juankuan_workflow"  
-    	tal:attributes="data-ajax-base python:portal_url;data-ajax-auth python:'/@@hotauth'">
+    	tal:attributes="data-ajax-base python:portal_url;data-ajax-auth python:'/@@auth'">
 		<div class="row">
 			<!--选择支付方式,捐款项目,发起支付 -->
 			<div class="col-xs-12">
@@ -32,19 +32,27 @@
              	</div>
 			 <div class="form-group">
 			 	<label for="InputName"><span class="required">捐款人</span></label>
-					<input type="text" class="form-control" name="name" value="">			 	
+					<input type="text" class="form-control" name="name" value="">
+					<p></p>			 	
 			 	<label for="InputMoney"><span class="required">捐款金额(单位:元)</span></label>
 					<input type="text" class="form-control" name="money" value="">
 			 </div>             	                          
 			 <div class="form-group">
 			 	<label for="InputWay">捐款方式</label>
 				<div class="radio">
-					<label><input type="radio" name="optionsPay" id="optionsPay1" value="pay1" checked="checked" />微信支付</label><br />             			
+					<label><input type="radio" name="optionsPay" id="optionsPay1" value="pay1" checked="checked" />微信支付</label>
+					<p></p>             			
 					<label><input type="radio" name="optionsPay" id="optionsPay2" value="pay2" disabled />支付宝支付</label>
              	</div>					
 			 </div>
+			<div class="row">
+			<div class="col-xs-6">
 			<button id="submit" class="btn btn-warning btn-lg" name="ok">确定</button>
+			</div>
+			<div class="col-xs-6">
 			<button class="btn btn-default btn-lg" name="cancel">取消</button>
+			</div>
+			</div>
 			</form>            		
 			</div>																		
 		</div>		<!--end row -->      

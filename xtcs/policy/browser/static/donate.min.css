@@ -1,12 +1,6 @@
 #juankuan_workflow hr{margin:20px 10px;height:2px;border:none;border-top:2px solid #fe8e2a;}
 .nav-tabs .col-xs-4{padding-left:0;padding-right:0}
-.nav-tabs li:first-child{padding-left:21px}
-.nav-tabs li:last-child{padding-right:21px}
-.ajaxform {margin: 15px 6px 6px 50px;}
-.ajaxform .btn-lg {margin-right:18px;}
 #qita .row{margin:15px 6px;min-height:50px;height:52px}
-#qita button{width:100px;background-color:#FE8E2A;border-color:#FD8E2A}
+.col-xs-12 button{width:100px;background-color:#FE8E2A;border-color:#FD8E2A}
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {border:none;}
-.form-group input[type="text"]{width:10%;min-width:80px}
-#yinhang ul {margin-left:50px}
-ul li{list-style-type:none}
+ul li{list-style-type:none}  .available li{list-style-type:decimal} .row .jumbotron {cursor:pointer}

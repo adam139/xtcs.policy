@@ -4,7 +4,7 @@ require([
 ], function($,tabs) {
   'use strict';
 $(document).ready(function(){ 
-	$(".nav-tabs a").mouseover(function (e) {
+	$(".nav-tabs a").on("click",function (e) {
 		  e.preventDefault();
 		  $(this).tab('show');
 		});

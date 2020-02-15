@@ -38,35 +38,35 @@
     />
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
-      name="cookieauth"
+      name="auth"
       class=".zhifu.Base"
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"            
-    />    
-    <browser:page
-      for="Products.CMFCore.interfaces.ISiteRoot"
-      name="auth"
-      class=".zhifu.ZhiFuWeiXinAuthView"
-      permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
-      template="templates/zhifu_weixin_auth.pt"
     />
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="hotauth"
-      class=".zhifu.ZhiFuHotAuthView"
+      class=".zhifu.HotBase"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"            
+    />        
+     <browser:page
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="hotpay"
+      class=".dbpage.CurrentWeixinPay"
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
-      template="templates/zhifu_weixin_auth.pt"
-    />        
+      template="templates/hot_project_zhifu.pt"
+    /> 
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
-      name="auth.html"
-      class=".zhifu.ZhiFuWView"
+      name="pay"
+      class=".dbpage.WeixinPay"
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
-      template="templates/zhifu_weixin_auth.pt"
-    />        
+      template="templates/weixin_jsapi_zhifu.pt"
+    />
+        
     <browser:page
       for="*"
       name="donor_table"
@@ -125,37 +125,14 @@
       template="templates/guanzhuang_donor_listings.pt"
     />        
     <browser:page
-      for="Products.CMFCore.interfaces.ISiteRoot"
+      for="xtcs.policy.interfaces.IJuanzengworkflow"
       name="donated_workflow"
       class=".dbpage.DonatedWorkflow"
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/donated_workflow.pt"
     />
-     <browser:page
-      for="Products.CMFCore.interfaces.ISiteRoot"
-      name="hotpay"
-      class=".dbpage.CurrentWeixinPay"
-      permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
-      template="templates/hot_project_zhifu.pt"
-    /> 
-    <browser:page
-      for="Products.CMFCore.interfaces.ISiteRoot"
-      name="pay"
-      class=".dbpage.WeixinPay"
-      permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
-      template="templates/weixin_jsapi_zhifu.pt"
-    />
-    <browser:page
-      for="Products.CMFCore.interfaces.ISiteRoot"
-      name="currentpay"
-      class=".dbpage.CurrentWeixinPay"
-      permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
-      template="templates/current_project_zhifu.pt"
-    />                 
+                
     <browser:page
       for="*"
       name="footer"

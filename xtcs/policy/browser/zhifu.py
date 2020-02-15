@@ -1,9 +1,6 @@
 #-*- coding: UTF-8 -*-
 from plone.memoize.instance import memoize
 from Products.Five.browser import BrowserView
-# from zope.component import getUtility
-# from plone.registry.interfaces import IRegistry
-# from my315ok.wechat.interfaces import IwechatSettings
 from datetime import datetime,timedelta
 from my315ok.wechat.lib import WeixinHelper
 from xtcs.policy.mapping_db import  AccessToken
@@ -32,8 +29,7 @@ class Base(BrowserView):
             else:
                 return ""
         else:
-            return ""
-            
+            return ""            
         
     
     def __call__(self):
@@ -46,14 +42,19 @@ class Base(BrowserView):
             self.request.response.redirect(self.winxinAuthUrl())
     
     def redirectUrl(self):
-        redirecturi = 'http://weixin.315ok.org/@@hotpay'
-        return redirecturi        
+        return '{0}/@@pay'.format(self.context.absolute_url())
+       
     
     def winxinAuthUrl(self):
         
-        nexturl = WeixinHelper.oauth2(self.redirectUrl())
-        return nexturl 
+        return WeixinHelper.oauth2(self.redirectUrl())
+
         
+class HotBase(Base):
+     
+    def redirectUrl(self):
+        return '{0}/@@hotpay'.format(self.context.absolute_url())
+ 
     
 class ZhiFuWView(BrowserView):    
        

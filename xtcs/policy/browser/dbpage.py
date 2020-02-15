@@ -21,9 +21,7 @@ from Products.CMFCore.interfaces import ISiteRoot
 from plone.memoize.instance import memoize
 from xtcs.policy import _
 from Products.Five.browser import BrowserView
-# from collective.gtags.source import TagsSourceBinder
 from zope.component import getUtility,queryUtility
-# input data view
 from plone.directives import form
 from z3c.form import field, button
 from Products.statusmessages.interfaces import IStatusMessage
@@ -41,7 +39,6 @@ from my315ok.wechat.pay import Wxpay_server_pub
 from my315ok.wechat.pay import OrderQuery_pub
 from my315ok.wechat.pay import WxPayConf_pub
 from my315ok.wechat.lib import HttpClient 
-# update data view
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFPlone.resources import add_bundle_on_request
@@ -292,20 +289,22 @@ class PayAjax(grok.View):
         openid = datadic['openid']
         locator = queryUtility(IDbapi, name='donate')
         body = locator.getByCode(did,"did").aname.encode('utf-8')       
-        api = JsApi_pub()
+#         api = JsApi_pub()
 #         logger.info ("openid:%s,body:%s,total_fee:%s." % (openid,body,total_fee))
-        out = api.getParameters(openid,body,total_fee)
+        out = JsApi_pub().getParameters(openid,body,total_fee)
         datadic['money'] = str(fee)
         datadic['status'] = 0
         datadic['openid'] = openid
         if datadic['aname'] =="":
             try:
                 logger.info("start get nickname !")
-                help_api = WeixinHelper()
-                logger.info("authorize code is:%s" % datadic['code'])
-                token = help_api.getAccessTokenByCode(datadic['code'])
-                logger.info("access token is:%s" % token)
-                userinfo = help_api.getSnsapiUserInfo(token,openid)
+                locator = queryUtility(IDbapi, name='accesstoken')
+                args = {"start":0,"size":1,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+                filter_args = {"openid":openid}
+                rdrs = locator.query_with_filter(args,filter_args)
+                token = rdrs[0].token
+                userinfo = WeixinHelper.getSnsapiUserInfo(token,openid)
                 logger.info("user nickname  is:%s" % userinfo['nickname'])            
                 datadic['aname'] = userinfo['nickname']
             except:
@@ -313,7 +312,6 @@ class PayAjax(grok.View):
                 datadic['aname'] == u"匿名".encode('utf-8')                
 
         del datadic['fee']
-        del datadic['code']
         self.insertprepay(**datadic)  
         self.request.response.setHeader('Content-Type', 'application/json')      
         return out        
@@ -324,7 +322,11 @@ class WeixinPay(BrowserView):
     在线捐款流程。
     view name:donated_workflow
     """
-    
+    def getProjectId(self):
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IwechatSettings)        
+        return settings.hot_project 
+        
     def get_projects(self,id=None):
         "提取系统所有公益项目"
 
@@ -345,21 +347,19 @@ class WeixinPay(BrowserView):
             index = first.find('value') 
             outhtml[0] = first[:index] + ' checked ' + first[index:]
              
-        outhtml = "<br/>".join(outhtml)
+        outhtml = "<p></p>".join(outhtml)
         return outhtml
 
 class CurrentWeixinPay(WeixinPay):
     """
     在线捐款流程。
     view name:donated_workflow
-    """
-    def getProjectId(self):
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(IwechatSettings)        
-        return settings.hot_project        
+    """       
         
-    def get_projects(self,id):
+    def get_projects(self,id=None):
         "提取当前公益项目,id is project id"
+        if id==None:
+            id = self.getProjectId()
         locator = queryUtility(IDbapi, name='donate')
         rcd = locator.getByCode(id,"did")
         out = dict()
@@ -381,6 +381,52 @@ class DonatedWorkflow(WeixinPay):
         self.request = request
         add_bundle_on_request(self.request, 'donate-legacy') 
             
+    def getHotProject(self):
+        id = self.getProjectId()
+        locator = queryUtility(IDbapi, name='donate')
+        rcd = locator.getByCode(id,"did")
+        out = "<h1>%s</h1><p>%s<p>" % (rcd.aname,rcd.amemo)
+        return out        
+
+    def get_projects(self):
+        "提取系统所有公益项目"
+
+        args = {"start":0,"size":10,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'did'}      
+        locator = queryUtility(IDbapi, name='donate')
+        filter_args = {"visible":1}               
+        recorders = locator.query_with_filter(args,filter_args)        
+#         recorders = locator.query(args)
+
+        def outfmt(rcd):
+            out = '<li>{0}</li>'.format(rcd.aname)
+            return out
+            
+        outhtml = map(outfmt,recorders)             
+        outhtml = '<ul class="available">{0}</ul>'.format("".join(outhtml))
+        return outhtml
+
+
+    @memoize
+    def outputjs(self):
+        ""                         
+        portal_url = api.portal.get().absolute_url()
+        hoturl = "{0}/@@hotauth".format(portal_url)
+        selectutl = "{0}/@@auth".format(portal_url)
+        
+        out = """
+$(document).ready(function(){        
+    $(".hot-project").on("click",function (e) {
+          e.preventDefault();
+          window.location.href = "%(hoturl)s";
+        });
+    $(".self-select").on("click",function (e) {
+          e.preventDefault();
+          window.location.href = "%(selectutl)s";
+        });
+    });
+        """ % dict(hoturl=hoturl,selectutl=selectutl)
+        return out
 
 class DonortableView(BrowserView):
     "捐赠金榜,显示日常捐赠"
