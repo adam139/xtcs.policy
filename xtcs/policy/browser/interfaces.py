@@ -20,6 +20,26 @@ class IwechatSettings(Interface):
                              title=_(u"app token"),
                              description=_(u"weixin app token"),
                              )
+    mchid = schema.ASCII(
+                             title=_(u"shop id"),
+                             description=_(u"shop id come from weixn"),
+                             )
+    key = schema.ASCII(
+                             title=_(u"shop pay key"),
+                             description=_(u"shop pay key"),
+                             )
+    notify_url = schema.ASCIILine(
+            title=_(u"pay result notify url"),
+            required=True,
+        )
+    curl_timeout = schema.Int(
+            title=_(u"curl timeout"),
+            required=True,
+        )
+    http_client = schema.ASCII(
+            title=_(u"http client lib"),
+            required=True,
+        )                    
     access_token = schema.ASCII(
                              title=_(u"gongzhong hao access token"),
                              description=_(u"gongzhong hao access token"),
@@ -27,11 +47,7 @@ class IwechatSettings(Interface):
     access_token_time = schema.Datetime(
                              title=_(u"access token update time"),
                              description=_(u"gongzhong hao access token update time"),
-                             )    
-    jsapi_access_token = schema.ASCII(
-                             title=_(u"jsapi access token"),
-                             description=_(u"jsapi web page authorized access token"),
-                             )
+                             )   
     jsapi_ticket = schema.ASCII(
                              title=_(u"jsapi ticket"),
                              description=_(u"jsapi web page authorized access ticket"),
@@ -39,18 +55,10 @@ class IwechatSettings(Interface):
     jsapi_ticket_time = schema.Datetime(
                              title=_(u"jsapi ticket update time"),
                              description=_(u"jsapi access ticket update time"),
-                             )
-    jsapi_access_token_time = schema.Datetime(
-                             title=_(u"access token update time"),
-                             description=_(u"jsapi access token update time"),
-                             )                    
+                             )                   
     preview = schema.ASCIILine(
             title=_(u"Preview image URL"),
             required=False,
-        )
-    redirecturi = schema.ASCIILine(
-            title=_(u"the redirect uri of jsapi authorize page"),
-            required=True,
         )
     hot_project = schema.Choice(
             title=_(u"tuijian xiangmu"),

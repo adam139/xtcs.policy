@@ -73,12 +73,17 @@ prefix="plone" />
         <value key="appid"></value>
         <value key="appsecret"></value>
 	    <value key="token"></value>
+        <value key="mchid"></value>
+        <value key="key"></value>
+	    <value key="notify_url"></value>
+	    <value key="curl_timeout">30</value>
+	    <value key="http_client">CURL</value>	    	    	    
 	    <value key="access_token"></value>
 	    <value key="access_token_time">2014-08-14 00:00:00</value>
 	    <value key="jsapi_ticket"></value>
         <value key="jsapi_ticket_time">2014-08-14 00:00:00</value>        
         <value key="preview">http://images.315ok.org/xtcs/images/qrcode.jpg</value>
-        <value key="redirecturi">http://www.xtcs.org/</value>
+        <value key="hot_project"></value>
   </records> 
     
   <!-- custom TinyMCE templates -->	
