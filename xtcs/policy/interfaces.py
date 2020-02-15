@@ -22,8 +22,7 @@ class IJuanzengworkflow (Interface):
 
 class IContainerTablelist (Interface):
     """文件夹标记接口"""
-
-# db insterface   
+ 
 # db insterface
 class IDbapi (Interface):
     """Db api """

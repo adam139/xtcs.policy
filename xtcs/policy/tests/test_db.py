@@ -99,6 +99,8 @@ class TestParametersDatabase(unittest.TestCase):
         from datetime import datetime
 
         locator = queryUtility(IDbapi, name='donate')
+        import pdb
+        pdb.set_trace()
         # add
         fmt = "%Y-%m-%d %H:%M:%S"
         import time

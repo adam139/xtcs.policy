@@ -50,8 +50,13 @@ class IwechatSettings(Interface):
         )
     redirecturi = schema.ASCIILine(
             title=_(u"the redirect uri of jsapi authorize page"),
-            required=False,
+            required=True,
         )
+    hot_project = schema.Choice(
+            title=_(u"tuijian xiangmu"),
+            vocabulary='xtcs.policy.vocabulary.donateId',
+            required=True,
+        )   
 
 
 class IThemeSpecific(Interface):
