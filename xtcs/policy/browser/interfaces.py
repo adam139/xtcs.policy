@@ -11,22 +11,27 @@ class IwechatSettings(Interface):
     appid = schema.ASCII(
             title=_(u"app id"),
             description=_(u"weixin app id"),
+            required=False,
         )
     appsecret = schema.ASCII(
                              title=_(u"app secret"),
                              description=_(u"weixin app secret"),
+                             required=False,
                              )
     token = schema.ASCII(
                              title=_(u"app token"),
                              description=_(u"weixin app token"),
+                             required=False,
                              )
     mchid = schema.ASCII(
                              title=_(u"shop id"),
                              description=_(u"shop id come from weixn"),
+                             required=False,
                              )
     key = schema.ASCII(
                              title=_(u"shop pay key"),
                              description=_(u"shop pay key"),
+                             required=False,
                              )
     notify_url = schema.ASCIILine(
             title=_(u"pay result notify url"),
@@ -43,18 +48,22 @@ class IwechatSettings(Interface):
     access_token = schema.ASCII(
                              title=_(u"gongzhong hao access token"),
                              description=_(u"gongzhong hao access token"),
+                             required=False,
                              )
     access_token_time = schema.Datetime(
                              title=_(u"access token update time"),
                              description=_(u"gongzhong hao access token update time"),
+                             required=False,
                              )   
     jsapi_ticket = schema.ASCII(
                              title=_(u"jsapi ticket"),
                              description=_(u"jsapi web page authorized access ticket"),
+                             required=False,
                              )    
     jsapi_ticket_time = schema.Datetime(
                              title=_(u"jsapi ticket update time"),
                              description=_(u"jsapi access ticket update time"),
+                             required=False,
                              )                   
     preview = schema.ASCIILine(
             title=_(u"Preview image URL"),
