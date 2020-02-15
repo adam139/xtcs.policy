@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<registry>
+  <!--remove control panel regsitry recorders-->
+   <records prefix="xtcs.policy.browser.interfaces.IwechatSettings" 
+  	interface="xtcs.policy.browser.interfaces.IwechatSettings" remove="true" />
+</registry>

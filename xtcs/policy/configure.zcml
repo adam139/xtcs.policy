@@ -52,7 +52,13 @@
       description="Installs the xtcs.policy package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-  <!-- -*- extra stuff goes here -*- -->
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="uninstall xtcs.policy"
+      directory="profiles/uninstall"
+      description="Uninstalls xtcs.policy package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      /> 
   
   <genericsetup:registerProfile
       name="post"
@@ -68,8 +74,6 @@
       description="some initial steps"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-
-
   
   <genericsetup:upgradeStep
       title="create directory tree"
