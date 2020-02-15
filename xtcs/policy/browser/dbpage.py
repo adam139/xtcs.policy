@@ -1077,7 +1077,7 @@ class DeleteDonor(DeleteDonate):
         self.request.response.redirect(self.context.absolute_url() + rdurl)
 
 
-class InputDonor(DeleteDonor):
+class InputDonor(InputDonate):
     """input db donor table data
     """
 
