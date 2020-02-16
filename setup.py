@@ -27,8 +27,6 @@ setup(name='xtcs.policy',
           'setuptools',
           'mysqlclient==1.4.6',
           'Products.CMFPlone',
-          'collective.z3cform.datetimewidget',       
-          'five.grok',
           'z3c.jbot',
           'plone.app.dexterity',          
           'MySQL-python',
@@ -48,6 +46,4 @@ setup(name='xtcs.policy',
       [z3c.autoinclude.plugin]
       target = plone
       """,
-#      setup_requires=["PasteScript"],
-#      paster_plugins=["ZopeSkel"],
       )
