@@ -18,11 +18,13 @@ def nowDateTime():
 
 # automap
 metadata = MetaData()
-metadata.reflect(engine, only=['onlinepay','accesstoken'])
+metadata.reflect(engine, only=['onlinepay','accesstoken','xiangmu','juanzeng'])
 AutoBase = automap_base(metadata=metadata)
 AutoBase.prepare()
 OnlinePay = AutoBase.classes.onlinepay
 AccessToken = AutoBase.classes.accesstoken
+XiangMu = AutoBase.classes.xiangmu
+JuanZeng = AutoBase.classes.juanzeng
 
 
 class IArticle(Interface):

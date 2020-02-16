@@ -37,6 +37,16 @@
 	/>
   <utility
 	provides=".interfaces.IDbapi"
+	component=".dbutility.xiangmu"
+	name="xiangmu"
+	/>  
+  <utility
+	provides=".interfaces.IDbapi"
+	component=".dbutility.juanzeng"
+	name="juanzeng"
+	/>	
+  <utility
+	provides=".interfaces.IDbapi"
 	component=".dbutility.donate"
 	name="donate"
 	/>	
@@ -75,7 +85,23 @@
       description="some initial steps"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
- 
+
+  <genericsetup:upgradeStep
+      title="copy table from donor to juanzeng"
+      description="copy table from donor to juanzeng"
+      source="1001"
+      destination="1002"
+      handler="xtcs.policy.copy_table.cp_donor2juanzeng"
+      profile="xtcs.policy:default"/> 
+
+  <genericsetup:upgradeStep
+      title="copy table from donate to xiangmu"
+      description="copy table from donate to xiangmu"
+      source="1001"
+      destination="1002"
+      handler="xtcs.policy.copy_table.import_contents"
+      profile="xtcs.policy:default"/> 
+   
    <genericsetup:upgradeStep
       title="fix collection query condition"
       description="fix collection query condition"

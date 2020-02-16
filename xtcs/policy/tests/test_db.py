@@ -108,7 +108,7 @@ class TestParametersDatabase(unittest.TestCase):
         dtst = time.strptime(now.strftime(fmt),fmt)
         timestamp = int(time.mktime(dtst))
         args = {"aname":"demo project",'visible':1,'start_time':timestamp}
-#         locator.add(args)        
+        locator.add(args)        
         # batch search
         args = {"start":0,"size":3,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'did'}
