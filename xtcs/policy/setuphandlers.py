@@ -4,22 +4,21 @@ from plone import api
 from plone.app.dexterity.behaviors import constrains
 from zope.dottedname.resolve import resolve
 from Products.Five.utilities.marker import mark
-
 from plone.namedfile.file import NamedImage
-
 from logging import getLogger
+import os
 logger = getLogger(__name__)
 
 # for image field data
-
-
-data = open('/home/plone/workspace/Plone5sites/sites/src/xtcs.policy/xtcs/policy/tests/image.jpg','r').read()
+filename =  os.path.join(os.path.dirname(__file__), 'tests/image.jpg')
+data = open(filename,'r').read()
 
 image = NamedImage(data, 'image/jpg', u'image.jpg')
 
 default = { 'i': 'portal_type',
-           'o': 'plone.app.querystring.operation.string.is',
-            'v': 'Document'}
+           'o': 'plone.app.querystring.operation.selection.any',
+            'v': ['Document','Link']}
+
 query = []
 defaultpath = {
                     'i': 'path',
@@ -390,6 +389,23 @@ STRUCTURE = [
 ]
 
 
+def fixCollectionQueryCon(context):
+    "Fix handler for update collection query condition"
+    
+#     if isNotCurrentProfile(context):
+#         return
+    default = { 'o': 'plone.app.querystring.operation.selection.any',
+            'v': ['Document','Link']}    
+    cols = api.content.find(context=api.portal.get(), portal_type='Collection')
+    for col in cols:
+        obj = col.getObject()
+        print obj.query[0]
+        if obj.query[0]['i'] =='portal_type' and obj.query[0]['v'] =='Document' :
+            obj.query[0].update(default)
+        print obj.query
+    return
+
+
 def isNotCurrentProfile(context):
     return context.readDataFile('policy_marker.txt') is None
 
@@ -402,9 +418,6 @@ def post_install(context):
     # Do something during the installation of this package
 #     return
     portal = api.portal.get()
-#     members = portal.get('events', None)
-#     if members is not None:
-#         api.content.delete(members)
     members = portal.get('news', None)
     if members is not None:
         api.content.delete(members)
@@ -416,7 +429,7 @@ def post_install(context):
 
     for item in STRUCTURE:
         _create_content(item, portal)
-#     set relation
+
 
 
 def content(context):
@@ -431,7 +444,6 @@ def content(context):
 def _create_content(item, container):
     new = container.get(item['id'], None)
     if not new:
-
         new = api.content.create(
             type=item['type'],
             container=container,
@@ -473,7 +485,6 @@ def _create_content(item, container):
     # call recursively for children
     for subitem in item.get('children', []):
         _create_content(subitem, new)
-
 
 def _constrain(context, allowed_types):
     behavior = ISelectableConstrainTypes(context)

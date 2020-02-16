@@ -75,6 +75,14 @@
       description="some initial steps"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
+ 
+   <genericsetup:upgradeStep
+      title="fix collection query condition"
+      description="fix collection query condition"
+      source="1001"
+      destination="1002"
+      handler="xtcs.policy.setuphandlers.fixCollectionQueryCon"
+      profile="xtcs.policy:default"/>
   
   <genericsetup:upgradeStep
       title="create directory tree"
