@@ -52,8 +52,7 @@
             	<ul id="eventListSort" class="pager">
                     <li><span>排序：</span></li>                    
                     <li><a class="a" id="bycode" href="javascript:void(0)">
-
-                    	<span data-name="did" class="glyphicon glyphicon-arrow-up">时间</span>
+                    	<span data-name="doid" class="glyphicon glyphicon-arrow-up">时间</span>
                     	</a></li>
                 </ul>
                 </div>

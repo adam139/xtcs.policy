@@ -617,14 +617,17 @@ class Dbapi(object):
         size = int(kwargs['size'])
         max = size + start + 1
         keyword = kwargs['SearchableText']
-        orderby = kwargs['order_by']        
         direction = kwargs['sort_order'].strip()
-        
-        try:
+        if kwargs.has_key('order_by'):
+            orderby = kwargs['order_by']
+        else:
+            #default orderby is id
+            orderby = 'id'        
+        if kwargs.has_key('with_entities'):
             with_entities = kwargs['with_entities']
-        except:
-            kwargs['with_entities'] = 1
-            with_entities = 1                                       
+        else:
+            with_entities = 1        
+                                      
         if size != 0:
             if keyword == "":
                 if direction == "reverse":
@@ -642,6 +645,27 @@ class Dbapi(object):
                                                                   self.filter_args2sql(filter_args),
                                                                   orderby)                    
                     selectcon = text(sqltext)
+                    if bool(with_entities):
+                        clmns = self.get_columns()
+                        try:
+                            recorders = session.query(tablecls).with_entities(*clmns).\
+                            from_statement(selectcon.params(start=start,max=max)).all()
+                        except:
+                            session.rollback()
+                    elif linkstr.startswith("oracle"):
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        try:
+                            recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                        except:
+                            session.rollback()
+                    else:
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        try:
+                            recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
+                        except:
+                            session.rollback()                    
                 else:
                     if linkstr.startswith("oracle"):
                         sqltext = """SELECT * FROM 
@@ -657,27 +681,27 @@ class Dbapi(object):
                                                                  self.filter_args2sql(filter_args),
                                                                  orderby)                                        
                     selectcon = text(sqltext)                    
-                if bool(with_entities):
-                    clmns = self.get_columns()
-                    try:
-                        recorders = session.query(tablecls).with_entities(*clmns).\
+                    if bool(with_entities):
+                        clmns = self.get_columns()
+                        try:
+                            recorders = session.query(tablecls).with_entities(*clmns).\
                             from_statement(selectcon.params(start=start,max=max)).all()
-                    except:
-                        session.rollback()
-                elif linkstr.startswith("oracle"):
-                    ftrclmns = self.filter_args2ormfilter(filter_args)
-                    try:
-                        recorders = session.query(tablecls).filter(*ftrclmns).\
-                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
-                    except:
-                        session.rollback()
-                else:
-                    ftrclmns = self.filter_args2ormfilter(filter_args)
-                    try:
-                        recorders = session.query(tablecls).filter(*ftrclmns).\
-                    order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
-                    except:
-                        session.rollback()                    
+                        except:
+                            session.rollback()
+                    elif linkstr.startswith("oracle"):
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        try:
+                            recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).asc()).all()[start:max]
+                        except:
+                            session.rollback()
+                    else:
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        try:
+                            recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).asc()).limit(max).offset(start).all()
+                        except:
+                            session.rollback()                    
             else:
                 keysrchtxt = self.search_clmns2sqltxt(self.fullsearch_clmns)
                 if direction == "reverse":
@@ -700,6 +724,40 @@ class Dbapi(object):
                                     filter_cols=self.filter_args2sql(filter_args),
                                     orderby=orderby)                        
                     selectcon = text(sqltxt)
+                    if bool(with_entities):
+                        clmns = self.get_columns()
+                        try:
+                            recorders = session.query(tablecls).with_entities(*clmns).\
+                            from_statement(selectcon.params(x=keyword,start=start,max=max)).all()
+                        except:
+                            session.rollback()
+                    elif linkstr.startswith("oracle"):
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
+                        if bool(keysearchcnd):
+                            if len(keysearchcnd) > 1:
+                                try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(or_(*keysearchcnd)).\
+                                order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                                except:
+                                    session.rollback()
+                            else:
+                                try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(keysearchcnd[0]).\
+                                order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                                except:
+                                    session.rollback()                            
+                    
+                        else:
+                            try:
+                                recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                            except:
+                                session.rollback()                   
+                    
+                    
                 else:
                     if linkstr.startswith("oracle"):                     
                         sqltxt = """SELECT * FROM
@@ -720,60 +778,59 @@ class Dbapi(object):
                                     filter_cols=self.filter_args2sql(filter_args),
                                     orderby=orderby)                                                                 
                     selectcon = text(sqltxt)
-                if bool(with_entities):
-                    clmns = self.get_columns()
-                    try:
-                        recorders = session.query(tablecls).with_entities(*clmns).\
+                    if bool(with_entities):
+                        clmns = self.get_columns()
+                        try:
+                            recorders = session.query(tablecls).with_entities(*clmns).\
                             from_statement(selectcon.params(x=keyword,start=start,max=max)).all()
-                    except:
-                        session.rollback()
-                elif linkstr.startswith("oracle"):
-                    ftrclmns = self.filter_args2ormfilter(filter_args)
-                    keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
-                    if bool(keysearchcnd):
-                        if len(keysearchcnd) > 1:
-                            try:
-                                recorders = session.query(tablecls).filter(*ftrclmns).\
-                                filter(or_(*keysearchcnd)).\
-                                order_by(getattr(tablecls,orderby).desc()).all()[start:max]
-                            except:
-                                session.rollback()
-                        else:
-                            try:
-                                recorders = session.query(tablecls).filter(*ftrclmns).\
-                                filter(keysearchcnd[0]).\
-                                order_by(getattr(tablecls,orderby).desc()).all()[start:max]
-                            except:
-                                session.rollback()                            
-                    
-                    else:
-                        try:
-                            recorders = session.query(tablecls).filter(*ftrclmns).\
-                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
-                        except:
-                            session.rollback()                                    
-                else:
-                    ftrclmns = self.filter_args2ormfilter(filter_args)
-                    keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
-                    if bool(keysearchcnd):
-                        if len(keysearchcnd) > 1:
-                            try:
-                                recorders = session.query(tablecls).filter(*ftrclmns).\
-                                filter(or_(*keysearchcnd)).order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
-                            except:
-                                 session.rollback()
-                        else:
-                            try:
-                                recorders = session.query(tablecls).filter(*ftrclmns).\
-                                filter(keysearchcnd[0]).order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
-                            except:
-                                 session.rollback()                                                                                          
-                    else:
-                        try:
-                            recorders = session.query(tablecls).filter(*ftrclmns).\
-                    order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
                         except:
                             session.rollback()
+                    elif linkstr.startswith("oracle"):
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
+                        if bool(keysearchcnd):
+                            if len(keysearchcnd) > 1:
+                                try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(or_(*keysearchcnd)).\
+                                order_by(getattr(tablecls,orderby).asc()).all()[start:max]
+                                except:
+                                    session.rollback()
+                            else:
+                                try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(keysearchcnd[0]).\
+                                order_by(getattr(tablecls,orderby).asc()).all()[start:max]
+                                except:
+                                    session.rollback()                                               
+                        else:
+                             try:
+                                recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).asc()).all()[start:max]
+                             except:
+                                 session.rollback()                                    
+                    else:
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
+                        if bool(keysearchcnd):
+                            if len(keysearchcnd) > 1:
+                                 try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(or_(*keysearchcnd)).order_by(getattr(tablecls,orderby).asc()).limit(max).offset(start).all()
+                                 except:
+                                    session.rollback()
+                            else:
+                                try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(keysearchcnd[0]).order_by(getattr(tablecls,orderby).asc()).limit(max).offset(start).all()
+                                except:
+                                     session.rollback()                                                                                          
+                        else:
+                            try:
+                                recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).asc()).limit(max).offset(start).all()
+                            except:
+                                session.rollback()
             try:
                 if not bool(recorders):
                     recorders = []

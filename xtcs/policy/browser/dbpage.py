@@ -567,10 +567,6 @@ class AjaxSearch(BrowserView):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-#     grok.context(Interface)
-#     grok.name('donate_ajaxsearch')
-#     grok.require('zope2.View')
-#     grok.require('emc.project.view_projectsummary')
     
     def Datecondition(self,key):
         "构造日期搜索条件"
@@ -730,8 +726,7 @@ class Donorajaxsearch(AjaxSearch):
         origquery['with_entities'] = 0
         filterquery = {'did':id}
         locator = queryUtility(IDbapi, name='donate')
-        name = locator.getByCode(id,"did").aname
-        
+        name = locator.getByCode(id,"did").aname        
 #totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
