@@ -703,6 +703,7 @@ class Dbapi(object):
                         except:
                             session.rollback()                    
             else:
+                # keyword !=""
                 keysrchtxt = self.search_clmns2sqltxt(self.fullsearch_clmns)
                 if direction == "reverse":
                     if linkstr.startswith("oracle"):                                                                
@@ -724,7 +725,7 @@ class Dbapi(object):
                                     filter_cols=self.filter_args2sql(filter_args),
                                     orderby=orderby)                        
                     selectcon = text(sqltxt)
-                    if bool(with_entities):
+                    if bool(with_entities):  # use sql query
                         clmns = self.get_columns()
                         try:
                             recorders = session.query(tablecls).with_entities(*clmns).\
@@ -745,18 +746,40 @@ class Dbapi(object):
                             else:
                                 try:
                                     recorders = session.query(tablecls).filter(*ftrclmns).\
-                                filter(keysearchcnd[0]).\
-                                order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                                    filter(keysearchcnd[0]).\
+                                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
                                 except:
-                                    session.rollback()                            
-                    
+                                    session.rollback()                                               
                         else:
                             try:
                                 recorders = session.query(tablecls).filter(*ftrclmns).\
-                    order_by(getattr(tablecls,orderby).desc()).all()[start:max]
+                                order_by(getattr(tablecls,orderby).desc()).all()[start:max]
                             except:
                                 session.rollback()                   
-                    
+
+                    else:
+                        # desc keyword mysql
+                        ftrclmns = self.filter_args2ormfilter(filter_args)
+                        keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
+                        if bool(keysearchcnd):
+                            if len(keysearchcnd) > 1:
+                                 try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(or_(*keysearchcnd)).order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
+                                 except:
+                                    session.rollback()
+                            else:
+                                try:
+                                    recorders = session.query(tablecls).filter(*ftrclmns).\
+                                filter(keysearchcnd[0]).order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
+                                except:
+                                     session.rollback()                                                                                          
+                        else:
+                            try:
+                                recorders = session.query(tablecls).filter(*ftrclmns).\
+                    order_by(getattr(tablecls,orderby).desc()).limit(max).offset(start).all()
+                            except:
+                                session.rollback()                    
                     
                 else:
                     if linkstr.startswith("oracle"):                     
@@ -778,6 +801,7 @@ class Dbapi(object):
                                     filter_cols=self.filter_args2sql(filter_args),
                                     orderby=orderby)                                                                 
                     selectcon = text(sqltxt)
+                    
                     if bool(with_entities):
                         clmns = self.get_columns()
                         try:
@@ -786,6 +810,7 @@ class Dbapi(object):
                         except:
                             session.rollback()
                     elif linkstr.startswith("oracle"):
+                        # asc keyword oracle with_entities = 0
                         ftrclmns = self.filter_args2ormfilter(filter_args)
                         keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
                         if bool(keysearchcnd):
@@ -810,6 +835,7 @@ class Dbapi(object):
                              except:
                                  session.rollback()                                    
                     else:
+                        # asc keyword mysql
                         ftrclmns = self.filter_args2ormfilter(filter_args)
                         keysearchcnd = self.search_clmns4filter(self.fullsearch_clmns,tablecls,keyword)
                         if bool(keysearchcnd):
