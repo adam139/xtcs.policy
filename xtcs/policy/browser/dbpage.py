@@ -70,7 +70,7 @@ class CustomWeixinHelper(WeixinHelper):
         import ast
         token = ast.literal_eval(token)
         if 'errcode' not in token.keys(): 
-            logger.info("new token '%s' saved to cache" % token['access_token'])
+#             logger.info("new token '%s' saved to cache" % token['access_token'])
             settings.access_token_time = datetime.now()
             settings.access_token = token['access_token']
         return token['access_token']
@@ -100,10 +100,10 @@ class CustomWeixinHelper(WeixinHelper):
                 openid = token['openid']
                 data = {"openid":openid,"token":token['access_token'],
                             "expiredtime":timelimit}
-                args = {"start":0,"size":1,'SearchableText':'',
+                query_args = {"start":0,"size":1,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
                 filter_args = {"openid":openid}
-                rdrs = locator.query_with_filter(args,filter_args)
+                rdrs = locator.query_with_filter(query_args,filter_args)
                 if bool(rdrs):
                     data['id'] = rdrs[0].id
                     locator.updateByCode(data)
@@ -137,12 +137,8 @@ class TokenAjax(BrowserView):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-#     grok.context(Interface)
-#     grok.name('token_ajax')
-#     grok.require('zope2.View')
 
-    def getAccessTokenByCode(self):
-        
+    def getAccessTokenByCode(self):        
         try:
             code = self.request.form['code']      
             return WeixinHelper.getAccessTokenByCode(code)
@@ -150,17 +146,16 @@ class TokenAjax(BrowserView):
             return ""
 
     def updateToken(self,token):
-        if 'errcode' not in token.keys():
-        
+        if 'errcode' not in token.keys():        
             locator = queryUtility(IDbapi, name='accesstoken')
             timelimit = datetime.now() + timedelta(seconds=token['expires_in'])
             openid = token['openid']
             data = {"openid":openid,"token":token['access_token'],
                             "expiredtime":timelimit}
-            args = {"start":0,"size":1,'SearchableText':'',
+            query_args = {"start":0,"size":1,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
             filter_args = {"openid":openid}
-            rdrs = locator.query_with_filter(args,filter_args)
+            rdrs = locator.query_with_filter(query_args,filter_args)
             if bool(rdrs):
                 data['id'] = rdrs[0].id
                 locator.updateByCode(data)
@@ -189,16 +184,16 @@ class NotifyAjax(object):
 
     def __call__(self):
         """weixin callback"""        
-        logger.info("weixin callback ------entering !")
+#         logger.info("weixin callback ------entering !")
         self.request.response.setHeader('Content-Type', 'text/plain')
         if self.request['method'] == 'GET':
-            logger.info("received get quest=get !")
+#             logger.info("received get quest=get !")
             self.request.response.setHeader('Content-Type', 'application/xml')          
             return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>"
 
         if "xml" not in self.request:return "no"     
         datadic = self.request['xml']        
-        logger.info(str(datadic))   
+#         logger.info(str(datadic))   
         datadic = WeixinHelper.xmlToArray(datadic)
         if 'result_code' not in datadic:
             return "no"
@@ -264,9 +259,6 @@ class PayAjax(BrowserView):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
-#     grok.context(Interface)
-#     grok.name('pay_ajax')
-#     grok.require('zope2.View')  
  
     def insertprepay(self,**paras):       
         locator = queryUtility(IDbapi, name='onlinepay')
@@ -277,7 +269,6 @@ class PayAjax(BrowserView):
         "response to front end"
         """def getSnsapiUserInfo(cls, access_token, openid, lang="zh_CN"):"""
 
-#         logger.info ("enter pay_ajax render.")
         datadic = self.request.form
         fee = float(datadic['fee'])        
         fee = round(fee,2)              
@@ -285,9 +276,7 @@ class PayAjax(BrowserView):
         did = datadic['did']      
         openid = datadic['openid']
         locator = queryUtility(IDbapi, name='donate')
-        body = locator.getByCode(did,"did").aname.encode('utf-8')       
-#         api = JsApi_pub()
-#         logger.info ("openid:%s,body:%s,total_fee:%s." % (openid,body,total_fee))
+        body = locator.getByCode(did,"did").aname.encode('utf-8')      
         out = JsApi_pub().getParameters(openid,body,total_fee)
         datadic['money'] = str(fee)
         datadic['status'] = 0
@@ -296,10 +285,10 @@ class PayAjax(BrowserView):
             try:
                 logger.info("start get nickname !")
                 locator = queryUtility(IDbapi, name='accesstoken')
-                args = {"start":0,"size":1,'SearchableText':'',
+                query_args = {"start":0,"size":1,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
                 filter_args = {"openid":openid}
-                rdrs = locator.query_with_filter(args,filter_args)
+                rdrs = locator.query_with_filter(query_args,filter_args)
                 token = rdrs[0].token
                 userinfo = WeixinHelper.getSnsapiUserInfo(token,openid)
                 logger.info("user nickname  is:%s" % userinfo['nickname'])            
@@ -327,10 +316,10 @@ class WeixinPay(BrowserView):
     def get_projects(self,id=None):
         "提取系统所有公益项目"
 
-        args = {"start":0,"size":10,'SearchableText':'',
+        query_args = {"start":0,"size":10,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'did'}      
         locator = queryUtility(IDbapi, name='donate')
-        recorders = locator.query(args)
+        recorders = locator.query(query_args)
 
         def outfmt(rcd):
             out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
@@ -388,12 +377,11 @@ class DonatedWorkflow(WeixinPay):
     def get_projects(self):
         "提取系统所有公益项目"
 
-        args = {"start":0,"size":10,'SearchableText':'',
+        query_args = {"start":0,"size":10,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'did'}      
         locator = queryUtility(IDbapi, name='donate')
         filter_args = {"visible":1}               
-        recorders = locator.query_with_filter(args,filter_args)        
-#         recorders = locator.query(args)
+        recorders = locator.query_with_filter(query_args,filter_args)        
 
         def outfmt(rcd):
             out = '<li>{0}</li>'.format(rcd.aname)
@@ -402,7 +390,6 @@ class DonatedWorkflow(WeixinPay):
         outhtml = map(outfmt,recorders)             
         outhtml = '<ul class="available">{0}</ul>'.format("".join(outhtml))
         return outhtml
-
 
     @memoize
     def outputjs(self):
@@ -433,10 +420,10 @@ class DonortableView(BrowserView):
         """获取捐赠结果列表"""
         
         locator = queryUtility(IDbapi, name='donor')
-        args = {"start":0,"size":1000,'SearchableText':'',
+        query_args = {"start":0,"size":1000,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'doid'}
         filter_args = {"did":21}               
-        articles = locator.query_with_filter(args,filter_args)
+        articles = locator.query_with_filter(query_args,filter_args)
         if articles == None:
             return             
         return self.outputList(articles)
@@ -475,10 +462,10 @@ class GuanZhuangDonortableView(DonortableView):
         """获取捐赠结果列表"""
         
         locator = queryUtility(IDbapi, name='donor')
-        args = {"start":0,"size":1000,'SearchableText':'',
+        data = {"start":0,"size":1000,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'doid'}
         filter_args = {"did":22}               
-        articles = locator.query_with_filter(args,filter_args)
+        articles = locator.query_with_filter(data,filter_args)
         if articles == None:
             return             
         return self.outputList(articles)
@@ -514,9 +501,7 @@ class DonateView(BrowserView):
 
     def search_multicondition(self,query):
         "query is dic,like :{'start':0,'size':10,'':}"
-        locator = queryUtility(IDbapi, name='donate')
-#         args = {"start":0,"size":100,'SearchableText':'',
-#                 'with_entities':0,'sort_order':'reverse','order_by':'did'}        
+        locator = queryUtility(IDbapi, name='donate')       
         recorders = locator.query(query)
         return recorders
 
@@ -529,10 +514,10 @@ class DonorView(DonateView):
     view name:db_ajax_juanzeng
     """
 
-    def search_multicondition(self,args,filter_args):
+    def search_multicondition(self,query_args,filter_args):
         "query is dic,like :{'start':0,'size':10,'':}"
         locator = queryUtility(IDbapi, name='donor')
-        recorders = locator.query_with_filter(args,filter_args)
+        recorders = locator.query_with_filter(query_args,filter_args)
         return recorders
 
 class SpecifyDonorView(DonorView):
@@ -559,8 +544,7 @@ class GuangZhuangDonorView(DonorView):
         id:21
     view name:db_ajax_juanzeng
     """
-
-      
+     
 
  # ajax multi-condition search relation db
 class AjaxSearch(BrowserView):
@@ -817,8 +801,6 @@ class SpecifyDonorajaxsearch(Donorajaxsearch):
     receive front end ajax transform parameters
     """
 
-#     grok.name('specify_donor_ajaxsearch')
-
     def searchview(self,viewname="specify_donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
@@ -829,8 +811,6 @@ class GuangZhuangDonorajaxsearch(Donorajaxsearch):
     receive front end ajax transform parameters
     """
 
-#     grok.name('guanzhuang_donor_ajaxsearch')
-
     def searchview(self,viewname="guanzhuang_donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
         return searchview
@@ -839,9 +819,6 @@ class GuangZhuangDonorajaxsearch(Donorajaxsearch):
 class DeleteDonate(form.Form):
     "delete the specify model recorder"
     implements(IPublishTraverse)
-#     grok.context(IJuanzenggongshi)
-#     grok.name('delete_donate')
-#     grok.require('xtcs.policy.input_db')
 
     label = _(u"delete donate data")
     fields = field.Fields(IDonate).omit('did','start_time')
@@ -894,10 +871,7 @@ class DeleteDonate(form.Form):
 class InputDonate(form.Form):
     """input db donate table data
     """
-# 
-#     grok.context(IJuanzenggongshi)
-#     grok.name('input_donate')
-#     grok.require('xtcs.policy.input_db')
+
     label = _(u"Input donate data")
     fields = field.Fields(IDonate).omit('did')
     ignoreContext = True
@@ -920,8 +894,7 @@ class InputDonate(form.Form):
         if isinstance(dtst,datetime):
             # datetime convert to timestamp
             dtst = time.strptime(dtst.strftime(fmt),fmt)
-            dtst = int(time.mktime(dtst))
-            
+            dtst = int(time.mktime(dtst))            
             data['start_time'] = dtst
         funcations = queryUtility(IDbapi, name='donate')
         try:            
@@ -954,10 +927,8 @@ class UpdateDonate(form.Form):
     id = None
     # reset content
     def getContent(self):
-        # Get the model table query funcations
         locator = queryUtility(IDbapi, name='donate')
         return locator.getByCode(self.id,"did")
-
 
     def publishTraverse(self, request, name):
         if self.id is None:
@@ -1002,7 +973,6 @@ class UpdateDonate(form.Form):
 class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
-#     grok.name('delete_donor')
     label = _(u"delete donate data")
     fields = field.Fields(IDonor).omit('did','doid')
 
@@ -1070,8 +1040,6 @@ class InputDonor(InputDonate):
     """input db donor table data
     """
 
-#     grok.name('input_donor')
-
     label = _(u"Input donor data")
     fields = field.Fields(IDonor).omit('doid')
 
@@ -1087,7 +1055,6 @@ class InputDonor(InputDonate):
         if errors:
             self.status = self.formErrorsMessage
             return
-#         funcations = getUtility(IDonorLocator)
         funcations = queryUtility(IDbapi, name='donor')
         locator = queryUtility(IDbapi, name='donate')
         try:
@@ -1115,7 +1082,7 @@ class InputDonor(InputDonate):
 class UpdateDonor(DeleteDonor):
     """update model table row data
     """
-#     grok.name('update_donor')
+
     label = _(u"update donor data")
     fields = field.Fields(IDonor).omit('doid')
     id = None              
@@ -1147,7 +1114,6 @@ class UpdateDonor(DeleteDonor):
         data['id'] = self.id
         # add self define primary key parameter
         data['pk'] = "doid" 
-#         funcations = getUtility(IDonorLocator)
         funcations = queryUtility(IDbapi, name='donor')        
         rdurl = self.redirectUrl()
         try:

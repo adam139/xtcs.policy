@@ -16,9 +16,7 @@
 
     <include package=".browser" />     
     <include package=".portlet" />
-    <!--
-    <grok:grok package="." />  -->
-  <!-- -*- cusomize indexer -*- -->
+
 
   <utility
       name="xtcs.policy.vocabulary.donateId"
