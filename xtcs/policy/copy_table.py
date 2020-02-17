@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from xtcs.policy import engine
+from xtcs.policy import fmt
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy.sql import select, desc,asc       
 
@@ -28,7 +29,7 @@ def import_contents(context):
             rs = con.execute(stm)
         return rs.fetchall()
     
-    recorders = query({"size":8,"offset":1})
+    recorders = query({"size":8,"offset":0})
     locator = queryUtility(IDbapi, name='xiangmu')
     for j in recorders:
         data = {}
@@ -76,19 +77,54 @@ def cp_donor2juanzeng(context):
             rs = con.execute(stm)
         return rs.fetchall()
     
-    recorders = query({"size":1,"offset":0})
+    recorders = query({"size":700,"offset":0})
     locator = queryUtility(IDbapi, name='juanzeng')
-    idmap = {1:2,}
+    #old and new table xiangmu'id map
+    idmap = {7:6,12:7,13:8,18:9,21:10,22:11}
+    import re
+    
     for j in recorders:
         data = {}
-        data['xiangmu_id'] = idmap[j[0]]
-        data['xingming'] = j[1]               
-        data['xianjin'] = j[2]
-        data['wuzi'] = j[3]
-        data['wuzi_jiazhi'] = j[2]
+        data['xiangmu_id'] = idmap[int(j[0])]
+        data['xingming'] = j[1].strip()
+        xianjin = j[2]
+        if bool(xianjin): 
+            if xianjin.isdecimal():               
+                data['xianjin'] = float(xianjin)
+        wuzi = j[3]
+        if bool(wuzi):
+            wz = wuzi.split(',')
+            if wuzi.isdecimal():               
+                data['wuzi_jiazhi'] = float(wuzi)
+                data['wuzi'] = "价值{0}元物资".format(wuzi).encode('utf-8')        
+             
+            elif len(wz) > 1:
+                wuzijiazhi =  re.findall(r'\d+',wz[-1])
+                if bool(wuzijiazhi):
+                    data['wuzi_jiazhi'] = float(wuzijiazhi[0])
+                    data['wuzi'] = wuzi                
+
+            elif len(wz) == 1:
+                s5 = u"\uff0c"
+                wz= wuzi.split(s5)
+                if len(wz) > 1:                
+                    wuzijiazhi =  re.findall(r'\d+',wz[-1])
+                    if bool(wuzijiazhi):
+                        data['wuzi_jiazhi'] = float(wuzijiazhi[0])
+                        data['wuzi'] = wuzi
+                else:                        
+                    data['wuzi'] = wuzi        
         data['status'] = 1
-        data['juanzeng_shijian'] = datetime.utcfromtimestamp(j[4])               
+        shijian = j[4]
+
+        if bool(shijian) and isinstance(shijian,datetime):
+            data['juanzeng_shijian'] = shijian
+        elif isinstance(shijian,int):
+            data['juanzeng_shijian'] = datetime.utcfromtimestamp(shijian)
+        else:
+            data['juanzeng_shijian'] = datetime.strptime("2000-01-01 00:00:00",fmt)                                          
         try:
+#             pass
             locator.add(data)
         except:
             continue
