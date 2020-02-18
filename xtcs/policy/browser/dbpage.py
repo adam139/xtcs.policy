@@ -302,6 +302,7 @@ class PayAjax(BrowserView):
 
 #         del datadic['fee']
         rdr['xingming'] = datadic['aname']
+        rdr['juanzeng_shijian'] = datetime.now()
         self.insertprepay(**rdr)  
         self.request.response.setHeader('Content-Type', 'application/json')      
         return out        
