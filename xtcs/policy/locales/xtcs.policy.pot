@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2018-06-05 07:30+0000\n"
+"POT-Creation-Date: 2020-02-18 08:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,194 +17,256 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: xtcs.policy\n"
 
-#: ./browser/dbpage.py:454
+#: ./browser/dbpage.py:870
 msgid "Cancel"
 msgstr ""
 
-#: ./browser/dbpage.py:435
+#: ./browser/dbpage.py:851
 msgid "Delete"
 msgstr ""
 
-#: ./browser/dbpage.py:458
+#: ./browser/dbpage.py:874
 msgid "Delete cancelled."
 msgstr ""
 
-#: ./browser/dbpage.py:512
+#: ./browser/dbpage.py:920
 msgid "Input cancelled."
 msgstr ""
 
-#: ./browser/dbpage.py:469
+#: ./browser/dbpage.py:882
 msgid "Input donate data"
 msgstr ""
 
-#: ./browser/dbpage.py:645
+#: ./browser/dbpage.py:1049
 msgid "Input donor data"
 msgstr ""
 
-#: ./configure.zcml:28
+#: ./configure.zcml:49
 msgid "Installs the xtcs.policy package"
 msgstr ""
 
-#: ./browser/dbpage.py:478
+#: ./browser/interfaces.py:69
+msgid "Preview image URL"
+msgstr ""
+
+#: ./browser/dbpage.py:890
 msgid "Submit"
 msgstr ""
 
-#: ./browser/dbpage.py:504
+#: ./browser/dbpage.py:912
 msgid "Thank you! Your data  will be update in back end DB."
 msgstr ""
 
-#: ./browser/dbpage.py:450
+#: ./configure.zcml:56
+msgid "Uninstalls xtcs.policy package"
+msgstr ""
+
+#: ./browser/controlpanel.py:11
+msgid "Wechat control panel"
+msgstr ""
+
+#: ./profiles/default/controlpanel.xml
+msgid "Wechat settings"
+msgstr ""
+
+#: ./browser/dbpage.py:866
 msgid "Your data  has been deleted."
 msgstr ""
 
-#: ./mapping_db.py:247
+#: ./browser/interfaces.py:54
+msgid "access token update time"
+msgstr ""
+
+#: ./browser/interfaces.py:12
+msgid "app id"
+msgstr ""
+
+#: ./browser/interfaces.py:17
+msgid "app secret"
+msgstr ""
+
+#: ./browser/interfaces.py:22
+msgid "app token"
+msgstr ""
+
+#: ./mapping_db.py:138
 msgid "cishan juanzeng xiangmu beizhu"
 msgstr ""
 
-#: ./mapping_db.py:244
+#: ./mapping_db.py:135
 msgid "cishan juanzeng xiangmu mingcheng"
 msgstr ""
 
-#: ./browser/dbpage.py:406
+#: ./browser/interfaces.py:41
+msgid "curl timeout"
+msgstr ""
+
+#: ./browser/dbpage.py:830
 msgid "delete donate data"
 msgstr ""
 
-#: ./mapping_db.py:74
-msgid "dengji ri qi"
+#: ./browser/interfaces.py:49
+msgid "gongzhong hao access token"
 msgstr ""
 
-#. Default: "Warning! This operation will remove database record."
-#: ./browser/templates/delete_model.pt:14
-msgid "description_delete_model_record"
-msgstr ""
-
-#. Default: "Please enter model recorder."
-#: ./browser/templates/input_model.pt:15
-msgid "description_input_model_record"
-msgstr ""
-
-#: ./mapping_db.py:28
-msgid "fabu ri qi"
+#: ./browser/interfaces.py:55
+msgid "gongzhong hao access token update time"
 msgstr ""
 
 #. Default: "How many levels to list after the top level."
-#: ./browser/interfaces.py:21
+#: ./browser/interfaces.py:93
 msgid "help_dropdown_depth"
 msgstr ""
 
 #. Default: "WARNING! This is an experimental feature. This is using RAM to store cached template for dropdown menus. Technically every user and every visited section gets its own instance in the ram.cache. Don't enable this if you don't know what this is about. Disable this option if you get unexpected behavior of your global tabs."
-#: ./browser/interfaces.py:28
+#: ./browser/interfaces.py:100
 msgid "help_enable_caching"
 msgstr ""
 
 #. Default: "With this option enabled, every menu item is clickable. With this option disabled, an item is only clickable when it is not a parent so it has no children."
-#: ./browser/interfaces.py:43
+#: ./browser/interfaces.py:115
 msgid "help_enable_parent_clickable"
 msgstr ""
 
-#: ./mapping_db.py:189
+#: ./browser/interfaces.py:45
+msgid "http client lib"
+msgstr ""
+
+#: ./browser/interfaces.py:65
+msgid "jsapi access ticket update time"
+msgstr ""
+
+#: ./browser/interfaces.py:59
+msgid "jsapi ticket"
+msgstr ""
+
+#: ./browser/interfaces.py:64
+msgid "jsapi ticket update time"
+msgstr ""
+
+#: ./browser/interfaces.py:60
+msgid "jsapi web page authorized access ticket"
+msgstr ""
+
+#: ./mapping_db.py:67
 msgid "juanzeng shi jian"
 msgstr ""
 
-#: ./mapping_db.py:185
+#: ./mapping_db.py:59
 msgid "juanzeng wuping"
 msgstr ""
 
-#: ./mapping_db.py:175
+#: ./mapping_db.py:47
 msgid "juanzeng xiangmu id"
 msgstr ""
 
-#: ./mapping_db.py:179
+#: ./mapping_db.py:52
 msgid "juanzeng zhe"
 msgstr ""
 
-#: ./mapping_db.py:237
+#: ./mapping_db.py:142
 msgid "kaishi shijian"
 msgstr ""
 
 #. Default: "Depth of dropdown menus"
-#: ./browser/interfaces.py:20
+#: ./browser/interfaces.py:92
 msgid "label_dropdown_depth"
 msgstr ""
 
 #. Default: "Enable caching"
-#: ./browser/interfaces.py:27
+#: ./browser/interfaces.py:99
 msgid "label_enable_caching"
 msgstr ""
 
 #. Default: "Enable clicking menu items that have children"
-#: ./browser/interfaces.py:41
+#: ./browser/interfaces.py:113
 msgid "label_enable_parent_clickable"
 msgstr ""
 
-#: ./mapping_db.py:22
-msgid "main folder id"
+#: ./browser/interfaces.py:37
+msgid "pay result notify url"
 msgstr ""
 
-#: ./mapping_db.py:240
+#: ./mapping_db.py:146
 msgid "shifou keshi?"
 msgstr ""
 
-#: ./configure.zcml:37
+#: ./browser/interfaces.py:27
+msgid "shop id"
+msgstr ""
+
+#: ./browser/interfaces.py:28
+msgid "shop id come from weixn"
+msgstr ""
+
+#: ./browser/interfaces.py:32
+msgid "shop pay key"
+msgstr ""
+
+#: ./configure.zcml:64
 msgid "some clear and post steps after initial the site"
 msgstr ""
 
-#: ./configure.zcml:44
+#: ./configure.zcml:71
 msgid "some initial steps"
 msgstr ""
 
-#: ./mapping_db.py:25
-msgid "sub folder id"
-msgstr ""
-
-#: ./mapping_db.py:19
+#: ./mapping_db.py:44
 msgid "table primary key"
 msgstr ""
 
-#: ./browser/dbpage.py:525
+#: ./browser/interfaces.py:73
+msgid "tuijian xiangmu"
+msgstr ""
+
+#: ./configure.zcml:56
+msgid "uninstall xtcs.policy"
+msgstr ""
+
+#: ./browser/dbpage.py:930
 msgid "update donate data"
 msgstr ""
 
-#: ./browser/dbpage.py:696
+#: ./browser/dbpage.py:1092
 msgid "update donor data"
 msgstr ""
 
-#: ./mapping_db.py:31
-msgid "wenzhang biaoti"
+#: ./browser/interfaces.py:13
+msgid "weixin app id"
 msgstr ""
 
-#: ./mapping_db.py:34
-msgid "wenzhang neirong"
+#: ./browser/interfaces.py:18
+msgid "weixin app secret"
 msgstr ""
 
-#: ./mapping_db.py:80
-msgid "xiangmu miaoshu"
+#: ./browser/interfaces.py:23
+msgid "weixin app token"
 msgstr ""
 
-#: ./mapping_db.py:77
-msgid "xiangmu mingcheng"
+#: ./mapping_db.py:71
+msgid "weixin openid"
 msgstr ""
 
-#: ./mapping_db.py:182
+#: ./mapping_db.py:63
+msgid "wuzi jiazhi"
+msgstr ""
+
+#: ./mapping_db.py:55
 msgid "xianjin jin e"
 msgstr ""
 
-#: ./configure.zcml:28
+#: ./configure.zcml:49
 msgid "xtcs.policy"
 msgstr ""
 
-#: ./configure.zcml:44
+#: ./configure.zcml:71
 msgid "xtcs.policy initial site"
 msgstr ""
 
-#: ./configure.zcml:37
+#: ./configure.zcml:64
 msgid "xtcs.policy post steps"
 msgstr ""
 
-#: ./mapping_db.py:132
-msgid "yigong tuandui jieshao"
-msgstr ""
-
-#: ./mapping_db.py:129
-msgid "yigong tuandui mingcheng"
+#: ./mapping_db.py:76
+msgid "yidong zhifu zhuangtai"
 msgstr ""

@@ -8,7 +8,7 @@ from datetime import datetime
 from datetime import timedelta
 from plone.registry.interfaces import IRegistry
 from xtcs.policy.browser.interfaces import IwechatSettings
-fmt = "%Y-%m-%d %H:%M:%S"
+from xtcs.policy import fmt
 from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore import permissions
@@ -24,9 +24,6 @@ from Products.statusmessages.interfaces import IStatusMessage
 from xtcs.policy.interfaces import InputError,IDbapi
 from xtcs.policy.mapping_db import IXiangMu,IJuanZeng
 from xtcs.policy.mapping_db import JuanZeng
-from xtcs.policy import Scope_session as Session
-
-from xtcs.policy.interfaces import IJuanzenggongshi
 from my315ok.wechat.pay import WeixinHelper
 from my315ok.wechat.pay import UnifiedOrder_pub
 from my315ok.wechat.pay import JsApi_pub
@@ -315,8 +312,11 @@ class WeixinPay(BrowserView):
     """
     def getProjectId(self):
         registry = getUtility(IRegistry)
-        settings = registry.forInterface(IwechatSettings)        
-        return settings.hot_project 
+        settings = registry.forInterface(IwechatSettings)
+        if bool(settings.hot_project):        
+            return settings.hot_project
+        else:
+            return 11 
         
     def get_projects(self,id=None):
         "提取系统所有公益项目"
@@ -385,7 +385,7 @@ class DonatedWorkflow(WeixinPay):
         query_args = {"start":0,"size":10,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}      
         locator = queryUtility(IDbapi, name='xiangmu')
-        filter_args = {"visible":1}               
+        filter_args = {"youxiao":1}               
         recorders = locator.query_with_filter(query_args,filter_args)        
 
         def outfmt(rcd):

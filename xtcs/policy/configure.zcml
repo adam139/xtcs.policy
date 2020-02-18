@@ -28,11 +28,7 @@
 	component=".dbutility.accesstoken"
 	name="accesstoken"
 	/>  
-  <utility
-	provides=".interfaces.IDbapi"
-	component=".dbutility.onlinepay"
-	name="onlinepay"
-	/>
+
   <utility
 	provides=".interfaces.IDbapi"
 	component=".dbutility.xiangmu"
@@ -43,16 +39,6 @@
 	component=".dbutility.juanzeng"
 	name="juanzeng"
 	/>	
-  <utility
-	provides=".interfaces.IDbapi"
-	component=".dbutility.donate"
-	name="donate"
-	/>	
-  <utility
-	provides=".interfaces.IDbapi"
-	component=".dbutility.donor"
-	name="donor"
-	/>
     
   <genericsetup:registerProfile
       name="default"

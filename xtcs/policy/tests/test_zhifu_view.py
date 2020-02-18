@@ -21,20 +21,7 @@ class TestView(unittest.TestCase):
         setRoles(portal, TEST_USER_ID, ('Manager',))                                                                                                                        
         self.portal = portal
     
-    def test_zhifu_weixin_auth_view(self):
-
-        app = self.layer['app']
-        portal = self.layer['portal']       
-        browser = Browser(app)
-        browser.handleErrors = False
-        browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
-
-        import transaction
-        transaction.commit()
-        obj = portal.absolute_url() + '/@@auth.html'    
-        browser.open(obj) 
-        outstr = "donated_workflow"
-        self.assertTrue(outstr in browser.contents)
+ 
 
     def test_zhifu_weixin_auth_view(self):
 
@@ -54,10 +41,7 @@ class TestView(unittest.TestCase):
         browser.open(obj) 
         outstr = "hotpay"
         self.assertTrue(outstr in browser.contents)
-        obj = portal.absolute_url() + '/@@auth.html'    
-        browser.open(obj) 
-        outstr = "donated_workflow"
-        self.assertTrue(outstr in browser.contents)                
+               
         
     def test_zhifu_weixin_workflow_view(self):
 
@@ -66,12 +50,15 @@ class TestView(unittest.TestCase):
         browser = Browser(app)
         browser.handleErrors = False
         browser.addHeader('Authorization', 'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,))       
-
+        from zope.interface import alsoProvides
+        from xtcs.policy.interfaces import IJuanzengworkflow
+        alsoProvides(portal,IJuanzengworkflow)
         import transaction
         transaction.commit()        
-        obj = portal.absolute_url() + '/@@donated_workflow?code=2&mail=3'    
-        browser.open(obj) 
-        outstr = 'name="money"'
+        obj = portal.absolute_url() + '/@@donated_workflow'    
+        browser.open(obj)
+ 
+        outstr = 'http://nohost/plone/@@hotauth'
         self.assertTrue(outstr in browser.contents)
         
     def test_zhifu_weixin_view(self):
@@ -118,7 +105,7 @@ class TestView(unittest.TestCase):
                         'fee': 10,
                         'code':12,
                         'aname':'testuser',
-                        'did':'21',
+                        'did':'11',
                         'openid':'oQ61n01gs3t34TglBy_x2U6l8VWk',                                                                                                                    
                         }
 # Look up and invoke the view via traversal
