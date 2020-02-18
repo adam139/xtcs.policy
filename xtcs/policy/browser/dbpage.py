@@ -755,8 +755,8 @@ class Donorajaxsearch(AjaxSearch):
 
                 url_suffix = "{0}?name={1}&id={2}".format(i.id,name,id)
                 out = """<tr class="text-left">
-                                <td class="col-md-8">%(name)s</td>
-                                <td class="col-md-1">%(money)s</td>
+                                <td class="col-md-5">%(name)s</td>
+                                <td class="col-md-4">%(money)s</td>
                                 <td class="col-md-1">%(atime)s</td>
                                 <td class="col-md-1 text-center">
                                 <a href="%(edit_url)s" title="edit">
@@ -794,8 +794,8 @@ class Donorajaxsearch(AjaxSearch):
                 else:
                     money = float(i.xianjin)                
                 out = """<tr class="text-left">
-                                <td class="col-md-10">%(name)s</td>
-                                <td class="col-md-1">%(money)s</td>
+                                <td class="col-md-7">%(name)s</td>
+                                <td class="col-md-4">%(money)s</td>
                                 <td class="col-md-1">%(atime)s</td>
                                 </tr> """% dict(
                                             name=i.xingming,
