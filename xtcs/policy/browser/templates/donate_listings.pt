@@ -40,8 +40,8 @@
 			<input type="hidden" value="0" id="dateSearch">
 			<input type="hidden" value="0" id="idSearch">
 			<input type="hidden" value="1" id="multiFlag">
-			<input type="hidden" value="did" id="solrSortColumn">
-			<input type="hidden" value="desc" id="solrSortDirection">
+			<input type="hidden" value="id" id="solrSortColumn">
+			<input type="hidden" value="reverse" id="solrSortDirection">
 
             <!--搜索选择结果排序-->
             <!-- db table index name as li item -->
@@ -50,10 +50,7 @@
             	<ul id="eventListSort" class="pager">
                     <li><span>排序：</span></li>                    
                     <li><a class="a" id="bycode" href="javascript:void(0)">
-                    	<span data-name="did" class="glyphicon glyphicon-arrow-up">代码</span>
-                    	</a></li>
-                    <li><a class="a" id="startTimestamp" href="javascript:void(0)">
-                    	<span data-name="created" class="glyphicon glyphicon-arrow-up">时间</span>
+                    	<span data-name="id" class="glyphicon glyphicon-arrow-up">时间</span>
                     	</a></li>
                 </ul>
                 </div>
