@@ -35,16 +35,17 @@ class TestParametersDatabase(unittest.TestCase):
 
         locator = queryUtility(IDbapi, name='juanzeng')
         # add
-        args = {"xiangmu_id":11,"xianjin":23.22,"openid":"demo_openid",'xingming':'demo_user',
-                'status':0,'wuzi':'','juanzeng_shijian':datetime.now()}
+        args = {"status":0,"xiangmu_id":11,"xianjin":23.22,"openid":"demo_openid",'xingming':'demo_user',
+                'juanzeng_shijian':datetime.now()}
         locator.add(args)
         args = {"start":0,"size":10,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}                 
-        filter_args = {"xiangmu_id":11}        
+        filter_args = {"openid":"demo_openid","xianjin":float(23.22)}        
         rdrs = locator.query_with_filter(args,filter_args)
+        import pdb
+        pdb.set_trace()
         self.assertEqual(len(rdrs),1)
         first = rdrs[0]
-
         # update           
         args = {"id":first.id,"openid":"test_openid"}    
         locator.updateByCode(args)

@@ -282,10 +282,12 @@ class IJuanZeng(Interface):
         )
     openid = schema.TextLine(
             title=_(u"weixin openid"),
+            required=False
 #             default = "noweixinpay"
         )
     status = schema.Int(
             title=_(u"yidong zhifu zhuangtai"),
+            required=False,
             default = 1
         )        
     
@@ -347,6 +349,7 @@ class IXiangMu(Interface):
         )    
     jieshao = schema.Text(
             title=_(u"cishan juanzeng xiangmu beizhu"),
+            required=False
         )
     zhuceshijian = schema.Datetime(
             title=_(u"kaishi shijian"),

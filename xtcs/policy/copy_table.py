@@ -92,7 +92,7 @@ def cp_donor2juanzeng(context):
             xianjin = float(xianjin)
             data['xianjin'] = xianjin
         except:
-            data['xianjin'] = 0.00
+            pass
         wuzi = rdr[3]
         if bool(wuzi):
             wz = wuzi.split(',')
@@ -116,12 +116,12 @@ def cp_donor2juanzeng(context):
                             data['wuzi'] = wuzi
                     else:                        
                         data['wuzi'] = wuzi
-                        data['wuzi_jiazhi'] = 0.00        
+#                         data['wuzi_jiazhi'] = 0.00        
         else:
             data['wuzi'] = ""
-            data['wuzi_jiazhi'] = 0.00 
+#             data['wuzi_jiazhi'] = 0.00 
         data['status'] = 1
-        data['openid'] = 'noweixin'
+#         data['openid'] = 'noweixin'
         shijian = rdr[4]
         if bool(shijian) and isinstance(shijian,datetime):
             data['juanzeng_shijian'] = shijian
