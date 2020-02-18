@@ -275,10 +275,12 @@ class PayAjax(BrowserView):
         id = datadic['did']      
         openid = datadic['openid']
         locator = queryUtility(IDbapi, name='xiangmu')
-        body = locator.getByCode(id).mingcheng.encode('utf-8')      
+        xrdr = locator.getByCode(id)
+        body = xrdr.mingcheng.encode('utf-8')     
         out = JsApi_pub().getParameters(openid,body,total_fee)
         rdr = {}
 #         datadic['money'] = str(fee)
+        rdr['xiangmu_id'] = xrdr.id
         rdr['xianjin'] = float(fee)
         rdr['status'] = 0
         rdr['openid'] = openid
