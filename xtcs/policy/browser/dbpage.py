@@ -4,8 +4,6 @@ from plone import api
 from zope.interface import Interface
 from zope.component import getMultiAdapter
 import json
-from datetime import date
-import time
 from datetime import datetime
 from datetime import timedelta
 from plone.registry.interfaces import IRegistry
@@ -206,12 +204,17 @@ class NotifyAjax(object):
         base.data = datadic
         locator = queryUtility(IDbapi, name='juanzeng')
 #         验证签名和金额是否一致 金额在用户下单插入数据库
-#         recorder = locator.getByKwargs(openid=openid,money=money)
-        recorder = Session.query(JuanZeng).filter(JuanZeng.openid==openid).\
-            filter(JuanZeng.money==float(money)).filter(JuanZeng.status==0).\
-            order_by(JuanZeng.id.desc()).first() 
-        
-        if base.checkSign() and bool(recorder):            
+        query_data = {"start":0,"size":1,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+        filter_args = {"openid":openid,"xianjin":float(money)}
+        recorders = locator.query_with_filter(args,filter_args)
+#         recorder = Session.query(JuanZeng).filter(JuanZeng.openid==openid).\
+#             filter(JuanZeng.xianjin==float(money)).\
+#             order_by(JuanZeng.id.desc()).first()
+        if not bool(recorders):return "no"
+        recorder = recorders[0]
+        if bool(recorder.status):return "no"        
+        if base.checkSign():            
             # update status=1
             locator.updateByCode({"id":recorder.id,"status":1})
             # send template message
@@ -227,8 +230,7 @@ class NotifyAjax(object):
                 logger.info("send text message:'%s'failed"  % text)
             return 'ok'                    
         else:            
-            return 'no'                       
-             
+            return 'no'             
 
 
 class SuccessNotifyAjax(object):    
@@ -978,7 +980,7 @@ class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
     label = _(u"delete donate data")
-    fields = field.Fields(IJuanZeng).omit('id','xiangmu_id')
+    fields = field.Fields(IJuanZeng).omit('id')
 
     id = None
     #receive url parameters    
@@ -1045,7 +1047,7 @@ class InputDonor(InputDonate):
     """
 
     label = _(u"Input donor data")
-    fields = field.Fields(IJuanZeng).omit('id')
+    fields = field.Fields(IJuanZeng).omit('id','openid')
 
     def update(self):
         self.request.set('disable_border', True)
@@ -1062,7 +1064,7 @@ class InputDonor(InputDonate):
         funcations = queryUtility(IDbapi, name='juanzeng')
         locator = queryUtility(IDbapi, name='xiangmu')
         try:
-            id = data['id']
+            id = data['xiangmu_id']
             name = locator.getByCode(id).mingcheng
             funcations.add(data)
         except InputError, e:
@@ -1088,7 +1090,7 @@ class UpdateDonor(DeleteDonor):
     """
 
     label = _(u"update donor data")
-    fields = field.Fields(IJuanZeng).omit('id','xiangmu_id')
+    fields = field.Fields(IJuanZeng).omit('id','xiangmu_id','openid')
     id = None              
     
     def publishTraverse(self, request, name):
