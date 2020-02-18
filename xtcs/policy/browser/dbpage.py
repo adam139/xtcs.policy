@@ -204,7 +204,7 @@ class NotifyAjax(object):
         query_data = {"start":0,"size":1,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
         filter_args = {"openid":openid,"xianjin":float(money)}
-        recorders = locator.query_with_filter(args,filter_args)
+        recorders = locator.query_with_filter(query_data,filter_args)
 #         recorder = Session.query(JuanZeng).filter(JuanZeng.openid==openid).\
 #             filter(JuanZeng.xianjin==float(money)).\
 #             order_by(JuanZeng.id.desc()).first()
