@@ -27,6 +27,39 @@ class TestParametersDatabase(unittest.TestCase):
         for item in STRUCTURE:
             _create_content(item, self.portal)
 
+    def test_Juanzeng_table(self):
+
+        from xtcs.policy.interfaces import IDbapi
+        from zope.component import queryUtility
+        from datetime import datetime,timedelta
+
+        locator = queryUtility(IDbapi, name='juanzeng')
+        # add
+        args = {"xiangmu_id":11,"xianjin":23.22,"openid":"demo_openid",'xingming':'demo_user',
+                'status':0,'wuzi':'','juanzeng_shijian':datetime.now()}
+        locator.add(args)
+        args = {"start":0,"size":10,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}                 
+        filter_args = {"xiangmu_id":11}        
+        rdrs = locator.query_with_filter(args,filter_args)
+        self.assertEqual(len(rdrs),1)
+        first = rdrs[0]
+
+        # update           
+        args = {"id":first.id,"openid":"test_openid"}    
+        locator.updateByCode(args)
+        #getByCode
+        rdrs = locator.getByCode(first.id)       
+
+        self.assertEqual(rdrs.openid,'test_openid')
+        import pdb
+        pdb.set_trace()
+        #delete
+        rt = locator.DeleteByCode(first.id)
+        if rt:
+            rdrs = locator.getByCode(first.id)
+            self.assertEqual(rdrs,None)
+
     def test_AccessToken_table(self):
         from xtcs.policy.mapping_db import  AccessToken
         from xtcs.policy.interfaces import IDbapi

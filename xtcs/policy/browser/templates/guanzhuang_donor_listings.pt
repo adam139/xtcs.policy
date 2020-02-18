@@ -38,11 +38,11 @@
 				</div>
 			</div>		
 			<input type="hidden" value="0" id="dateSearch">
-			<input type="hidden" value="22" id="idSearch">
+			<input type="hidden" value="11" id="idSearch">
 			<input type="hidden" value="1" id="multiFlag">	
 			<!-- search fashej table ,so index name define as "sbdm" -->
-			<input type="hidden" value="doid" id="solrSortColumn">
-			<input type="hidden" value="desc" id="solrSortDirection">
+			<input type="hidden" value="id" id="solrSortColumn">
+			<input type="hidden" value="reverse" id="solrSortDirection">
 
             <!--搜索选择结果排序-->
             <!-- db table index name as li item -->

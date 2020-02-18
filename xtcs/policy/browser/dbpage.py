@@ -24,8 +24,8 @@ from plone.directives import form
 from z3c.form import field, button
 from Products.statusmessages.interfaces import IStatusMessage
 from xtcs.policy.interfaces import InputError,IDbapi
-from xtcs.policy.mapping_db import IDonate,IDonor
-from xtcs.policy.mapping_db import OnlinePay
+from xtcs.policy.mapping_db import IXiangMu,IJuanZeng
+from xtcs.policy.mapping_db import JuanZeng
 from xtcs.policy import Scope_session as Session
 
 from xtcs.policy.interfaces import IJuanzenggongshi
@@ -204,12 +204,12 @@ class NotifyAjax(object):
         money =  datadic['total_fee']        
         money = int(money)/100  
         base.data = datadic
-        locator = queryUtility(IDbapi, name='onlinepay')
+        locator = queryUtility(IDbapi, name='juanzeng')
 #         验证签名和金额是否一致 金额在用户下单插入数据库
 #         recorder = locator.getByKwargs(openid=openid,money=money)
-        recorder = Session.query(OnlinePay).filter(OnlinePay.openid==openid).\
-            filter(OnlinePay.money==str(money)).filter(OnlinePay.status==0).\
-            order_by(OnlinePay.id.desc()).first() 
+        recorder = Session.query(JuanZeng).filter(JuanZeng.openid==openid).\
+            filter(JuanZeng.money==float(money)).filter(JuanZeng.status==0).\
+            order_by(JuanZeng.id.desc()).first() 
         
         if base.checkSign() and bool(recorder):            
             # update status=1
@@ -261,7 +261,7 @@ class PayAjax(BrowserView):
     """
  
     def insertprepay(self,**paras):       
-        locator = queryUtility(IDbapi, name='onlinepay')
+        locator = queryUtility(IDbapi, name='juanzeng')
         locator.add(paras)
         return              
     
@@ -273,14 +273,16 @@ class PayAjax(BrowserView):
         fee = float(datadic['fee'])        
         fee = round(fee,2)              
         total_fee = str(int(fee * 100))
-        did = datadic['did']      
+        id = datadic['did']      
         openid = datadic['openid']
-        locator = queryUtility(IDbapi, name='donate')
-        body = locator.getByCode(did,"did").aname.encode('utf-8')      
+        locator = queryUtility(IDbapi, name='xiangmu')
+        body = locator.getByCode(id).mingcheng.encode('utf-8')      
         out = JsApi_pub().getParameters(openid,body,total_fee)
-        datadic['money'] = str(fee)
-        datadic['status'] = 0
-        datadic['openid'] = openid
+        rdr = {}
+#         datadic['money'] = str(fee)
+        rdr['xianjin'] = float(fee)
+        rdr['status'] = 0
+        rdr['openid'] = openid
         if datadic['aname'] =="":
             try:
                 logger.info("start get nickname !")
@@ -297,8 +299,9 @@ class PayAjax(BrowserView):
                 logger.info("fetch  nickname failed !")
                 datadic['aname'] == u"匿名".encode('utf-8')                
 
-        del datadic['fee']
-        self.insertprepay(**datadic)  
+#         del datadic['fee']
+        rdr['xingming'] = datadic['aname']
+        self.insertprepay(**rdr)  
         self.request.response.setHeader('Content-Type', 'application/json')      
         return out        
             
@@ -316,15 +319,15 @@ class WeixinPay(BrowserView):
     def get_projects(self,id=None):
         "提取系统所有公益项目"
 
-        query_args = {"start":0,"size":10,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'did'}      
-        locator = queryUtility(IDbapi, name='donate')
+        query_args = {"start":0,"size":20,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}      
+        locator = queryUtility(IDbapi, name='xiangmu')
         recorders = locator.query(query_args)
 
         def outfmt(rcd):
             out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
-            name = "project{0}".format(rcd.did)
-            out = out.format("project",name,rcd.did,rcd.aname)
+            name = "project{0}".format(rcd.id)
+            out = out.format("project",name,rcd.id,rcd.mingcheng)
             return out
             
         outhtml = map(outfmt,recorders)
@@ -346,13 +349,13 @@ class CurrentWeixinPay(WeixinPay):
         "提取当前公益项目,id is project id"
         if id==None:
             id = self.getProjectId()
-        locator = queryUtility(IDbapi, name='donate')
-        rcd = locator.getByCode(id,"did")
+        locator = queryUtility(IDbapi, name='xiangmu')
+        rcd = locator.getByCode(id)
         out = dict()
-        out['title'] = rcd.aname
+        out['title'] = rcd.mingcheng
         st = '<label><input type="radio" name="{0}" id="{1}" value="{2}" checked>{3}</label>'
-        pid = "project{0}".format(rcd.did)
-        out['html']  = st.format("project",pid ,rcd.did,rcd.aname)
+        pid = "project{0}".format(rcd.id)
+        out['html']  = st.format("project",pid ,rcd.id,rcd.mingcheng)
         return out       
         
     
@@ -369,22 +372,22 @@ class DonatedWorkflow(WeixinPay):
             
     def getHotProject(self):
         id = self.getProjectId()
-        locator = queryUtility(IDbapi, name='donate')
-        rcd = locator.getByCode(id,"did")
-        out = "<h1>%s</h1><p>%s<p>" % (rcd.aname,rcd.amemo)
+        locator = queryUtility(IDbapi, name='xiangmu')
+        rcd = locator.getByCode(id)
+        out = "<h1>%s</h1><p>%s<p>" % (rcd.mingcheng,rcd.jieshao)
         return out        
 
     def get_projects(self):
         "提取系统所有公益项目"
 
         query_args = {"start":0,"size":10,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'did'}      
-        locator = queryUtility(IDbapi, name='donate')
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}      
+        locator = queryUtility(IDbapi, name='xiangmu')
         filter_args = {"visible":1}               
         recorders = locator.query_with_filter(query_args,filter_args)        
 
         def outfmt(rcd):
-            out = '<li>{0}</li>'.format(rcd.aname)
+            out = '<li>{0}</li>'.format(rcd.mingcheng)
             return out
             
         outhtml = map(outfmt,recorders)             
@@ -419,10 +422,10 @@ class DonortableView(BrowserView):
     def getMemberList(self,start=0,size=0):
         """获取捐赠结果列表"""
         
-        locator = queryUtility(IDbapi, name='donor')
+        locator = queryUtility(IDbapi, name='juanzeng')
         query_args = {"start":0,"size":1000,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'doid'}
-        filter_args = {"did":21}               
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+        filter_args = {"xiangmu_id":10}               
         articles = locator.query_with_filter(query_args,filter_args)
         if articles == None:
             return             
@@ -432,23 +435,23 @@ class DonortableView(BrowserView):
         outhtml = ""
        
         for i in braindata:
-            astr = i.atime.strftime('%Y-%m-%d')
+            astr = i.juanzeng_shijian.strftime('%Y-%m-%d')
             if astr != '2000-01-01':
                 atime = astr
             else:
                 atime= u""                        
-            if bool(i.goods):
-                if bool(i.money):
-                    money = "%s(%s)" % (i.money,i.goods)
+            if bool(i.wuzi):
+                if bool(i.xianjin):
+                    money = "%s(%s)" % (float(i.xianjin),i.wuzi)
                 else:
-                    money = "(%s)" % (i.goods)
+                    money = "(%s)" % (i.wuzi)
             else:
-                money = i.money            
+                money = float(i.xianjin)            
             out = """<tr>
             <td class="title">%(title)s</td>
             <td class="item">%(money)s</td>
             <td class="atime">%(atime)s</td></tr>""" % dict(
-                                            title=i.aname,
+                                            title=i.xingming,
                                             money= money,
                                             atime=atime)           
             outhtml = "%s%s" %(outhtml ,out)
@@ -461,10 +464,10 @@ class GuanZhuangDonortableView(DonortableView):
     def getMemberList(self,start=0,size=0):
         """获取捐赠结果列表"""
         
-        locator = queryUtility(IDbapi, name='donor')
+        locator = queryUtility(IDbapi, name='juanzeng')
         data = {"start":0,"size":1000,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'doid'}
-        filter_args = {"did":22}               
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+        filter_args = {"xiangmu_id":11}               
         articles = locator.query_with_filter(data,filter_args)
         if articles == None:
             return             
@@ -501,7 +504,8 @@ class DonateView(BrowserView):
 
     def search_multicondition(self,query):
         "query is dic,like :{'start':0,'size':10,'':}"
-        locator = queryUtility(IDbapi, name='donate')       
+        locator = queryUtility(IDbapi, name='xiangmu')
+     
         recorders = locator.query(query)
         return recorders
 
@@ -516,7 +520,7 @@ class DonorView(DonateView):
 
     def search_multicondition(self,query_args,filter_args):
         "query is dic,like :{'start':0,'size':10,'':}"
-        locator = queryUtility(IDbapi, name='donor')
+        locator = queryUtility(IDbapi, name='juanzeng')
         recorders = locator.query_with_filter(query_args,filter_args)
         return recorders
 
@@ -585,11 +589,11 @@ class AjaxSearch(BrowserView):
         datadic = self.request.form
         start = int(datadic['start']) # batch search start position
         size = int(datadic['size'])      # batch search size
-        sortcolumn = datadic['sortcolumn']
+#         sortcolumn = datadic['sortcolumn']
         sortdirection = datadic['sortdirection']
         keyword = datadic['searchabletext'].strip()
         origquery = {}
-        origquery['order_by'] = sortcolumn
+#         origquery['order_by'] = sortcolumn
         # sql db sortt_order:asc,desc
         origquery['sort_order'] = sortdirection
 #  #模糊搜索
@@ -624,7 +628,7 @@ class AjaxSearch(BrowserView):
         contexturl = self.context.absolute_url()
         if bool(self.searchview().isAddable):
             for i in resultDicLists:
-                regtime = datetime.utcfromtimestamp(i.start_time)            
+                regtime = i.zhuceshijian            
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-7 text-left">
@@ -643,31 +647,31 @@ class AjaxSearch(BrowserView):
                                   </span>
                                 </a>
                                 </td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
-                                                name = "%s" % i.aname,                                                
-                                                id = "%s" % i.did,
+                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
+                                                name = "%s" % i.mingcheng,                                                
+                                                id = "%s" % i.id,
                                                 num=str(k + 1),
                                                 regtime = regtime.strftime("%Y-%m-%d"),
-                                                title=i.aname,
-                                                edit_url="%s/@@update_donate/%s" % (contexturl,i.did),
-                                                delete_url="%s/@@delete_donate/%s" % (contexturl,i.did))
+                                                title=i.mingcheng,
+                                                edit_url="%s/@@update_donate/%s" % (contexturl,i.id),
+                                                delete_url="%s/@@delete_donate/%s" % (contexturl,i.id))
                 outhtml = "%s%s" %(outhtml ,out)
                 k = k + 1
         else:
             for i in resultDicLists:
-                regtime = datetime.utcfromtimestamp(i.start_time)            
+                regtime = i.zhuceshijian           
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-9 text-left">
                                 <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
                                 </td>
                                 <td class="col-md-2">%(regtime)s</td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.aname,i.did),
-                                                name = "%s" % i.aname,                                                
-                                                id = "%s" % i.did,
+                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
+                                                name = "%s" % i.mingcheng,                                                
+                                                id = "%s" % i.id,
                                                 num=str(k + 1),
                                                 regtime = regtime.strftime("%Y-%m-%d"),
-                                                title=i.aname)
+                                                title=i.mingcheng)
                 outhtml = "%s%s" %(outhtml ,out)
                 k = k + 1                
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
@@ -708,9 +712,9 @@ class Donorajaxsearch(AjaxSearch):
         origquery['start'] = start
 #         origquery['id'] = id
         origquery['with_entities'] = 0
-        filterquery = {'did':id}
-        locator = queryUtility(IDbapi, name='donate')
-        name = locator.getByCode(id,"did").aname        
+        filterquery = {'xiangmu_id':id}
+        locator = queryUtility(IDbapi, name='xiangmu')
+        name = locator.getByCode(id).mingcheng        
 #totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
@@ -731,19 +735,20 @@ class Donorajaxsearch(AjaxSearch):
         contexturl = self.context.absolute_url()
         if bool(self.searchview().isAddable):        
             for i in resultDicLists:
-                astr = i.atime.strftime('%Y-%m-%d')
+                astr = i.juanzeng_shijian.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
                     atime = u""
                 else:
                     atime = astr
-                if bool(i.goods):
-                    if bool(i.money):
-                        money = "%s(%s)" % (i.money,i.goods)
+                if bool(i.wuzi):
+                    if bool(i.xianjin):
+                        money = "%s(%s)" % (float(i.xianjin),i.wuzi)
                     else:
-                        money = "(%s)" % (i.goods)
+                        money = "(%s)" % (i.wuzi)
                 else:
-                    money = i.money
-                url_suffix = "{0}?name={1}&id={2}".format(i.doid,name,id)
+                    money = float(i.xianjin)
+
+                url_suffix = "{0}?name={1}&id={2}".format(i.id,name,id)
                 out = """<tr class="text-left">
                                 <td class="col-md-8">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
@@ -761,7 +766,7 @@ class Donorajaxsearch(AjaxSearch):
                                 </a>
                                 </td>
                                 </tr> """ % dict(
-                                    name=i.aname,
+                                    name=i.xingming,
                                     money= money,
                                     atime= atime,
                                     edit_url="%s/@@update_donor/%s" % (contexturl,url_suffix),
@@ -771,24 +776,24 @@ class Donorajaxsearch(AjaxSearch):
         else:
             for i in resultDicLists:
                 
-                astr = i.atime.strftime('%Y-%m-%d')
+                astr = i.juanzeng_shijian.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
                     atime = u""
                 else:
                     atime = astr
-                if bool(i.goods):
-                    if bool(i.money):
-                        money = "%s(%s)" % (i.money,i.goods)
+                if bool(i.wuzi):
+                    if bool(i.xianjin):
+                        money = "%s(%s)" % (float(i.xianjin),i.wuzi)
                     else:
-                        money = "(%s)" % (i.goods)
+                        money = "(%s)" % (i.wuzi)
                 else:
-                    money = i.money                
+                    money = float(i.xianjin)                
                 out = """<tr class="text-left">
                                 <td class="col-md-10">%(name)s</td>
                                 <td class="col-md-1">%(money)s</td>
                                 <td class="col-md-1">%(atime)s</td>
                                 </tr> """% dict(
-                                            name=i.aname,
+                                            name=i.xingming,
                                             money= money,
                                             atime= atime)
                 outhtml = "%s%s" %(outhtml ,out)
@@ -821,7 +826,7 @@ class DeleteDonate(form.Form):
     implements(IPublishTraverse)
 
     label = _(u"delete donate data")
-    fields = field.Fields(IDonate).omit('did','start_time')
+    fields = field.Fields(IXiangMu).omit('id')
     ignoreContext = False
 
     id = None
@@ -834,8 +839,8 @@ class DeleteDonate(form.Form):
             raise NotFound()
 
     def getContent(self):
-        locator = queryUtility(IDbapi, name='donate')
-        return locator.getByCode(self.id,"did")
+        locator = queryUtility(IDbapi, name='xiangmu')
+        return locator.getByCode(self.id)
 
     def update(self):
         self.request.set('disable_border', True)
@@ -850,9 +855,9 @@ class DeleteDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = queryUtility(IDbapi, name='donate')
+        funcations = queryUtility(IDbapi, name='xiangmu')
         try:
-            funcations.DeleteByCode(self.id,'did')
+            funcations.DeleteByCode(self.id)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
             self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
@@ -873,12 +878,11 @@ class InputDonate(form.Form):
     """
 
     label = _(u"Input donate data")
-    fields = field.Fields(IDonate).omit('did')
+    fields = field.Fields(IXiangMu).omit('id')
     ignoreContext = True
 
     def update(self):
         self.request.set('disable_border', True)
-
         super(InputDonate, self).update()
 
     @button.buttonAndHandler(_(u"Submit"))
@@ -890,13 +894,13 @@ class InputDonate(form.Form):
             self.status = self.formErrorsMessage
             return
       
-        dtst = data['start_time']
-        if isinstance(dtst,datetime):
-            # datetime convert to timestamp
-            dtst = time.strptime(dtst.strftime(fmt),fmt)
-            dtst = int(time.mktime(dtst))            
-            data['start_time'] = dtst
-        funcations = queryUtility(IDbapi, name='donate')
+#         dtst = data['start_time']
+#         if isinstance(dtst,datetime):
+#             # datetime convert to timestamp
+#             dtst = time.strptime(dtst.strftime(fmt),fmt)
+#             dtst = int(time.mktime(dtst))            
+#             data['start_time'] = dtst
+        funcations = queryUtility(IDbapi, name='xiangmu')
         try:            
             funcations.add(data)
         except InputError, e:
@@ -922,13 +926,13 @@ class UpdateDonate(form.Form):
     implements(IPublishTraverse)
 
     label = _(u"update donate data")
-    fields = field.Fields(IDonate).omit('did','start_time')
+    fields = field.Fields(IXiangMu).omit('id')
     ignoreContext = False
     id = None
     # reset content
     def getContent(self):
-        locator = queryUtility(IDbapi, name='donate')
-        return locator.getByCode(self.id,"did")
+        locator = queryUtility(IDbapi, name='xiangmu')
+        return locator.getByCode(self.id)
 
     def publishTraverse(self, request, name):
         if self.id is None:
@@ -950,9 +954,9 @@ class UpdateDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = queryUtility(IDbapi, name='donate')
+        funcations = queryUtility(IDbapi, name='xiangmu')
         data['id'] = self.id
-        data['pk'] = "did"
+#         data['pk'] = "did"
         try:
             funcations.updateByCode(data)
         except InputError, e:
@@ -974,7 +978,7 @@ class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
     label = _(u"delete donate data")
-    fields = field.Fields(IDonor).omit('did','doid')
+    fields = field.Fields(IJuanZeng).omit('id','xiangmu_id')
 
     id = None
     #receive url parameters    
@@ -999,8 +1003,8 @@ class DeleteDonor(DeleteDonate):
             raise NotFound()
 
     def getContent(self):
-        locator = queryUtility(IDbapi, name='donor')
-        return locator.getByCode(self.id,"doid")
+        locator = queryUtility(IDbapi, name='juanzeng')
+        return locator.getByCode(self.id)
 
     def update(self):
         self.request.set('disable_border', True)
@@ -1015,10 +1019,10 @@ class DeleteDonor(DeleteDonate):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = queryUtility(IDbapi, name='donor')
+        funcations = queryUtility(IDbapi, name='juanzeng')
         rdurl = self.redirectUrl()
         try:
-            funcations.DeleteByCode(self.id,"doid")
+            funcations.DeleteByCode(self.id)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
             self.request.response.redirect(self.context.absolute_url() + rdurl)
@@ -1041,7 +1045,7 @@ class InputDonor(InputDonate):
     """
 
     label = _(u"Input donor data")
-    fields = field.Fields(IDonor).omit('doid')
+    fields = field.Fields(IJuanZeng).omit('id')
 
     def update(self):
         self.request.set('disable_border', True)
@@ -1055,11 +1059,11 @@ class InputDonor(InputDonate):
         if errors:
             self.status = self.formErrorsMessage
             return
-        funcations = queryUtility(IDbapi, name='donor')
-        locator = queryUtility(IDbapi, name='donate')
+        funcations = queryUtility(IDbapi, name='juanzeng')
+        locator = queryUtility(IDbapi, name='xiangmu')
         try:
-            id = data['did']
-            name = locator.getByCode(id,'did').aname
+            id = data['id']
+            name = locator.getByCode(id).mingcheng
             funcations.add(data)
         except InputError, e:
             IStatusMessage(self.request).add(str(e), type='error')
@@ -1084,7 +1088,7 @@ class UpdateDonor(DeleteDonor):
     """
 
     label = _(u"update donor data")
-    fields = field.Fields(IDonor).omit('doid')
+    fields = field.Fields(IJuanZeng).omit('id','xiangmu_id')
     id = None              
     
     def publishTraverse(self, request, name):
@@ -1095,8 +1099,8 @@ class UpdateDonor(DeleteDonor):
             raise NotFound()
 
     def getContent(self):                                         
-        locator = queryUtility(IDbapi, name='donor')
-        return locator.getByCode(self.id,"doid")
+        locator = queryUtility(IDbapi, name='juanzeng')
+        return locator.getByCode(self.id)
 
     def update(self):
         self.request.set('disable_border', True)
@@ -1113,8 +1117,8 @@ class UpdateDonor(DeleteDonor):
             return
         data['id'] = self.id
         # add self define primary key parameter
-        data['pk'] = "doid" 
-        funcations = queryUtility(IDbapi, name='donor')        
+#         data['pk'] = "doid" 
+        funcations = queryUtility(IDbapi, name='juanzeng')        
         rdurl = self.redirectUrl()
         try:
             funcations.updateByCode(data)
