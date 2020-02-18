@@ -29,6 +29,8 @@ create table if not exists juanzeng (
     status tinyint(1) not null  default 0,
     index weixin_openid(openid),
     index juanzeng_xingming(xingming),
+    index juanzeng_xianjin(xianjin),
+    index juanzeng_wuzijiazhi(wuzi_jiazhi),
     foreign key(xiangmu_id)
         references xiangmu(id)
             on update restrict
