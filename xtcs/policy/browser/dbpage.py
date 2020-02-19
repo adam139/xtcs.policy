@@ -898,13 +898,7 @@ class InputDonate(form.Form):
         if errors:
             self.status = self.formErrorsMessage
             return
-      
-#         dtst = data['start_time']
-#         if isinstance(dtst,datetime):
-#             # datetime convert to timestamp
-#             dtst = time.strptime(dtst.strftime(fmt),fmt)
-#             dtst = int(time.mktime(dtst))            
-#             data['start_time'] = dtst
+
         funcations = queryUtility(IDbapi, name='xiangmu')
         try:            
             funcations.add(data)
