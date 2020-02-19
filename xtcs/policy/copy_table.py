@@ -80,7 +80,7 @@ def cp_donor2juanzeng(context):
     recorders = query({"size":700,"offset":0})
     locator = queryUtility(IDbapi, name='juanzeng')
     #old and new table xiangmu'id map
-    idmap = {7:6,12:7,13:8,18:9,21:10,22:11}
+    idmap = {7:1,12:2,13:3,18:4,21:5,22:6}
     import re
     
     for rdr in recorders:
