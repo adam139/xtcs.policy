@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-02-18 08:15+0000\n"
+"POT-Creation-Date: 2020-02-19 03:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: xtcs.policy\n"
 
-#: ./browser/dbpage.py:870
+#: ./browser/dbpage.py:873
 msgid "Cancel"
 msgstr ""
 
-#: ./browser/dbpage.py:851
+#: ./browser/dbpage.py:854
 msgid "Delete"
 msgstr ""
 
-#: ./browser/dbpage.py:874
+#: ./browser/dbpage.py:877
 msgid "Delete cancelled."
 msgstr ""
 
-#: ./browser/dbpage.py:920
+#: ./browser/dbpage.py:917
 msgid "Input cancelled."
 msgstr ""
 
-#: ./browser/dbpage.py:882
+#: ./browser/dbpage.py:885
 msgid "Input donate data"
 msgstr ""
 
-#: ./browser/dbpage.py:1049
+#: ./browser/dbpage.py:1046
 msgid "Input donor data"
 msgstr ""
 
@@ -49,11 +49,11 @@ msgstr ""
 msgid "Preview image URL"
 msgstr ""
 
-#: ./browser/dbpage.py:890
+#: ./browser/dbpage.py:893
 msgid "Submit"
 msgstr ""
 
-#: ./browser/dbpage.py:912
+#: ./browser/dbpage.py:909
 msgid "Thank you! Your data  will be update in back end DB."
 msgstr ""
 
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Wechat settings"
 msgstr ""
 
-#: ./browser/dbpage.py:866
+#: ./browser/dbpage.py:869
 msgid "Your data  has been deleted."
 msgstr ""
 
@@ -101,7 +101,7 @@ msgstr ""
 msgid "curl timeout"
 msgstr ""
 
-#: ./browser/dbpage.py:830
+#: ./browser/dbpage.py:833
 msgid "delete donate data"
 msgstr ""
 
@@ -223,11 +223,11 @@ msgstr ""
 msgid "uninstall xtcs.policy"
 msgstr ""
 
-#: ./browser/dbpage.py:930
+#: ./browser/dbpage.py:927
 msgid "update donate data"
 msgstr ""
 
-#: ./browser/dbpage.py:1092
+#: ./browser/dbpage.py:1089
 msgid "update donor data"
 msgstr ""
 

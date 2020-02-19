@@ -13,7 +13,6 @@ from Acquisition import aq_inner
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore import permissions
 from plone.app.contenttypes.permissions import AddDocument
-from Products.CMFCore.interfaces import ISiteRoot
 from plone.memoize.instance import memoize
 from xtcs.policy import _
 from Products.Five.browser import BrowserView
@@ -35,7 +34,6 @@ from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFPlone.resources import add_bundle_on_request
 from zExceptions import NotFound
-from xtcs.policy import InputDb
 from xtcs.policy.utility import fetch_url_parameters
 import logging
 logger = logging.getLogger("weixin notify")
