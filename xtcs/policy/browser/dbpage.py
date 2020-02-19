@@ -428,7 +428,7 @@ class DonortableView(BrowserView):
         locator = queryUtility(IDbapi, name='juanzeng')
         query_args = {"start":0,"size":1000,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
-        filter_args = {"xiangmu_id":10}               
+        filter_args = {"xiangmu_id":5}               
         articles = locator.query_with_filter(query_args,filter_args)
         if articles == None:
             return             
@@ -470,7 +470,7 @@ class GuanZhuangDonortableView(DonortableView):
         locator = queryUtility(IDbapi, name='juanzeng')
         data = {"start":0,"size":1000,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
-        filter_args = {"xiangmu_id":11}               
+        filter_args = {"xiangmu_id":6}               
         articles = locator.query_with_filter(data,filter_args)
         if articles == None:
             return             
