@@ -8,8 +8,10 @@ from xtcs.policy.mapping_db import JuanZeng
 
 #automap class start
 accesstoken = Dbapi(Session,'xtcs.policy.mapping_db','accesstoken',AccessToken)
-xiangmu = Dbapi(Session,'xtcs.policy.mapping_db','xiangmu',XiangMu)
-juanzeng = Dbapi(Session,'xtcs.policy.mapping_db','juanzeng',JuanZeng)
+search_clmns = ['mingcheng']
+xiangmu = Dbapi(Session,'xtcs.policy.mapping_db','xiangmu',XiangMu,fullsearch_clmns=search_clmns)
+search_clmns = ['xingming']
+juanzeng = Dbapi(Session,'xtcs.policy.mapping_db','juanzeng',JuanZeng,fullsearch_clmns=search_clmns)
 #automap end
 
 
