@@ -31,6 +31,7 @@ create table if not exists juanzeng (
     index juanzeng_xingming(xingming),
     index juanzeng_xianjin(xianjin),
     index juanzeng_wuzijiazhi(wuzi_jiazhi),
+    index juanzeng_shijian(juanzeng_shijian),
     foreign key(xiangmu_id)
         references xiangmu(id)
             on update restrict
