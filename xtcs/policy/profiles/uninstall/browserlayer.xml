@@ -1,0 +1,9 @@
+<layers>
+   
+    <layer
+        name="xtcs.policy"
+        interface="xtcs.policy.browser.interfaces.IThemeSpecific"
+        remove="true"
+        />
+
+</layers>

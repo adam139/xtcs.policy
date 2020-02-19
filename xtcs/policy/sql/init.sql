@@ -37,21 +37,6 @@ create table if not exists juanzeng (
             on delete restrict
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
-create table if not exists onlinepay (
-    id integer unsigned not null auto_increment primary key,
-    projectId integer unsigned not null,
-    aname varchar(64) not null default '',    
-    money decimal(13,2) not null default 0.00,
-    goods varchar(64) not null default '',
-    atime DATETIME not null,
-    openid varchar(128) not null default 'noweixin',
-    status tinyint(1) not null  default 0,
-    index pay_openid(openid),
-    index pay_name(aname)
-    
-) engine=InnoDB DEFAULT CHARSET=utf8;
-
-
 -- openid accesstoken cache table for weixin jsapi
 -- every user has self openid and accesstoken
 

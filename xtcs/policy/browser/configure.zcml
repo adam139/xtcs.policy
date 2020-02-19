@@ -87,7 +87,15 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/container_table_list.pt"
-    />        
+    /> 
+    <browser:page
+      for="plone.app.contenttypes.interfaces.IFolder"
+      name="favoritemore"
+      class=".ajax_loadmore.Favoritemore"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"      
+    /> 
+               
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donate_listings"
