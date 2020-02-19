@@ -1,5 +1,4 @@
 #-*- coding: UTF-8 -*-
-from five import grok
 import json
 from Acquisition import aq_inner
 from zope.interface import Interface
@@ -19,8 +18,6 @@ import datetime
 
 
 class ContainerTableListView(BrowserView):
-
-#     grok.layer(IThemeSpecific)  
     
     def update(self):
         # Hide the editable-object border
@@ -138,15 +135,15 @@ class ContainerTableListView(BrowserView):
                             pubtime = i.created.strftime('%Y-%m-%d'))           
             outhtml = "%s%s" %(outhtml ,out)
         return outhtml 
-class favoritemore(grok.View):
+class Favoritemore(BrowserView):
     """AJAX action for container table click more.
     """
     
-    grok.context(IFolder)
-    grok.name('favoritemore')
-    grok.require('zope2.View')            
+#     grok.context(IFolder)
+#     grok.name('favoritemore')
+#     grok.require('zope2.View')            
     
-    def render(self):
+    def __call__(self):
 #        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")        
         form = self.request.form
         formst = form['formstart']
