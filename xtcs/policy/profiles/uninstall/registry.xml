@@ -3,4 +3,103 @@
   <!--remove control panel regsitry recorders-->
    <records prefix="xtcs.policy.browser.interfaces.IwechatSettings" 
   	interface="xtcs.policy.browser.interfaces.IwechatSettings" remove="true" />
+  <records prefix="plone.resources/mockup-patterns-datatables"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <!-- DataTables resources -->
+  <records prefix="plone.resources/datatables.net"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-autofill"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-autofill-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-colvis"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-flash"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-html5"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-print"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-colreorder"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-fixedcolumns"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+ 
+  </records>
+
+  <records prefix="plone.resources/datatables.net-fixedheader"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-keytable"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-responsive"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-responsive-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-rowreorder"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-scroller"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>
+
+  <records prefix="plone.resources/datatables.net-select"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry' remove="true">
+
+  </records>  	
 </registry>

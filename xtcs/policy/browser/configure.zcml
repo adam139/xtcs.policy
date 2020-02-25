@@ -104,7 +104,14 @@
       layer=".interfaces.IThemeSpecific"       
       template="templates/donate_listings.pt"
     /> 
-             
+    <browser:page
+      for="xtcs.policy.interfaces.IJuanzenggongshi"
+      name="juanzeng_listings"
+      class=".dt_listing.JuanZengView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/juanzeng_listings.pt"
+    />             
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donor_listings"
