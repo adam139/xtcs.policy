@@ -23,7 +23,8 @@
 
             <!-- datatables -->
 
-         <table class="pat-datatables row table table-striped table-bordered table-condensed">
+         <table class="row table table-striped table-bordered table-condensed"
+         	    id="datatables">
          <thead>
              <tr>
                  <th>Name</th>
