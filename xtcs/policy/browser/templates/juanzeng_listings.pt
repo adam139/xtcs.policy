@@ -24,7 +24,7 @@
             <!-- datatables -->
 
          <table class="row table table-striped table-bordered table-condensed"
-         	    id="datatables">
+         	    id="datatable">
          <thead>
              <tr>
                  <th>Name</th>

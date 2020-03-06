@@ -44,7 +44,7 @@ prefix="plone" />
     <value key="jscompilation">++resource++xtcs.policy/homepage-custom.js</value>
     <value key="csscompilation">++resource++xtcs.policy/homepage.minv2.css</value>
     <value key="last_compilation">2015-08-14 00:00:00</value>
-    <value key="compile">True</value>
+    <value key="compile">False</value>
     <value key="enabled">False</value>
     <value key="stub_js_modules">
         <element>roll</element>
@@ -56,7 +56,7 @@ prefix="plone" />
     <value key="jscompilation">++resource++xtcs.policy/donate-custom.js</value>
     <value key="csscompilation">++resource++xtcs.policy/donate.min.css</value>
     <value key="last_compilation">2018-04-14 00:00:00</value>
-    <value key="compile">True</value>
+    <value key="compile">False</value>
     <value key="enabled">False</value>
   </records>           
   <records prefix="plone.bundles/legacy-custom"
@@ -124,4 +124,127 @@ prefix="plone" />
   	{"title": "法律文件", "url": "++theme++collective.diazotheme.bootstrap/tinymce_templates/law.html"},
   	{"title": "分页文件", "url": "++theme++collective.diazotheme.bootstrap/tinymce_templates/auto_tab.html"}]</value>
 </record>
+  <records prefix="plone.resources/mockup-patterns-datatables"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++resource++mockup/datatables/pattern.js</value>
+      <value key="css">
+        <element>++resource++mockup/datatables/pattern.datatables.less</element>
+      </value>
+  </records>
+  <records prefix="plone.resources/xtcs-datatables"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++resource++xtcs.policy/datatable.js</value>
+  </records>
+  <!-- DataTables resources -->
+  <records prefix="plone.resources/datatables.net"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net/js/jquery.dataTables.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-bs/js/dataTables.bootstrap.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-autofill"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-autofill/js/dataTables.autoFill.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-autofill-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-autofill-bs/js/autoFill.bootstrap.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-buttons/js/dataTables.buttons.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-colvis"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-buttons/js/buttons.colVis.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-flash"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-buttons/js/buttons.flash.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-html5"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-buttons/js/buttons.html5.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-print"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-buttons/js/buttons.print.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-buttons-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-buttons-bs/js/buttons.bootstrap.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-colreorder"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-colreorder/js/dataTables.colReorder.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-fixedcolumns"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-fixedcolumns/js/dataTables.fixedColumns.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-fixedheader"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-keytable"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-keytable/js/dataTables.keyTable.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-responsive"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-responsive/js/dataTables.responsive.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-responsive-bs"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-responsive-bs/js/responsive.bootstrap.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-rowreorder"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-rowreorder/js/dataTables.rowReorder.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-scroller"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-scroller/js/dataTables.scroller.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-select"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++plone++static/components/datatables.net-select/js/dataTables.select.min.js</value>
+  </records>
+  
+    <!-- Bundles -->
+  <records prefix="plone.bundles/xtcs-policy-datatable"
+            interface='Products.CMFPlone.interfaces.IBundleRegistry'>    
+    <value key="depends">plone</value>
+    <value key="resources">
+    	<element>xtcs-datatables</element>
+    </value>	
+    <value key="jscompilation">++resource++xtcs.policy/datatable.min.js</value>
+    <value key="csscompilation">++resource++xtcs.policy/datatable.min.css</value>
+    <value key="last_compilation">2020-02-26 00:00:00</value>
+    <value key="compile">True</value>
+    <value key="enabled">False</value>
+    <value key="stub_js_modules">
+        <element>jquery</element>
+    </value>
+  </records>
 </registry>
