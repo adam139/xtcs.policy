@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="context/main_template/macros/master"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"      
+      i18n:domain="xtcs.policy">        
+<head>
+      <metal:block fill-slot="top_slot">
+        <tal:insert tal:replace="nothing"
+              tal:define="disable_column_two python:request.set('disable_plone.rightcolumn', 1);
+              disable_column_one python:request.set('disable_plone.leftcolumn', 1)" />
+      </metal:block>
+  </head>
+<body>
+	<div metal:fill-slot="main">
+		<div id="ajaxsearch" style="display: none" 
+			tal:attributes="data-ajax-target python:context.absolute_url() + '/@@juanzeng_ajax'"></div>
+		<div class="container-fluid">
+			<div class="row">
+                <h1 class="documentFirstHeading">湘潭6.22暴雨灾害捐款</h1>
+                <input type="hidden" value="6" id="xiangmuId">				
+			</div>			
+         <table class="row table table-striped table-bordered table-condensed"
+         	    id="datatable">
+         <thead>
+             <tr>
+            	<th>捐赠单位或个人</th>
+            	<th>现金</th>
+            	<th>物资</th>
+            	<th>捐赠时间</th>          			            			            			
+             </tr>
+         </thead>
+         </table>
+		</div>	
+	</div>
+</body>
+</html>
