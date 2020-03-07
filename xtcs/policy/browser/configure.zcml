@@ -15,6 +15,7 @@
      directory="static" />
      
     <include file="dbpages.zcml"/>
+    <include file="ajax.zcml"/>
          
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
@@ -111,7 +112,15 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"       
       template="templates/juanzeng_listings.pt"
-    />             
+    />
+    <browser:page
+      for="xtcs.policy.interfaces.IJuanzenggongshi"
+      name="juanzeng_listings_dt"
+      class=".dt_listing.JuanZengView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"       
+      template="templates/juanzeng_listings_dt.pt"
+    />                 
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donor_listings"
