@@ -47,7 +47,8 @@ $(document).ready(function(){
  		'url':ajax_url,
  		'type':'POST',
         "data": function ( d ) {                
-             d.xiangmu_id = $('#xiangmuId').val();                
+             d.xiangmu_id = $('#xiangmuId').val();
+             d.total_col = $('#totalCol').val();                
             },
          "dataSrc": function ( data ) {
            xianjinTotal = data.xianjinTotal;

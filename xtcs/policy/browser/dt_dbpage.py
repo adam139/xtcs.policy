@@ -23,6 +23,7 @@ class DtAjaxView(BrowserView):
         order_by = dt['order[0][column]']
         direction = dt['order[0][dir]']
         id = int(dt['xiangmu_id'])
+        total_col = dt['total_col']
         if direction == "desc":
             direction = "reverse"
         else:
@@ -39,7 +40,7 @@ class DtAjaxView(BrowserView):
         recordsFiltered = searchview.search_multicondition(keyquery,filterquery)        
         origquery['order_by'] = 'juanzeng_shijian'
         resultDicLists = searchview.search_multicondition(origquery,filterquery)
-        total = searchview.total_multicondition({'sumCol':'xianjin','keyword':keyword},filterquery)
+        total = searchview.total_multicondition({'sumCol':total_col,'keyword':keyword},filterquery)
         data = []
         for i in resultDicLists:
             item = []

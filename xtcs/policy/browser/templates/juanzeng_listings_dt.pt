@@ -20,7 +20,7 @@
 			<div class="row">
                 <h1 class="documentFirstHeading">湘潭6.22暴雨灾害捐款</h1>
                 <input type="hidden" value="6" id="xiangmuId">
-                <input type="hidden" value="1" id="totalCol">				
+                <input type="hidden" value="xianjin" id="totalCol">				
 			</div>			
          <table class="row table table-striped table-bordered table-condensed"
          	    id="datatable">
