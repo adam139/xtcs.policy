@@ -39,6 +39,7 @@ class DtAjaxView(BrowserView):
         recordsFiltered = searchview.search_multicondition(keyquery,filterquery)        
         origquery['order_by'] = 'juanzeng_shijian'
         resultDicLists = searchview.search_multicondition(origquery,filterquery)
+        total = searchview.total_multicondition({'sumCol':'xianjin','keyword':keyword},filterquery)
         data = []
         for i in resultDicLists:
             item = []
@@ -49,7 +50,8 @@ class DtAjaxView(BrowserView):
             data.append(item)              
         
         result = {'draw':draw,'recordsTotal':recordsTotal,'recordsFiltered':recordsFiltered}
-        result.update({'data':data})
+        result.update({'data':data,'xianjinTotal':float(total)})
+        
         self.request.response.setHeader('Content-Type', 'application/json')
         return json.dumps(result)              
         

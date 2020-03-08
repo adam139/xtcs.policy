@@ -19,7 +19,8 @@
 		<div class="container-fluid">
 			<div class="row">
                 <h1 class="documentFirstHeading">湘潭6.22暴雨灾害捐款</h1>
-                <input type="hidden" value="6" id="xiangmuId">				
+                <input type="hidden" value="6" id="xiangmuId">
+                <input type="hidden" value="1" id="totalCol">				
 			</div>			
          <table class="row table table-striped table-bordered table-condensed"
          	    id="datatable">
@@ -31,6 +32,12 @@
             	<th>捐赠时间</th>          			            			            			
              </tr>
          </thead>
+         <tfoot>
+            <tr>
+                <th style="text-align:right">合计:</th>
+                <th colspan="3"></th>
+            </tr>
+         </tfoot>         
          </table>
 		</div>	
 	</div>

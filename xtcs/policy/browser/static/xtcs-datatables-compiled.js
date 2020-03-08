@@ -19731,6 +19731,9 @@ define('mockup-patterns-datatables',[
 
 require([
   'jquery',
+//  'datatables.net-pdfmake',
+//  'datatables.net-jszip',
+//  'datatables.net-vfs-fonts',
   'mockup-patterns-datatables' 
 ], function($) {
   'use strict';
@@ -19753,7 +19756,7 @@ $.extend({
 });  
   
 $(document).ready(function(){
- var ajax_url = $("#ajaxsearch").attr('data-ajax-target');
+ var ajax_url = $("#ajaxsearch").attr('data-ajax-target'); 
  var byName = $.getUrlVar('name');
  if (byName === undefined || byName == null || byName === "") { 	 	
   } else {
@@ -19765,21 +19768,35 @@ $(document).ready(function(){
   } else {
   	$("#xiangmuId").val(byId);
   }
+  var xianjinTotal;
  $('#datatable').DataTable({
  	"processing": true,
  	"serverSide": true,
+// 	 dom: 'Bfrtip',
+// 	 buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
  	"ajax":{
  		'url':ajax_url,
  		'type':'POST',
         "data": function ( d ) {                
-                 d.xiangmu_id = $('#xiangmuId').val();                
-            } 		
+             d.xiangmu_id = $('#xiangmuId').val();                
+            },
+         "dataSrc": function ( data ) {
+           xianjinTotal = data.xianjinTotal;
+           return data.data;
+         }     		
  	},
  	'language':{
  		'url':'http://cdn.datatables.net/plug-ins/1.10.20/i18n/Chinese.json'
  	},
- });
-	});
+     "drawCallback": function( settings ) {
+        var api = this.api();
+
+        $( api.column( 1 ).footer() ).html(
+         xianjinTotal +'元'
+            );
+        }
+    }); 
+  });
 });
 
 define("/home/plone/workspace/Plone515/sites/src/xtcs.policy/xtcs/policy/browser/static/datatable.js", function(){});
