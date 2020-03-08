@@ -186,6 +186,21 @@ prefix="plone" />
       <value key="js">++plone++static/components/datatables.net-buttons-bs/js/buttons.bootstrap.min.js</value>
   </records>
 
+  <records prefix="plone.resources/datatables.net-pdfmake"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++resource++xtcs.policy/pdfmake.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-jszip"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++resource++xtcs.policy/jszip.min.js</value>
+  </records>
+
+  <records prefix="plone.resources/datatables.net-vfs-fonts"
+            interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+      <value key="js">++resource++xtcs.policy/vfs_fonts.js</value>
+  </records>
+  
   <records prefix="plone.resources/datatables.net-colreorder"
             interface='Products.CMFPlone.interfaces.IResourceRegistry'>
       <value key="js">++plone++static/components/datatables.net-colreorder/js/dataTables.colReorder.min.js</value>
