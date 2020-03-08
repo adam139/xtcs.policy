@@ -24,18 +24,18 @@
 
  <!-- db named utility -->
   <utility
-	provides=".interfaces.IDbapi"
+	provides="sqlalchemy.dbapi.interfaces.IDbapi"
 	component=".dbutility.accesstoken"
 	name="accesstoken"
 	/>  
 
   <utility
-	provides=".interfaces.IDbapi"
+	provides="sqlalchemy.dbapi.interfaces.IDbapi"
 	component=".dbutility.xiangmu"
 	name="xiangmu"
 	/>  
   <utility
-	provides=".interfaces.IDbapi"
+	provides="sqlalchemy.dbapi.interfaces.IDbapi"
 	component=".dbutility.juanzeng"
 	name="juanzeng"
 	/>	

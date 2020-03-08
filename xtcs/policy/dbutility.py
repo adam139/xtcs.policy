@@ -1,6 +1,7 @@
 #-*- coding: UTF-8 -*-
 from xtcs.policy import Scope_session as Session
-from xtcs.policy.ORMdbAPI import Dbapi
+# from xtcs.policy.ORMdbAPI import Dbapi
+from sqlalchemy.dbapi.ORMdbAPI import Dbapi
 from xtcs.policy.mapping_db import AccessToken
 from xtcs.policy.mapping_db import XiangMu
 from xtcs.policy.mapping_db import JuanZeng
