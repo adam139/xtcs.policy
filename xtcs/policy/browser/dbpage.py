@@ -715,7 +715,7 @@ class Donorajaxsearch(AjaxSearch):
         origquery['start'] = start
 #         origquery['id'] = id
         origquery['with_entities'] = 0
-        filterquery = {'xiangmu_id':id}
+        filterquery = {'xiangmu_id':id,'status':1}
         locator = queryUtility(IDbapi, name='xiangmu')
         name = locator.getByCode(id).mingcheng        
 #totalquery  search all
