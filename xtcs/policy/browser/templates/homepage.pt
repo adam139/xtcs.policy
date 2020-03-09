@@ -119,12 +119,13 @@
   					<!-- 冠状疫情捐赠-->
     				<li role="presentation" class="active">
     					<a href="#guanzhuang" aria-controls="guanzhuang" role="tab" data-toggle="tab"
-    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@guanzhuang_donor_listings'">疫情捐赠</a>
+    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt'">疫情捐赠</a>
     				</li>  					
   					<!-- 日常捐赠 无定向-->
     				<li role="presentation">
     					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
-    						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@specify_donor_listings'">日常捐赠</a>
+    						tal:attributes="data-js-target 
+    						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=日常捐赠&id=5'">日常捐赠</a>
     				</li>
   				</ul>
   					<!-- Tab panes start-->

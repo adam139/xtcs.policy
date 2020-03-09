@@ -34,6 +34,7 @@ setup(name='xtcs.policy',
 #           'xtcs.theme',
           'z3c.caching',
           'collective.autopermission',
+          'sqlalchemy.dbapi',
                                                                      
           # -*- Extra requirements: -*-
       ],

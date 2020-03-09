@@ -4,6 +4,7 @@ from plone import api
 from zope.interface import Interface
 from zope.component import getMultiAdapter
 import json
+import urllib
 from datetime import datetime
 from datetime import timedelta
 from plone.registry.interfaces import IRegistry
@@ -659,7 +660,7 @@ class AjaxSearch(BrowserView):
                                 </a>
                                 </td>
                                 </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
-                                                name = "%s" % i.mingcheng,                                                
+                                                name = "%s" %  urllib.quote_plus(i.mingcheng.encode('utf-8')),                                                
                                                 id = "%s" % i.id,
                                                 num=str(k + 1),
                                                 regtime = regtime.strftime("%Y-%m-%d"),
@@ -670,15 +671,15 @@ class AjaxSearch(BrowserView):
                 k = k + 1
         else:
             for i in resultDicLists:
-                regtime = i.zhuceshijian           
+                regtime = i.zhuceshijian         
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-9 text-left">
                                 <a class="donate" data-name="%(name)s" data-id="%(id)s" href="%(objurl)s">%(title)s</a>
                                 </td>
                                 <td class="col-md-2">%(regtime)s</td>
-                                </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
-                                                name = "%s" % i.mingcheng,                                                
+                                </tr> """% dict(objurl="%s/@@juanzeng_listings_dt?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
+                                                name = "%s" %  urllib.quote_plus(i.mingcheng.encode('utf-8')),                                                 
                                                 id = "%s" % i.id,
                                                 num=str(k + 1),
                                                 regtime = regtime.strftime("%Y-%m-%d"),
