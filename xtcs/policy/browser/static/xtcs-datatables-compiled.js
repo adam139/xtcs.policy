@@ -19770,6 +19770,8 @@ $(document).ready(function(){
   }
   var xianjinTotal;
  $('#datatable').DataTable({
+        "order": [[ 3, 'desc' ]],
+        "columnDefs": [{ "orderable": false, "targets":[0,1,2] }],
  	"processing": true,
  	"serverSide": true,
 // 	 dom: 'Bfrtip',

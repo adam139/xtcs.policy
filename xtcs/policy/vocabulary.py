@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from zope.interface import provider
 # from xtcs.policy.interfaces import IDbapi
-from sqlalchemy.dbpai.interfaces import IDbapi
+from sqlalchemy.dbapi.interfaces import IDbapi
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
