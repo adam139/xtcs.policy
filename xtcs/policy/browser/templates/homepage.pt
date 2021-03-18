@@ -117,12 +117,12 @@
 				<div role="tabpanel" class="portlet">
   				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
   					<!-- 冠状疫情捐赠-->
-    				<li role="presentation" class="active">
+    				<li role="presentation">
     					<a href="#guanzhuang" aria-controls="guanzhuang" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt'">疫情捐赠</a>
     				</li>  					
   					<!-- 日常捐赠 无定向-->
-    				<li role="presentation">
+    				<li role="presentation" class="active">
     					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target 
     						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=日常捐赠&id=5'">日常捐赠</a>
@@ -130,7 +130,7 @@
   				</ul>
   					<!-- Tab panes start-->
   				<div class="tab-content">
-   				<div role="tabpanel" class="tab-pane active" id="guanzhuang">
+   				<div role="tabpanel" class="tab-pane" id="guanzhuang">
 					<div class="rolltables">
 						<table class="table"><tbody><tr> 
     						<td class="nopadding">
@@ -156,9 +156,9 @@
     						</div>
     					</td></tr></tbody>
 					</table>
-				</div>     	
+				</div>
     			</div>
-				<div role="tabpanel" class="tab-pane" id="juanzengjinbang">
+				<div role="tabpanel" class="tab-pane  active" id="juanzengjinbang">
 					<div class="rolltables">
 						<table class="table"><tbody><tr> 
     						<td class="nopadding">
@@ -171,7 +171,7 @@
 								</table>
     							<div id="oRollV">
     							  <div id="oRollV1">
-    								<table class="table table-bordered">                  
+    								<table class="table table-bordered">
         								<tbody tal:content="structure python: view.getable('donor_table')" >
         									<tr> 
           										<td>单位甲</td>
@@ -200,7 +200,7 @@
 		 		</div>
 			</div>		
 		</div>				
-		<div class="row row-3">							
+		<div class="row row-3">
         <div class="col-xs-12 col-md-4 tabPortlet">
 				<div role="tabpanel" class="kuputab-container">
   				<!-- Nav tabs -->
@@ -418,7 +418,7 @@
          			</div>
          			<div class="col-sm-1 hidden-xs">
          			<!-- offset gut -->	
-         			</div>         			         			
+         			</div>
          		</div>
     					</div>    	
     				</div>
@@ -482,11 +482,11 @@
     						tal:attributes="href python:p + '/cishanxiangmu/tuijianxiangmu/'" class="verticaltext" alt="慈善项目">慈善项目</a></div>   
         		<div id="roll_chanpin" tal:attributes="data-root python:p">
         		<div class="roll_image" data-pause="1000" data-step="1" data-speed="37" data-direction="left">
-            	<ul class="img"></ul>          
+            	<ul class="img"></ul>
         		</div>
         </div>
-    		</div>              		
-			</div>												
+    		</div>
+			</div>
 			<div class="col-md-4 col-xs-12">
 				<div role="tabpanel" class="portlet">
   				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
@@ -502,13 +502,13 @@
         					<li class="portletItem">开户名称：湘潭市慈善总会</li>
 							<li class="portletItem">开户银行：华融湘江银行湘潭建设支行</li>
 							<li class="portletItem">开户账号：78003032010010028866</li>
-							<li class="portletItem">联系电话：0731—52255876</li>												        		
+							<li class="portletItem">联系电话：0731—52255876</li>
     				</ul>    	
     			</div>
     		</div> <!--Tab panes end -->
-  			</div>  <!--portlet end -->								
-		  </div>	<!--end col-md -->					
-		 </div>		<!--end row -->  
+  			</div>  <!--portlet end -->
+		  </div>	<!--end col-md -->
+		 </div>		<!--end row -->
      
      </div>
   </tal:main-macro>
