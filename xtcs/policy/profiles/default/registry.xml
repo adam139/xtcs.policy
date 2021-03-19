@@ -58,7 +58,7 @@ prefix="plone" />
     <value key="last_compilation">2018-04-14 00:00:00</value>
     <value key="compile">False</value>
     <value key="enabled">False</value>
-  </records>           
+  </records>
   <records prefix="plone.bundles/legacy-custom"
             interface='Products.CMFPlone.interfaces.IBundleRegistry'>    
     <value key="depends">plone</value>

@@ -11,4 +11,4 @@ class JuanZengView(BrowserView):
         # Each view instance receives context and request as construction parameters
         self.context = context
         self.request = request
-        add_bundle_on_request(self.request, 'xtcs-policy-datatable')    
+        add_bundle_on_request(self.request, 'xtcs-policy-datatable')
