@@ -3,9 +3,9 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c"
     xmlns:grok="http://namespaces.zope.org/grok"    
-    i18n_domain="xtcs.policy">    
+    i18n_domain="xtcs.policy">
 
-    <include file="caching.zcml" />  
+    <include file="caching.zcml" />
     <include package="z3c.form" file="meta.zcml" />
     <include package="z3c.form" />
       
@@ -22,7 +22,7 @@
       name="index.html"
       class=".homepage.FrontpageView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/homepage.pt"
     />
     
@@ -32,28 +32,28 @@
       name="wechat-controlpanel"
       class=".controlpanel.WechatControlPanel"
       permission="cmf.ManagePortal" 
-      />     
+      />
 
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="auth"
       class=".zhifu.Base"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"            
+      layer=".interfaces.IThemeSpecific"
     />
     <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="hotauth"
       class=".zhifu.HotBase"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"            
-    />        
+      layer=".interfaces.IThemeSpecific"
+    />
      <browser:page
       for="Products.CMFCore.interfaces.ISiteRoot"
       name="hotpay"
       class=".dbpage.CurrentWeixinPay"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/hot_project_zhifu.pt"
     /> 
     <browser:page
@@ -61,7 +61,7 @@
       name="pay"
       class=".dbpage.WeixinPay"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/weixin_jsapi_zhifu.pt"
     />
         
@@ -78,7 +78,7 @@
       name="guanzhuang_donor_table"
       class=".dbpage.GuanZhuangDonortableView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/guanzhuang_donor_table.pt"
     />    
     <browser:page
@@ -86,7 +86,7 @@
       name="tableview"
       class=".ajax_loadmore.ContainerTableListView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/container_table_list.pt"
     /> 
     <browser:page
@@ -94,15 +94,15 @@
       name="favoritemore"
       class=".ajax_loadmore.Favoritemore"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"      
+      layer=".interfaces.IThemeSpecific"
     /> 
-               
+
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donate_listings"
       class=".dbpage.DonateView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/donate_listings.pt"
     /> 
     <browser:page
@@ -110,7 +110,7 @@
       name="juanzeng_listings"
       class=".dt_listing.JuanZengView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/juanzeng_listings.pt"
     />
     <browser:page
@@ -118,15 +118,15 @@
       name="juanzeng_listings_dt"
       class=".dt_listing.JuanZengView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/juanzeng_listings_dt.pt"
-    />                 
+    />
     <browser:page
       for="xtcs.policy.interfaces.IJuanzenggongshi"
       name="donor_listings"
       class=".dbpage.DonorView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/donor_listings.pt"
     />
     <browser:page
@@ -134,7 +134,7 @@
       name="specify_donor_listings"
       class=".dbpage.SpecifyDonorView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/specify_donor_listings.pt"
     />
     <browser:page
@@ -142,26 +142,26 @@
       name="guanzhuang_donor_listings"
       class=".dbpage.GuangZhuangDonorView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/guanzhuang_donor_listings.pt"
-    />        
+    />
     <browser:page
       for="xtcs.policy.interfaces.IJuanzengworkflow"
       name="donated_workflow"
       class=".dbpage.DonatedWorkflow"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/donated_workflow.pt"
     />
-                
+
     <browser:page
       for="*"
       name="footer"
       permission="zope.Public"
- 	    layer=".interfaces.IThemeSpecific"       
+ 	    layer=".interfaces.IThemeSpecific"
       template="templates/footer.pt"
       />
-            
+
     <!-- The search box -->
     <browser:viewlet
         name="plone.searchbox"
@@ -179,7 +179,7 @@
         layer=".interfaces.IThemeSpecific"
         permission="zope2.View"
         /> 
-               
+
     <!-- Override global sections viewlet -->
     <browser:viewlet
         name="plone.global_sections"
@@ -194,22 +194,22 @@
         for="*"
         permission="zope.Public"
         class="plone.batching.browser.PloneBatchView"
-        layer=".interfaces.IThemeSpecific"        
+        layer=".interfaces.IThemeSpecific"
         template="templates/batchnavigation_bootstrap.pt"
         />
 
     <browser:page
-		name="xtcs-policy-macros"
-		for="*"
-		permission="zope2.View"
-		class=".macros.Macros"/>    
-		
+       name="xtcs-policy-macros"
+       for="*"
+       permission="zope2.View"
+       class=".macros.Macros"/>
+
 
     <include package="z3c.jbot" file="meta.zcml" />
 
     <browser:jbot
         directory="override"
- 		layer=".interfaces.IThemeSpecific"    
+        layer=".interfaces.IThemeSpecific"
      />
       
     <!-- db page -->
