@@ -325,7 +325,7 @@ class WeixinPay(BrowserView):
         "提取系统所有有效的(开放的)公益项目"
 
         query_args = {"start":0,"size":10,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+                'with_entities':0,'sort_order':'forward','order_by':'id'}
         locator = queryUtility(IDbapi, name='xiangmu')
         filter_args = {"youxiao":1}
         recorders = locator.query_with_filter(query_args,filter_args)
