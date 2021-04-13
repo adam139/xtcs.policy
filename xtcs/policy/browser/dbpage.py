@@ -320,14 +320,23 @@ class WeixinPay(BrowserView):
             return settings.hot_project
         else:
             return 6 
-        
-    def get_projects(self,id=None):
-        "提取系统所有公益项目"
 
-        query_args = {"start":0,"size":20,'SearchableText':'',
+    def get_projects(self,id=None):
+        "提取系统所有有效的(开放的)公益项目"
+
+        query_args = {"start":0,"size":10,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
         locator = queryUtility(IDbapi, name='xiangmu')
-        recorders = locator.query(query_args)
+        filter_args = {"youxiao":1}
+        recorders = locator.query_with_filter(query_args,filter_args)
+
+#     def get_projects(self,id=None):
+#         "提取系统所有公益项目"
+# 
+#         query_args = {"start":0,"size":20,'SearchableText':'',
+#                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
+#         locator = queryUtility(IDbapi, name='xiangmu')
+#         recorders = locator.query(query_args)
 
         def outfmt(rcd):
             out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
