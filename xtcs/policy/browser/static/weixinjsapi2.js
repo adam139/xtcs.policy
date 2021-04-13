@@ -60,7 +60,7 @@ $(document).ready(function(){
 	var openid = $(".ajaxform input[name='openid']").val();
 	var data = {'aname':aname,'fee':money,'did':project,'openid':openid};
 	$.post(base + "/@@pay_ajax",data,function(callback) {
-      console.log(JSON.stringify(callback));
+      //console.log(JSON.stringify(callback));
       function onBridgeReady(){
       WeixinJSBridge.invoke(
       'getBrandWCPayRequest', {

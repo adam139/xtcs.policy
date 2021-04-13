@@ -1,20 +1,13 @@
 #-*- coding: UTF-8 -*-
 import json
 from Acquisition import aq_inner
-from zope.interface import Interface
 from zope.component import getMultiAdapter
 from Products.CMFCore import permissions
-from plone.app.contenttypes.permissions import AddDocument
 from Products.CMFCore.utils import getToolByName
 from plone.app.contenttypes.interfaces import IFolder,IFile,IDocument,ILink
-from Products.Five.utilities.marker import mark
-from Products.CMFCore.interfaces import ISiteRoot
 from plone.memoize.instance import memoize
-from plone.app.layout.navigation.interfaces import INavigationRoot
-from plone.dexterity.utils import createContentInContainer
 from xtcs.policy.browser.interfaces import IThemeSpecific
 from Products.Five.browser import BrowserView
-import datetime    
 
 
 class ContainerTableListView(BrowserView):
@@ -23,18 +16,18 @@ class ContainerTableListView(BrowserView):
         # Hide the editable-object border
         self.request.set('disable_border', True)
 
-    @memoize    
+    @memoize
     def catalog(self):
         context = aq_inner(self.context)
         pc = getToolByName(context, "portal_catalog")
-        return pc    
+        return pc
     
-    @memoize    
+    @memoize
     def pm(self):
         context = aq_inner(self.context)
         pm = getToolByName(context, "portal_membership")
-        return pm    
-            
+        return pm
+    
     @property
     def isEditable(self):
       
@@ -46,12 +39,12 @@ class ContainerTableListView(BrowserView):
         return self.pm().checkPermission(permissions.AddPortalContent,self.context)  
         
     def getFolders(self):
-        """获取当前目录所有文件夹对象"""       
+        """获取当前目录所有文件夹对象"""
 
         braindata = self.catalog()({'object_provides':IFolder.__identifier__,
-                             'path':"/".join(self.context.getPhysicalPath()),                                  
+                             'path':"/".join(self.context.getPhysicalPath()),
                              'sort_order': 'reverse',
-                             'sort_on': 'created'}                              
+                             'sort_on': 'created'}
                                               )
  
     def objmarks(self):
@@ -67,18 +60,18 @@ class ContainerTableListView(BrowserView):
             from my315ok.products.product import Iproduct
             objmarks.append(Iproduct.__identifier__)
             braindata = self.catalog()({'object_provides':objmarks,
-                             'path':"/".join(self.context.getPhysicalPath()),                                  
+                             'path':"/".join(self.context.getPhysicalPath()),
                              'sort_order': 'reverse',
-                             'sort_on': 'created'}                              
-                                              ) 
-        except:            
+                             'sort_on': 'created'}
+                                              )
+        except:
             braindata = self.catalog()({'object_provides':objmarks,
-                             'path':"/".join(self.context.getPhysicalPath()),                                  
+                             'path':"/".join(self.context.getPhysicalPath()),
                              'sort_order': 'reverse',
-                             'sort_on': 'created'}                              
-                                              ) 
+                             'sort_on': 'created'}
+                                              )
 
-        return braindata         
+        return braindata
         
     def getDocuments(self,start,size):
         """获取所有页面"""
@@ -89,23 +82,23 @@ class ContainerTableListView(BrowserView):
             from my315ok.products.product import Iproduct
             objmarks.append(Iproduct.__identifier__)
             braindata = self.catalog()({'object_provides':objmarks,
-                             'path':"/".join(self.context.getPhysicalPath()),                                  
+                             'path':"/".join(self.context.getPhysicalPath()),
                              'sort_order': 'reverse',
                              'sort_on': 'created',
                              'b_start':start,
-                             'b_size':size}                              
-                                              ) 
+                             'b_size':size}
+                                              )
         except:
             
             braindata = self.catalog()({'object_provides':objmarks,
-                             'path':"/".join(self.context.getPhysicalPath()),                                  
+                             'path':"/".join(self.context.getPhysicalPath()),
                              'sort_order': 'reverse',
                              'sort_on': 'created',
                              'b_start':start,
-                             'b_size':size}                               
+                             'b_size':size}
                                               ) 
 
-        return braindata 
+        return braindata
 
     
     def pendingDefault(self):
@@ -126,29 +119,27 @@ class ContainerTableListView(BrowserView):
     def outhtmlList(self,braindata):
         outhtml = ""
         
-        for i in braindata:            
+        for i in braindata:
             out = """<tr>
             <td class="col-md-9 title"><a href="%(url)s">%(title)s</a></td>
             <td class="col-md-3 item">%(pubtime)s</td>
             </tr>""" % dict(url = i.getURL(),
                             title = i.Title,
-                            pubtime = i.created.strftime('%Y-%m-%d'))           
+                            pubtime = i.created.strftime('%Y-%m-%d'))
             outhtml = "%s%s" %(outhtml ,out)
-        return outhtml 
+        return outhtml
+
+
 class Favoritemore(BrowserView):
     """AJAX action for container table click more.
     """
     
-#     grok.context(IFolder)
-#     grok.name('favoritemore')
-#     grok.require('zope2.View')            
     
     def __call__(self):
-#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")        
         form = self.request.form
         formst = form['formstart']
         formstart = int(formst)*10 
-        nextstart = formstart + 10                
+        nextstart = formstart + 10
         favorite_view = getMultiAdapter((self.context, self.request),name=u"tableview")
         favoritenum = len(favorite_view.allitems())
         
@@ -157,8 +148,8 @@ class Favoritemore(BrowserView):
             pending = 0
         else :
             ifmore = 0  
-            pending = favoritenum - nextstart          
-        braindata = favorite_view.getDocuments(formstart,10)        
+            pending = favoritenum - nextstart
+        braindata = favorite_view.getDocuments(formstart,10)
         outhtml = ""
 
         pending = "%s" % (pending)
@@ -169,7 +160,7 @@ class Favoritemore(BrowserView):
             <td class="col-md-3 item">%(pubtime)s</td>
             </tr>""" % dict(url = i.getURL(),
                             title = i.Title,
-                            pubtime = i.created.strftime('%Y-%m-%d'))           
+                            pubtime = i.created.strftime('%Y-%m-%d'))
             outhtml = "%s%s" %(outhtml ,out)
             
         data = {'outhtml': outhtml,'pending':pending,'ifmore':ifmore}

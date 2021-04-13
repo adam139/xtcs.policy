@@ -57,7 +57,7 @@ class CustomWeixinHelper(WeixinHelper):
         token = settings.access_token
 #         logger.info("old token is:%s,old time is:%s" % (token,stime))
         if bool(token) and stime + timedelta(seconds=7000) > datetime.now():
-            return token        
+            return token
 #         _ACCESS_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={0}&secret={1}"
 #         token = HttpClient().get(_ACCESS_URL.format(WxPayConf_pub.APPID, WxPayConf_pub.APPSECRET))
         token = super(CustomWeixinHelper,cls).getAccessToken()
@@ -77,16 +77,16 @@ class CustomWeixinHelper(WeixinHelper):
         http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
         """
 
-        logger.info("enter getAccessTokenByCode. code:'%s'" % code)        
+        logger.info("enter getAccessTokenByCode. code:'%s'" % code)
         token =  super(CustomWeixinHelper,cls).getAccessTokenByCode(code)
         import ast
-        if isinstance(token,str):            
-            token = ast.literal_eval(token)        
+        if isinstance(token,str):
+            token = ast.literal_eval(token)
         if 'errcode' not in token.keys():
             #refresh access_token
             token = super(CustomWeixinHelper,cls).refreshAccessToken(token['refresh_token'])
             logger.info("new refresh token is:%s" % token)
-            if isinstance(token,str):                
+            if isinstance(token,str):
                 token = ast.literal_eval(token)
             if 'errcode' not in token.keys():
                 #new openid accesstoken expire_time write to db
@@ -117,14 +117,14 @@ class CustomWeixinHelper(WeixinHelper):
         """获取jsapi_ticket
         """
         registry = getUtility(IRegistry)
-        settings = registry.forInterface(IwechatSettings)        
+        settings = registry.forInterface(IwechatSettings)
         stime = settings.jsapi_ticket_time
         ticket = settings.jsapi_ticket
         if bool(ticket) and stime + timedelta(seconds=7000) > datetime.now():
-            return token         
+            return token
         ticket = super(CustomWeixinHelper,cls).getJsapiTicket(access_token)
         settings.jsapi_ticket_time = datetime.now()
-        settings.jsapi_ticket = ticket         
+        settings.jsapi_ticket = ticket
         return ticket    
 
 
@@ -133,15 +133,15 @@ class TokenAjax(BrowserView):
     receive front end ajax transform parameters
     """
 
-    def getAccessTokenByCode(self):        
+    def getAccessTokenByCode(self):
         try:
-            code = self.request.form['code']      
+            code = self.request.form['code']
             return WeixinHelper.getAccessTokenByCode(code)
         except:
             return ""
 
     def updateToken(self,token):
-        if 'errcode' not in token.keys():        
+        if 'errcode' not in token.keys():
             locator = queryUtility(IDbapi, name='accesstoken')
             timelimit = datetime.now() + timedelta(seconds=token['expires_in'])
             openid = token['openid']
@@ -154,13 +154,13 @@ class TokenAjax(BrowserView):
             if bool(rdrs):
                 data['id'] = rdrs[0].id
                 locator.updateByCode(data)
-            else:                   
+            else:
                 locator.add(data)
-            self.request.response.setCookie("openid", token["openid"])        
+            self.request.response.setCookie("openid", token["openid"])
         
     
     def __call__(self):
-        "response to front end"       
+        "response to front end"
     
         token = self.getAccessTokenByCode()
         #set cookie for store openid
@@ -169,7 +169,7 @@ class TokenAjax(BrowserView):
             token2 = ast.literal_eval(token)
         self.updateToken(token2)
         self.request.response.setHeader('Content-Type', 'application/json')
-        return token                   
+        return token
 
 
 class NotifyAjax(object):    
@@ -178,16 +178,16 @@ class NotifyAjax(object):
     """
 
     def __call__(self):
-        """weixin callback"""        
+        """weixin callback"""
 #         logger.info("weixin callback ------entering !")
         self.request.response.setHeader('Content-Type', 'text/plain')
         if self.request['method'] == 'GET':
 #             logger.info("received get quest=get !")
-            self.request.response.setHeader('Content-Type', 'application/xml')          
+            self.request.response.setHeader('Content-Type', 'application/xml')
             return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>"
 
-        if "xml" not in self.request:return "no"     
-        datadic = self.request['xml']        
+        if "xml" not in self.request:return "no"
+        datadic = self.request['xml']
 #         logger.info(str(datadic))   
         datadic = WeixinHelper.xmlToArray(datadic)
         if 'result_code' not in datadic:
@@ -196,7 +196,7 @@ class NotifyAjax(object):
             return "no"
         base = Wxpay_server_pub()
         openid = datadic['openid']
-        money =  datadic['total_fee']        
+        money =  datadic['total_fee']
         money = int(money)/100  
         base.data = datadic
         locator = queryUtility(IDbapi, name='juanzeng')
@@ -210,8 +210,8 @@ class NotifyAjax(object):
 #             order_by(JuanZeng.id.desc()).first()
         if not bool(recorders):return "no"
         recorder = recorders[0]
-        if bool(recorder.status):return "no"        
-        if base.checkSign():            
+        if bool(recorder.status):return "no"
+        if base.checkSign():
             # update status=1
             locator.updateByCode({"id":recorder.id,"status":1})
             # send template message
@@ -225,12 +225,12 @@ class NotifyAjax(object):
                 WeixinHelper.sendTextMessage(openid, text, access_token)
             except:
                 logger.info("send text message:'%s'failed"  % text)
-            return 'ok'                    
-        else:            
-            return 'no'             
+            return 'ok'
+        else:
+            return 'no'
 
 
-class SuccessNotifyAjax(object):    
+class SuccessNotifyAjax(object):
     """AJAX action for search DB.
     receive front end ajax transform parameters
     """
@@ -240,13 +240,13 @@ class SuccessNotifyAjax(object):
         
         datadic = self.request.form 
         trade_no = datadic['out_trade_no']
-        t_id = datadic['transaction_id']        
+        t_id = datadic['transaction_id']
         if datadic["result"] == "ok":
             # query order
             qapi = OrderQuery_pub()
             qapi.parameters['out_trade_no'] = trade_no
             qapi.parameters['transaction_id'] = t_id
-            result = qapi.getResult()            
+            result = qapi.getResult()
             out = {"result":"yes"}
         else:
             out = {"result":"no"}
@@ -259,24 +259,24 @@ class PayAjax(BrowserView):
     receive front end ajax transform parameters
     """
  
-    def insertprepay(self,**paras):       
+    def insertprepay(self,**paras):
         locator = queryUtility(IDbapi, name='juanzeng')
         locator.add(paras)
-        return              
+        return
     
     def __call__(self):
         "response to front end"
         """def getSnsapiUserInfo(cls, access_token, openid, lang="zh_CN"):"""
 
         datadic = self.request.form
-        fee = float(datadic['fee'])        
-        fee = round(fee,2)              
+        fee = float(datadic['fee'])
+        fee = round(fee,2)
         total_fee = str(int(fee * 100))
-        id = datadic['did']      
+        id = datadic['did']
         openid = datadic['openid']
         locator = queryUtility(IDbapi, name='xiangmu')
         xrdr = locator.getByCode(id)
-        body = xrdr.mingcheng.encode('utf-8')     
+        body = xrdr.mingcheng.encode('utf-8')
         out = JsApi_pub().getParameters(openid,body,total_fee)
         rdr = {}
 #         datadic['money'] = str(fee)
@@ -294,18 +294,18 @@ class PayAjax(BrowserView):
                 rdrs = locator.query_with_filter(query_args,filter_args)
                 token = rdrs[0].token
                 userinfo = WeixinHelper.getSnsapiUserInfo(token,openid)
-                logger.info("user nickname  is:%s" % userinfo['nickname'])            
+                logger.info("user nickname  is:%s" % userinfo['nickname'])
                 datadic['aname'] = userinfo['nickname']
             except:
                 logger.info("fetch  nickname failed !")
-                datadic['aname'] == u"匿名".encode('utf-8')                
+                datadic['aname'] == u"匿名".encode('utf-8')
 
 #         del datadic['fee']
         rdr['xingming'] = datadic['aname']
         rdr['juanzeng_shijian'] = datetime.now()
         self.insertprepay(**rdr)  
-        self.request.response.setHeader('Content-Type', 'application/json')      
-        return out        
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return out
             
 
 class WeixinPay(BrowserView):
@@ -316,7 +316,7 @@ class WeixinPay(BrowserView):
     def getProjectId(self):
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IwechatSettings)
-        if bool(settings.hot_project):        
+        if bool(settings.hot_project):
             return settings.hot_project
         else:
             return 6 
@@ -325,7 +325,7 @@ class WeixinPay(BrowserView):
         "提取系统所有公益项目"
 
         query_args = {"start":0,"size":20,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'id'}      
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
         locator = queryUtility(IDbapi, name='xiangmu')
         recorders = locator.query(query_args)
 
@@ -361,7 +361,7 @@ class CurrentWeixinPay(WeixinPay):
         st = '<label><input type="radio" name="{0}" id="{1}" value="{2}" checked>{3}</label>'
         pid = "project{0}".format(rcd.id)
         out['html']  = st.format("project",pid ,rcd.id,rcd.mingcheng)
-        return out       
+        return out
         
     
 class DonatedWorkflow(WeixinPay):
@@ -380,28 +380,28 @@ class DonatedWorkflow(WeixinPay):
         locator = queryUtility(IDbapi, name='xiangmu')
         rcd = locator.getByCode(id)
         out = "<h1>%s</h1><p>%s<p>" % (rcd.mingcheng,rcd.jieshao)
-        return out        
+        return out
 
     def get_projects(self):
         "提取系统所有公益项目"
 
         query_args = {"start":0,"size":10,'SearchableText':'',
-                'with_entities':0,'sort_order':'reverse','order_by':'id'}      
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
         locator = queryUtility(IDbapi, name='xiangmu')
-        filter_args = {"youxiao":1}               
-        recorders = locator.query_with_filter(query_args,filter_args)        
+        filter_args = {"youxiao":1}
+        recorders = locator.query_with_filter(query_args,filter_args)
 
         def outfmt(rcd):
             out = '<li>{0}</li>'.format(rcd.mingcheng)
             return out
             
-        outhtml = map(outfmt,recorders)             
+        outhtml = map(outfmt,recorders)
         outhtml = '<ul class="available">{0}</ul>'.format("".join(outhtml))
         return outhtml
 
     @memoize
     def outputjs(self):
-        ""                         
+        ""
         portal_url = api.portal.get().absolute_url()
         hoturl = "{0}/@@hotauth".format(portal_url)
         selectutl = "{0}/@@auth".format(portal_url)
@@ -420,6 +420,7 @@ $(document).ready(function(){
         """ % dict(hoturl=hoturl,selectutl=selectutl)
         return out
 
+
 class DonortableView(BrowserView):
     "捐赠金榜,显示日常捐赠"
       
@@ -430,10 +431,10 @@ class DonortableView(BrowserView):
         locator = queryUtility(IDbapi, name='juanzeng')
         query_args = {"start":0,"size":1000,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
-        filter_args = {"xiangmu_id":5}               
+        filter_args = {"xiangmu_id":5}
         articles = locator.query_with_filter(query_args,filter_args)
         if articles == None:
-            return             
+            return
         return self.outputList(articles)
 
     def outputList(self,braindata): 
@@ -444,21 +445,21 @@ class DonortableView(BrowserView):
             if astr != '2000-01-01':
                 atime = astr
             else:
-                atime= u""                        
+                atime= u""
             if bool(i.wuzi):
                 if bool(i.xianjin):
                     money = "%s(%s)" % (float(i.xianjin),i.wuzi)
                 else:
                     money = "(%s)" % (i.wuzi)
             else:
-                money = float(i.xianjin)            
+                money = float(i.xianjin)
             out = """<tr>
             <td class="title">%(title)s</td>
             <td class="item">%(money)s</td>
             <td class="atime">%(atime)s</td></tr>""" % dict(
                                             title=i.xingming,
                                             money= money,
-                                            atime=atime)           
+                                            atime=atime)
             outhtml = "%s%s" %(outhtml ,out)
         return outhtml
 
@@ -472,11 +473,12 @@ class GuanZhuangDonortableView(DonortableView):
         locator = queryUtility(IDbapi, name='juanzeng')
         data = {"start":0,"size":1000,'SearchableText':'',
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
-        filter_args = {"xiangmu_id":6}               
+        filter_args = {"xiangmu_id":6}
         articles = locator.query_with_filter(data,filter_args)
         if articles == None:
-            return             
+            return
         return self.outputList(articles)
+
 
 # all donate table
 class DonateView(BrowserView):
@@ -487,8 +489,8 @@ class DonateView(BrowserView):
     view name:donate_listings
     """
     @property
-    def isEditable(self):      
-        return self.pm().checkPermission(permissions.ManagePortal,self.context)    
+    def isEditable(self):
+        return self.pm().checkPermission(permissions.ManagePortal,self.context)
     @property
     def isAddable(self):
         return self.pm().checkPermission(permissions.AddPortalContent,self.context)
@@ -514,6 +516,7 @@ class DonateView(BrowserView):
         recorders = locator.query(query)
         return recorders
 
+
 # donor table
 class DonorView(DonateView):
     """
@@ -535,6 +538,7 @@ class DonorView(DonateView):
         locator = queryUtility(IDbapi, name='juanzeng')
         recorders = locator.total_query_with_filter(query_args,filter_args)
         return recorders    
+
 
 class SpecifyDonorView(DonorView):
     """
@@ -560,7 +564,7 @@ class GuangZhuangDonorView(DonorView):
         id:21
     view name:db_ajax_juanzeng
     """
-     
+
 
  # ajax multi-condition search relation db
 class AjaxSearch(BrowserView):
@@ -640,7 +644,7 @@ class AjaxSearch(BrowserView):
         contexturl = self.context.absolute_url()
         if bool(self.searchview().isAddable):
             for i in resultDicLists:
-                regtime = i.zhuceshijian            
+                regtime = i.zhuceshijian
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-7 text-left">
@@ -660,7 +664,7 @@ class AjaxSearch(BrowserView):
                                 </a>
                                 </td>
                                 </tr> """% dict(objurl="%s/@@donor_listings?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
-                                                name = "%s" %  urllib.quote_plus(i.mingcheng.encode('utf-8')),                                                
+                                                name = "%s" %  urllib.quote_plus(i.mingcheng.encode('utf-8')),
                                                 id = "%s" % i.id,
                                                 num=str(k + 1),
                                                 regtime = regtime.strftime("%Y-%m-%d"),
@@ -671,7 +675,7 @@ class AjaxSearch(BrowserView):
                 k = k + 1
         else:
             for i in resultDicLists:
-                regtime = i.zhuceshijian         
+                regtime = i.zhuceshijian
                 out = """<tr class="text-left">
                                 <td class="col-md-1 text-center">%(num)s</td>
                                 <td class="col-md-9 text-left">
@@ -679,24 +683,21 @@ class AjaxSearch(BrowserView):
                                 </td>
                                 <td class="col-md-2">%(regtime)s</td>
                                 </tr> """% dict(objurl="%s/@@juanzeng_listings_dt?name=%s&id=%s" % (contexturl,i.mingcheng,i.id),
-                                                name = "%s" %  urllib.quote_plus(i.mingcheng.encode('utf-8')),                                                 
+                                                name = "%s" %  urllib.quote_plus(i.mingcheng.encode('utf-8')),
                                                 id = "%s" % i.id,
                                                 num=str(k + 1),
                                                 regtime = regtime.strftime("%Y-%m-%d"),
                                                 title=i.mingcheng)
                 outhtml = "%s%s" %(outhtml ,out)
-                k = k + 1                
+                k = k + 1
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
         return data
-
-
 
 
 class Donorajaxsearch(AjaxSearch):
     """AJAX action for search DB donor table.
     receive front end ajax transform parameters
     """
-
 
     def searchview(self,viewname="donor_listings"):
         searchview = getMultiAdapter((self.context, self.request),name=viewname)
@@ -726,7 +727,7 @@ class Donorajaxsearch(AjaxSearch):
         origquery['with_entities'] = 0
         filterquery = {'xiangmu_id':id}
         locator = queryUtility(IDbapi, name='xiangmu')
-        name = locator.getByCode(id).mingcheng        
+        name = locator.getByCode(id).mingcheng
 #totalquery  search all
         totalquery = origquery.copy()
         totalquery['size'] = 0
@@ -735,7 +736,7 @@ class Donorajaxsearch(AjaxSearch):
         resultDicLists = searchview.search_multicondition(origquery,filterquery)
         del origquery
         del totalquery
-        data = self.output(start,size,id,name,totalnum, resultDicLists)              
+        data = self.output(start,size,id,name,totalnum, resultDicLists)
         self.request.response.setHeader('Content-Type', 'application/json')
         return json.dumps(data)
     
@@ -745,7 +746,7 @@ class Donorajaxsearch(AjaxSearch):
         outhtml = ""
         k = 0
         contexturl = self.context.absolute_url()
-        if bool(self.searchview().isAddable):        
+        if bool(self.searchview().isAddable):
             for i in resultDicLists:
                 astr = i.juanzeng_shijian.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
@@ -787,7 +788,6 @@ class Donorajaxsearch(AjaxSearch):
                 k = k + 1
         else:
             for i in resultDicLists:
-                
                 astr = i.juanzeng_shijian.strftime('%Y-%m-%d')
                 if astr == '2000-01-01':
                     atime = u""
@@ -799,7 +799,7 @@ class Donorajaxsearch(AjaxSearch):
                     else:
                         money = "(%s)" % (i.wuzi)
                 else:
-                    money = float(i.xianjin)                
+                    money = float(i.xianjin)
                 out = """<tr class="text-left">
                                 <td class="col-md-7">%(name)s</td>
                                 <td class="col-md-4">%(money)s</td>
@@ -809,9 +809,10 @@ class Donorajaxsearch(AjaxSearch):
                                             money= money,
                                             atime= atime)
                 outhtml = "%s%s" %(outhtml ,out)
-                k = k + 1                
+                k = k + 1
         data = {'searchresult': outhtml,'start':start,'size':size,'total':totalnum}
         return data
+
 
 class SpecifyDonorajaxsearch(Donorajaxsearch):
     """AJAX action for search DB donor table.
@@ -840,7 +841,6 @@ class DeleteDonate(form.Form):
     label = _(u"delete donate data")
     fields = field.Fields(IXiangMu).omit('id')
     ignoreContext = False
-
     id = None
     #receive url parameters
     def publishTraverse(self, request, name):
@@ -885,6 +885,7 @@ class DeleteDonate(form.Form):
         IStatusMessage(self.request).add(confirm, type='info')
         self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
 
+
 class InputDonate(form.Form):
     """input db donate table data
     """
@@ -924,6 +925,7 @@ class InputDonate(form.Form):
         confirm = _(u"Input cancelled.")
         IStatusMessage(self.request).add(confirm, type='info')
         self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
+
 
 class UpdateDonate(form.Form):
     """update model table row data
@@ -980,6 +982,7 @@ class UpdateDonate(form.Form):
         IStatusMessage(self.request).add(confirm, type='info')
         self.request.response.redirect(self.context.absolute_url() + '/donate_listings')
 
+
 class DeleteDonor(DeleteDonate):
     "delete the specify donor recorder"
 
@@ -987,7 +990,7 @@ class DeleteDonor(DeleteDonate):
     fields = field.Fields(IJuanZeng).omit('id')
 
     id = None
-    #receive url parameters    
+    #receive url parameters
     def redirectUrl(self):
         pars = self.request['HTTP_REFERER'].split('?')
         if len(pars) > 1:
@@ -1003,7 +1006,7 @@ class DeleteDonor(DeleteDonate):
         
     def publishTraverse(self, request, name):
         if self.id is None:
-            self.id = name              
+            self.id = name
             return self
         else:
             raise NotFound()
@@ -1095,16 +1098,16 @@ class UpdateDonor(DeleteDonor):
 
     label = _(u"update donor data")
     fields = field.Fields(IJuanZeng).omit('id','xiangmu_id','openid')
-    id = None              
+    id = None
     
     def publishTraverse(self, request, name):
         if self.id is None:
-            self.id = name              
+            self.id = name
             return self
         else:
             raise NotFound()
 
-    def getContent(self):                                         
+    def getContent(self):
         locator = queryUtility(IDbapi, name='juanzeng')
         return locator.getByCode(self.id)
 
@@ -1117,14 +1120,14 @@ class UpdateDonor(DeleteDonor):
         """Update model recorder
         """
 
-        data, errors = self.extractData()        
+        data, errors = self.extractData()
         if errors:
             self.status = self.formErrorsMessage
             return
         data['id'] = self.id
         # add self define primary key parameter
 #         data['pk'] = "doid" 
-        funcations = queryUtility(IDbapi, name='juanzeng')        
+        funcations = queryUtility(IDbapi, name='juanzeng')
         rdurl = self.redirectUrl()
         try:
             funcations.updateByCode(data)
