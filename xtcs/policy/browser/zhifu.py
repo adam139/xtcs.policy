@@ -29,7 +29,7 @@ class Base(BrowserView):
             else:
                 return ""
         else:
-            return ""            
+            return ""
         
     
     def __call__(self):
@@ -40,30 +40,27 @@ class Base(BrowserView):
             self.request.response.redirect(url)
         else:
             self.request.response.redirect(self.winxinAuthUrl())
-    
+
     def redirectUrl(self):
         return '{0}/@@pay'.format(self.context.absolute_url())
-       
-    
+
     def winxinAuthUrl(self):
-        
         return WeixinHelper.oauth2(self.redirectUrl())
 
-        
+
 class HotBase(Base):
      
     def redirectUrl(self):
         return '{0}/@@hotpay'.format(self.context.absolute_url())
- 
-    
-class ZhiFuWView(BrowserView):    
+
+
+class ZhiFuWView(BrowserView):
        
         
     @memoize
     def outputjs(self):
         "用户同意授权，获取code"
-#         registry = getUtility(IRegistry)
-#         settings = registry.forInterface(IwechatSettings)                          
+
         redirecturi = 'http://weixin.315ok.org/@@donated_workflow'
         nexturl = WeixinHelper.oauth2(redirecturi)
         out = """
@@ -81,8 +78,7 @@ class ZhiFuWeiXinAuthView(ZhiFuWView):
     @memoize
     def outputjs(self):
         "用户同意授权，获取code"
-#         registry = getUtility(IRegistry)
-#         settings = registry.forInterface(IwechatSettings)                          
+
         redirecturi = 'http://weixin.315ok.org/@@pay'
         nexturl = WeixinHelper.oauth2(redirecturi)
         out = """
@@ -100,8 +96,7 @@ class ZhiFuHotAuthView(ZhiFuWView):
     @memoize
     def outputjs(self):
         "用户同意授权，获取code"
-#         registry = getUtility(IRegistry)
-#         settings = registry.forInterface(IwechatSettings)                          
+
         redirecturi = 'http://weixin.315ok.org/@@currentpay'
         nexturl = WeixinHelper.oauth2(redirecturi)
         out = """
@@ -110,6 +105,6 @@ class ZhiFuHotAuthView(ZhiFuWView):
         }
         init();
         """ % dict(oauthUrl=nexturl)
-        return out    
+        return out
                
  
