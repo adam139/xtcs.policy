@@ -10,7 +10,7 @@
     tal:define="disable_column_one python:request.set('disable_plone.leftcolumn',1);
                 disable_column_two python:request.set('disable_plone.rightcolumn',1);"/>
 </head>
-<body>	
+<body>
 <metal:main fill-slot="main">
     <tal:main-macro metal:define-macro="main">
     <div id="homepage" 
@@ -120,16 +120,50 @@
     				<li role="presentation">
     					<a href="#guanzhuang" aria-controls="guanzhuang" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt'">疫情捐赠</a>
-    				</li>  					
+    				</li>
   					<!-- 日常捐赠 无定向-->
     				<li role="presentation" class="active">
     					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target 
     						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=日常捐赠&id=5'">日常捐赠</a>
     				</li>
+  					<!-- 河南水灾-->
+    				<li role="presentation" class="active">
+    					<a href="#henanshuizai" aria-controls="henanshuizai" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target 
+    						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=河南2021年7月水灾捐赠&id=10'">河南水灾捐赠</a>
+    				</li>
   				</ul>
   					<!-- Tab panes start-->
   				<div class="tab-content">
+   				<div role="tabpanel" class="tab-pane" id="henanshuizai">
+					<div class="rolltables">
+						<table class="table"><tbody><tr> 
+    						<td class="nopadding">
+    							<table class="table table-bordered"><tbody>
+    								<tr class="theader row">
+			  							<td class="title">捐赠个人或单位</td>
+			  							<td class="item">现金(物资)</td>
+			  							<td class="atime">日期</td>
+									</tr></tbody>
+								</table>
+    							<div id="sRollV"><div id="sRollV1">
+    								<table class="table table-bordered">
+        								<tbody tal:content="structure python: view.getable('henanshuizai_donor_table')" >
+        									<tr> 
+          										<td>单位甲</td>
+          										<td>201300</td>
+          										<td></td>
+        									</tr></tbody>
+    									</table>
+    								</div>
+	 							 <div id="sRollV2"><!--roll placeholder-->
+      							</div>    
+    						</div>
+    					</td></tr></tbody>
+					</table>
+				</div>
+    			</div>
    				<div role="tabpanel" class="tab-pane" id="guanzhuang">
 					<div class="rolltables">
 						<table class="table"><tbody><tr> 
@@ -221,7 +255,7 @@
   				<div class="tab-content">
    				<div role="tabpanel" class="tab-pane" id="yigonghuodong">
          		<ul class="tabcontent-lists">
-         		<tal:group tal:repeat="obj python:view.collection('yigonghuodong',9)">    				
+         		<tal:group tal:repeat="obj python:view.collection('yigonghuodong',9)">
     						<li class="portletItem"
         					tal:define="oddrow repeat/obj/odd;ttl obj/Title"
         					tal:attributes="class python:oddrow and 'portletItem even' or 'portletItem odd'">

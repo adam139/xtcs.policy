@@ -40,6 +40,7 @@ from xtcs.policy.utility import fetch_url_parameters
 import logging
 logger = logging.getLogger("weixin notify")
 
+
 # our helper class
 class CustomWeixinHelper(WeixinHelper):
     "overrite get access token method for cached and refresh"
@@ -172,9 +173,8 @@ class TokenAjax(BrowserView):
         return token
 
 
-class NotifyAjax(object):    
-    """AJAX action for search DB.
-    receive front end ajax transform parameters
+class NotifyAjax(object):
+    """receive wechat server sent out pay success notify ,update order status
     """
 
     def __call__(self):
@@ -188,7 +188,7 @@ class NotifyAjax(object):
 
         if "xml" not in self.request:return "no"
         datadic = self.request['xml']
-#         logger.info(str(datadic))   
+#         logger.info(str(datadic))
         datadic = WeixinHelper.xmlToArray(datadic)
         if 'result_code' not in datadic:
             return "no"
@@ -197,7 +197,7 @@ class NotifyAjax(object):
         base = Wxpay_server_pub()
         openid = datadic['openid']
         money =  datadic['total_fee']
-        money = int(money)/100  
+        money = int(money)/100
         base.data = datadic
         locator = queryUtility(IDbapi, name='juanzeng')
 #         验证签名和金额是否一致 金额在用户下单插入数据库
@@ -205,16 +205,15 @@ class NotifyAjax(object):
                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
         filter_args = {"openid":openid,"xianjin":float(money)}
         recorders = locator.query_with_filter(query_data,filter_args)
-#         recorder = Session.query(JuanZeng).filter(JuanZeng.openid==openid).\
-#             filter(JuanZeng.xianjin==float(money)).\
-#             order_by(JuanZeng.id.desc()).first()
+
         if not bool(recorders):return "no"
         recorder = recorders[0]
         if bool(recorder.status):return "no"
         if base.checkSign():
             # update status=1
             locator.updateByCode({"id":recorder.id,"status":1})
-            # send template message
+            
+            # send template message when user follow the weixin gongzhonghao
             try:
                 message = u"湘潭市慈善总会于:{0},收到您的捐款:{1}元,感谢您的善心善行!"
                 nw = datetime.now().strftime(fmt)
@@ -260,6 +259,8 @@ class PayAjax(BrowserView):
     """
  
     def insertprepay(self,**paras):
+        "插入预捐赠记录到数据库"
+        
         locator = queryUtility(IDbapi, name='juanzeng')
         locator.add(paras)
         return
@@ -271,13 +272,17 @@ class PayAjax(BrowserView):
         datadic = self.request.form
         fee = float(datadic['fee'])
         fee = round(fee,2)
+        # 金额前端以'元'为单位,wechat 服务器 则以 '分'为单位
         total_fee = str(int(fee * 100))
         id = datadic['did']
         openid = datadic['openid']
         locator = queryUtility(IDbapi, name='xiangmu')
+        #查找项目表,获取项目记录
         xrdr = locator.getByCode(id)
         body = xrdr.mingcheng.encode('utf-8')
+        # send 
         out = JsApi_pub().getParameters(openid,body,total_fee)
+        # generate prepay recorder and write to db
         rdr = {}
 #         datadic['money'] = str(fee)
         rdr['xiangmu_id'] = xrdr.id
@@ -300,13 +305,12 @@ class PayAjax(BrowserView):
                 logger.info("fetch  nickname failed !")
                 datadic['aname'] == u"匿名".encode('utf-8')
 
-#         del datadic['fee']
         rdr['xingming'] = datadic['aname']
         rdr['juanzeng_shijian'] = datetime.now()
-        self.insertprepay(**rdr)  
+        self.insertprepay(**rdr)
         self.request.response.setHeader('Content-Type', 'application/json')
         return out
-            
+
 
 class WeixinPay(BrowserView):
     """
@@ -329,14 +333,6 @@ class WeixinPay(BrowserView):
         locator = queryUtility(IDbapi, name='xiangmu')
         filter_args = {"youxiao":1}
         recorders = locator.query_with_filter(query_args,filter_args)
-
-#     def get_projects(self,id=None):
-#         "提取系统所有公益项目"
-# 
-#         query_args = {"start":0,"size":20,'SearchableText':'',
-#                 'with_entities':0,'sort_order':'reverse','order_by':'id'}
-#         locator = queryUtility(IDbapi, name='xiangmu')
-#         recorders = locator.query(query_args)
 
         def outfmt(rcd):
             out = '<label><input type="radio" name="{0}" id="{1}" value="{2}">{3}</label>'
@@ -416,7 +412,7 @@ class DonatedWorkflow(WeixinPay):
         selectutl = "{0}/@@auth".format(portal_url)
         
         out = """
-$(document).ready(function(){        
+$(document).ready(function(){
     $(".hot-project").on("click",function (e) {
           e.preventDefault();
           window.location.href = "%(hoturl)s";
@@ -488,6 +484,23 @@ class GuanZhuangDonortableView(DonortableView):
             return
         return self.outputList(articles)
 
+# 河南水灾
+class HeNanShuiZaiDonortableView(DonortableView):
+    "河南水灾捐赠"
+      
+    @memoize
+    def getMemberList(self,start=0,size=0):
+        """获取捐赠结果列表"""
+        
+        locator = queryUtility(IDbapi, name='juanzeng')
+        data = {"start":0,"size":1000,'SearchableText':'',
+                'with_entities':0,'sort_order':'reverse','order_by':'id'}
+        filter_args = {"xiangmu_id":10}
+        articles = locator.query_with_filter(data,filter_args)
+        if articles == None:
+            return
+        return self.outputList(articles)
+    
 
 # all donate table
 class DonateView(BrowserView):
@@ -574,6 +587,17 @@ class GuangZhuangDonorView(DonorView):
     view name:db_ajax_juanzeng
     """
 
+class HeNanShuiZaiDonorView(DonorView):
+    """
+    DB AJAX 查询，返回分页结果,这个class 调用数据库表 功能集 utility,
+    从ajaxsearch view 构造 查询条件（通常是一个参数字典），该utility 接受
+    该参数，并提供表id,查询数据库的日常捐赠表,并返回结果。
+    
+    parameters:
+        query:{'start':0,'size':10}
+        id:21
+    view name:db_ajax_juanzeng
+    """
 
  # ajax multi-condition search relation db
 class AjaxSearch(BrowserView):
@@ -608,7 +632,7 @@ class AjaxSearch(BrowserView):
         return searchview
 
     def __call__(self):
-#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
+
         searchview = self.searchview()
  # datadic receive front ajax post data
         datadic = self.request.form
@@ -713,7 +737,6 @@ class Donorajaxsearch(AjaxSearch):
         return searchview
 
     def __call__(self):
-#        self.portal_state = getMultiAdapter((self.context, self.request), name=u"plone_portal_state")
         searchview = self.searchview()
  # datadic receive front ajax post data
         datadic = self.request.form
@@ -725,9 +748,9 @@ class Donorajaxsearch(AjaxSearch):
         id = int(datadic['id'])
         origquery = {}
         origquery['order_by'] = sortcolumn
-        # sql db sortt_order:asc,desc
+        # sql db sort_order:asc,desc
         origquery['sort_order'] = sortdirection
-#  #模糊搜索       
+#  #模糊搜索
         origquery['SearchableText'] = keyword
 #origquery provide  batch search
         origquery['size'] = size

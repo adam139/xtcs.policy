@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>湘潭市慈善总会－－河南2021年7月水灾捐赠结果公示</title>
+<script src="modernizr-2.6.2.min.js"
+  tal:define="navroot context/@@plone_portal_state/navigation_root_url"	
+	tal:attributes="src string:${navroot}/++resource++xtcs.policy/roll.min.js"></script>
+<link rel="stylesheet" type="text/css"
+            tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+            tal:attributes="href string:${navroot}/++resource++xtcs.policy/rollstyle.css"
+            />
+</head>
+<body>
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tbody><tr> 
+    <td valign="top" align="right">
+    	<table width="100%" cellspacing="1" cellpadding="0" border="0" bgcolor="#cfcfcf" align="center">
+			<tbody><tr class="theader">
+			  <td width="55%" valign="middle" height="25" bgcolor="#ededed" align="center">捐赠个人或单位</td>
+			  <td width="25%" valign="middle" bgcolor="#ededed" align="center">现金(物资)</td>
+			  <td width="20%" valign="middle" bgcolor="#ededed" align="center">时间</td>
+			</tr>
+			</tbody>
+		</table>
+    <div style="margin: 0px; overflow: hidden;height: 180px" id="sRollV">
+	  <div id="sRollV1">
+    <table width="100%" cellspacing="1" cellpadding="3" border="0" bgcolor="#E6E7E8" class="text1">
+        <tbody tal:content="structure python: view.getMemberList()" >
+        	<tr style="font-size:12px;"> 
+          <td width="55%" height="28" bgcolor="#FFFFFF" align="left">中国中亚友好协会</td>
+          <td width="25%" bgcolor="#FFFFFF" align="center">2013</td>
+          <td width="20%" bgcolor="#FFFFFF" align="center"></td>
+        </tr></tbody>
+    </table>
+    </div>
+	  <div id="sRollV2"><!--roll placeholder-->
+    </div>    
+    </div>
+    </td>
+  </tr>
+</tbody>
+</table>
+<script type="text/javascript" language="javascript">StartRollVs();</script>
+</body>
+</html>

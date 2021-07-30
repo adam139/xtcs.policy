@@ -9,26 +9,31 @@
         for="*"
         permission="zope2.View"
         class=".dbpage.PayAjax"/>
+        
      <browser:page
         name="token_ajax"
         for="*"
         permission="zope2.View"
         class=".dbpage.TokenAjax"/>
+        
      <browser:page
         for="*"
         name="notify"
         class=".dbpage.NotifyAjax"
-        permission="zope.Public"/>                        
+        permission="zope.Public"/>
+        
      <browser:page
         name="donate_ajaxsearch"
         for="*"
         permission="zope2.View"
         class=".dbpage.AjaxSearch"/> 
+        
      <browser:page
         name="donor_ajaxsearch"
         for="*"
         permission="zope2.View"
         class=".dbpage.Donorajaxsearch"/>
+        
      <browser:page
         name="specify_donor_ajaxsearch"
         for="*"
@@ -41,7 +46,6 @@
         permission="zope2.View"
         class=".dbpage.GuangZhuangDonorajaxsearch"/>
 
-                                                
      
      <!-- input form views define--> 
      <browser:page
@@ -55,7 +59,6 @@
         permission="xtcs.policy.input_db"
         class=".dbpage.InputDonor"/>
 
-
      <!-- update form views define--> 
      <browser:page
         name="update_donate"
@@ -67,7 +70,6 @@
         for="xtcs.policy.interfaces.IJuanzenggongshi"
         permission="xtcs.policy.input_db"
         class=".dbpage.UpdateDonor"/>
-
         
     <!-- delete form view -->
      <browser:page
@@ -79,7 +81,6 @@
         name="delete_donor"
         for="xtcs.policy.interfaces.IJuanzenggongshi"
         permission="xtcs.policy.input_db"
-        class=".dbpage.DeleteDonor"/>            
-                                    
+        class=".dbpage.DeleteDonor"/>
                
-</configure>    
+</configure>

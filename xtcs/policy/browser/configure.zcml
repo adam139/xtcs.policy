@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:z3c="http://namespaces.zope.org/z3c"
-    xmlns:grok="http://namespaces.zope.org/grok"    
+    xmlns:grok="http://namespaces.zope.org/grok"
     i18n_domain="xtcs.policy">
 
     <include file="caching.zcml" />
@@ -70,7 +70,7 @@
       name="donor_table"
       class=".dbpage.DonortableView"
       permission="zope.Public"
-      layer=".interfaces.IThemeSpecific"       
+      layer=".interfaces.IThemeSpecific"
       template="templates/donor_table.pt"
     />
     <browser:page
@@ -80,7 +80,15 @@
       permission="zope.Public"
       layer=".interfaces.IThemeSpecific"
       template="templates/guanzhuang_donor_table.pt"
-    />    
+    />
+    <browser:page
+      for="*"
+      name="henanshuizai_donor_table"
+      class=".dbpage.HeNanShuiZaiDonortableView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"
+      template="templates/henanshuizai_donor_table.pt"
+    />
     <browser:page
       for="plone.app.contenttypes.interfaces.IFolder"
       name="tableview"
@@ -146,6 +154,14 @@
       template="templates/guanzhuang_donor_listings.pt"
     />
     <browser:page
+      for="xtcs.policy.interfaces.IJuanzenggongshi"
+      name="henanshuizai_donor_listings"
+      class=".dbpage.HeNanShuiZaiDonorView"
+      permission="zope.Public"
+      layer=".interfaces.IThemeSpecific"
+      template="templates/henanshuizai_donor_listings.pt"
+    />
+    <browser:page
       for="xtcs.policy.interfaces.IJuanzengworkflow"
       name="donated_workflow"
       class=".dbpage.DonatedWorkflow"
@@ -165,7 +181,7 @@
     <!-- The search box -->
     <browser:viewlet
         name="plone.searchbox"
-        layer=".interfaces.IThemeSpecific"        
+        layer=".interfaces.IThemeSpecific"
         manager="plone.app.layout.viewlets.interfaces.IPortalHeader"
         class=".common.SearchBoxViewlet"
         permission="zope2.View"
