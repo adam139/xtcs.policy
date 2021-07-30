@@ -116,6 +116,12 @@
 			<!-- 捐赠公示-->
 				<div role="tabpanel" class="portlet">
   				<ul  class="nav nav-tabs kuputab-selectors" role="tablist">
+  				    <!-- 河南水灾-->
+    				<li role="presentation" class="active">
+    					<a href="#henanshuizai" aria-controls="henanshuizai" role="tab" data-toggle="tab"
+    						tal:attributes="data-js-target 
+    						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=河南2021年7月水灾捐赠&id=10'">河南水灾捐赠</a>
+    				</li>
   					<!-- 冠状疫情捐赠-->
     				<li role="presentation">
     					<a href="#guanzhuang" aria-controls="guanzhuang" role="tab" data-toggle="tab"
@@ -126,12 +132,6 @@
     					<a href="#juanzengjinbang" aria-controls="juanzengjinbang" role="tab" data-toggle="tab"
     						tal:attributes="data-js-target 
     						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=日常捐赠&id=5'">日常捐赠</a>
-    				</li>
-  					<!-- 河南水灾-->
-    				<li role="presentation" class="active">
-    					<a href="#henanshuizai" aria-controls="henanshuizai" role="tab" data-toggle="tab"
-    						tal:attributes="data-js-target 
-    						python:p + '/aixingongshi/juanzenggongshi/@@juanzeng_listings_dt?name=河南2021年7月水灾捐赠&id=10'">河南水灾捐赠</a>
     				</li>
   				</ul>
   					<!-- Tab panes start-->
